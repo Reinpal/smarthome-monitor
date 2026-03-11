@@ -1,0 +1,13 @@
+apiVersion: 1
+
+providers:
+  - name: "SmartHome Monitor"
+    orgId: 1
+    folder: "SmartHome"
+    type: file
+    disableDeletion: false
+    editable: true
+    updateIntervalSeconds: 30
+    options:
+      path: /otel-lgtm/grafana/conf/provisioning/dashboards
+      foldersFromFilesStructure: false

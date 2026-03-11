@@ -1,0 +1,46 @@
+services:
+  # Grafana LGTM stack (Loki, Grafana, Tempo, Mimir) with OpenTelemetry Collector
+  lgtm:
+    image: grafana/otel-lgtm:latest
+    container_name: lgtm
+    ports:
+      - "3000:3000"   # Grafana UI
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+    volumes:
+      - lgtm-data:/data
+      - ./grafana/provisioning/dashboards:/otel-lgtm/grafana/conf/provisioning/dashboards
+      - ./grafana/provisioning/datasources:/otel-lgtm/grafana/conf/provisioning/datasources
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:-admin}
+    networks:
+      - monitoring
+
+  # ISG Heat Pump Scraper
+  scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: isg-scraper
+    restart: unless-stopped
+    depends_on:
+      - lgtm
+    env_file:
+      - .env
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://lgtm:4317
+    networks:
+      - monitoring
+      # The scraper needs access to the ISG on your local network.
+      # Using 'host' network mode OR ensure the container can reach
+      # your ISG IP. With bridge mode, Docker's default gateway
+      # typically allows access to the host network.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  lgtm-data:
+
+networks:
+  monitoring:
+    driver: bridge

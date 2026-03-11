@@ -1,0 +1,2683 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 100,
+      "title": "Temperaturen",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisLabel": "Temperatur (°C)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          },
+          "unit": "celsius"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Vorlauf"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Rücklauf"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Außentemperatur"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Spread (VL-RL)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_vorlauftemperatur_celsius",
+          "legendFormat": "Vorlauf",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_ruecklauftemperatur_celsius",
+          "legendFormat": "Rücklauf",
+          "refId": "B"
+        },
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_aussentemperatur_celsius",
+          "legendFormat": "Außentemperatur",
+          "refId": "C"
+        },
+        {
+          "expr": "heatpump_calculated_vorlauf_ruecklauf_spread_celsius",
+          "legendFormat": "Spread (VL-RL)",
+          "refId": "D"
+        }
+      ],
+      "title": "Vorlauf / Rücklauf / Außentemperatur",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Temperatur (°C)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          },
+          "unit": "celsius"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Warmwasser IST"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Warmwasser SOLL"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_anlage_warmwasser_isttemperatur_celsius",
+          "legendFormat": "Warmwasser IST",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_anlage_warmwasser_solltemperatur_celsius",
+          "legendFormat": "Warmwasser SOLL",
+          "refId": "B"
+        }
+      ],
+      "title": "Warmwasser",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Temperatur (°C)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          },
+          "unit": "celsius"
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 11
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_anlage_raumtemperatur_isttemperatur_1_celsius",
+          "legendFormat": "Raumtemperatur IST",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_anlage_raumtemperatur_solltemperatur_1_celsius",
+          "legendFormat": "Raumtemperatur SOLL",
+          "refId": "B"
+        },
+        {
+          "expr": "heatpump_anlage_raumtemperatur_taupunkttemperatur_1_celsius",
+          "legendFormat": "Taupunkt",
+          "refId": "C"
+        }
+      ],
+      "title": "Raumtemperatur",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Temperatur (°C)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          },
+          "unit": "celsius"
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 11
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_verdampfertemperatur_celsius",
+          "legendFormat": "Verdampfer",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_verdichtereintrittstemperatur_celsius",
+          "legendFormat": "Verdichtereintritt",
+          "refId": "B"
+        },
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_heissgastemperatur_celsius",
+          "legendFormat": "Heißgas",
+          "refId": "C"
+        },
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_oelsumpftemperatur_celsius",
+          "legendFormat": "Ölsumpf",
+          "refId": "D"
+        },
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_frostschutztemperatur_celsius",
+          "legendFormat": "Frostschutz",
+          "refId": "E"
+        }
+      ],
+      "title": "Wärmepumpe Temperaturen (Detail)",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 101,
+      "title": "Effizienz & Leistung",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "COP",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2
+              },
+              {
+                "color": "yellow",
+                "value": 3
+              },
+              {
+                "color": "green",
+                "value": 4
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 22
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_calculated_cop_heizen_tag",
+          "legendFormat": "COP Heizen (Tag)",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_calculated_cop_warmwasser_tag",
+          "legendFormat": "COP Warmwasser (Tag)",
+          "refId": "B"
+        },
+        {
+          "expr": "heatpump_calculated_cop_heizen_gesamt",
+          "legendFormat": "COP Heizen (Gesamt)",
+          "refId": "C"
+        },
+        {
+          "expr": "heatpump_calculated_cop_warmwasser_gesamt",
+          "legendFormat": "COP Warmwasser (Gesamt)",
+          "refId": "D"
+        }
+      ],
+      "title": "COP (Coefficient of Performance)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "kW",
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "spanNulls": true
+          },
+          "unit": "kwatt"
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 22
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW",
+          "legendFormat": "Inverter Aufnahmeleistung (ISG)",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_calculated_inverter_leistung_berechnet_kW",
+          "legendFormat": "Inverter Leistung (berechnet V*A)",
+          "refId": "B"
+        }
+      ],
+      "title": "Elektrische Leistung",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 108,
+      "title": "Verbrauchsanalyse",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Täglicher Stromverbrauch für Heizen und Warmwasser. Schwellenwerte basierend auf Energieausweis HWB(ref)=39 kWh/m²a, 240m² Neubau.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "kWh / Tag",
+            "lineWidth": 2,
+            "fillOpacity": 30,
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "area"
+            }
+          },
+          "unit": "kwatth",
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              },
+              {
+                "color": "rgba(255, 152, 48, 0.1)",
+                "value": 20
+              },
+              {
+                "color": "rgba(242, 73, 92, 0.15)",
+                "value": 30
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Heizen"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Warmwasser"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "HWB-Referenz (39 kWh/m²a)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-green",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "group": "B",
+                  "mode": "none"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 33
+      },
+      "id": 23,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh",
+          "legendFormat": "Heizen",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh",
+          "legendFormat": "Warmwasser",
+          "refId": "B"
+        },
+        {
+          "expr": "39.0 * $wohnflaeche / 3.5 / 365",
+          "legendFormat": "HWB-Referenz (39 kWh/m²a)",
+          "refId": "C"
+        }
+      ],
+      "title": "Täglicher Stromverbrauch",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Aktuelle Jahresarbeitszahl (COP) für Heizen. Mindestens 3.0 empfohlen (Fördervoraussetzung), 3.5-4.0 gut für Luft-WP, >4.0 ausgezeichnet.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2.5
+              },
+              {
+                "color": "yellow",
+                "value": 3.0
+              },
+              {
+                "color": "green",
+                "value": 3.5
+              },
+              {
+                "color": "dark-green",
+                "value": 4.0
+              }
+            ]
+          },
+          "min": 0,
+          "max": 6
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 6,
+        "x": 12,
+        "y": 33
+      },
+      "id": 24,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": true,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "targets": [
+        {
+          "expr": "heatpump_calculated_cop_heizen_tag",
+          "legendFormat": "COP Heizen (Tag)",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_calculated_cop_heizen_gesamt",
+          "legendFormat": "COP Heizen (Gesamt)",
+          "refId": "B"
+        }
+      ],
+      "title": "JAZ / COP Heizen",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Hochgerechneter jährlicher Stromverbrauch pro m² Wohnfläche. Basierend auf Energieausweis HWB(ref)=39 kWh/m²a und JAZ ~3.5 ergibt sich ein Zielwert von ~14 kWh/m²a Strom (inkl. Warmwasser).",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "unit": "kWh/m²a",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 10
+              },
+              {
+                "color": "yellow",
+                "value": 14
+              },
+              {
+                "color": "orange",
+                "value": 20
+              },
+              {
+                "color": "red",
+                "value": 25
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 6,
+        "x": 18,
+        "y": 33
+      },
+      "id": 25,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "expr": "(increase(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh[30d]) + increase(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh[30d])) * 1000 * 12 / $wohnflaeche",
+          "legendFormat": "30-Tage Hochrechnung",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh + heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh) * 1000 / ((time() - $inbetriebnahme_ts) / 86400) * 365 / $wohnflaeche",
+          "legendFormat": "Seit Inbetriebnahme",
+          "refId": "B"
+        }
+      ],
+      "title": "Verbrauch pro m² (hochgerechnet)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Korrelation zwischen Stromverbrauch und Außentemperatur. Bei milden Temperaturen sollte der Verbrauch niedrig sein. Bleibt er hoch, stimmen die Einstellungen nicht.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Außentemperatur"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "unit",
+                "value": "celsius"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Außentemperatur (°C)"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 5
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Stromverbrauch Heizen"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "unit",
+                "value": "kwatth"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Stromverbrauch (kWh/Tag)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Stromverbrauch WW"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "unit",
+                "value": "kwatth"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 43
+      },
+      "id": 26,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh",
+          "legendFormat": "Stromverbrauch Heizen",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh",
+          "legendFormat": "Stromverbrauch WW",
+          "refId": "B"
+        },
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_aussentemperatur_celsius",
+          "legendFormat": "Außentemperatur",
+          "refId": "C"
+        }
+      ],
+      "title": "Stromverbrauch vs. Außentemperatur",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Aktuelle Leistungsaufnahme des Inverters. Zeigt das Lastprofil der Wärmepumpe im Tagesverlauf.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "kW",
+            "lineWidth": 2,
+            "fillOpacity": 20,
+            "spanNulls": true,
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "unit": "kwatt",
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 8
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Aufnahmeleistung (ISG)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Leistung berechnet (V*A)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 43
+      },
+      "id": 27,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW",
+          "legendFormat": "Aufnahmeleistung (ISG)",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_calculated_inverter_leistung_berechnet_kW",
+          "legendFormat": "Leistung berechnet (V*A)",
+          "refId": "B"
+        }
+      ],
+      "title": "Momentane Leistungsaufnahme",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Aufteilung des Stromverbrauchs auf Heizen und Warmwasser. Bei einem Neubau mit HWB 39 sollte Warmwasser einen merklichen Anteil haben, da der Heizenergiebedarf niedrig ist.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "kwatth"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Heizen (Gesamt MWh)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Warmwasser (Gesamt MWh)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 9,
+        "x": 0,
+        "y": 53
+      },
+      "id": 28,
+      "options": {
+        "displayLabels": [
+          "name",
+          "value",
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh * 1000",
+          "legendFormat": "Heizen (Gesamt MWh)",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh * 1000",
+          "legendFormat": "Warmwasser (Gesamt MWh)",
+          "refId": "B"
+        }
+      ],
+      "title": "Heizen vs. Warmwasser Anteil",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Betriebstage seit Inbetriebnahme und durchschnittliche Verdichterstarts pro Tag über die gesamte Laufzeit.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Betriebstage"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "⌀ Starts/Tag"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 3,
+        "x": 9,
+        "y": 53
+      },
+      "id": 30,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(time() - $inbetriebnahme_ts) / 86400",
+          "legendFormat": "Betriebstage",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "heatpump_waermepumpe_starts_verdichter / ((time() - $inbetriebnahme_ts) / 86400)",
+          "legendFormat": "⌀ Starts/Tag",
+          "refId": "B"
+        }
+      ],
+      "title": "Betriebsinfo",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Vergleich: Energieausweis HWB(ref) = 39 kWh/m²a (Soll-Wärmebedarf) vs. tatsächlich gemessene Wärmeabgabe der WP pro m². Zeigt ob das Haus mehr oder weniger Wärme braucht als laut Energieausweis.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "unit": "kWh/m²a",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 39
+              },
+              {
+                "color": "orange",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 70
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "HWB Energieausweis"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 53
+      },
+      "id": 29,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "expr": "(increase(heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh[30d]) + increase(heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh[30d])) * 1000 * 12 / $wohnflaeche",
+          "legendFormat": "Wärmebedarf 30-Tage",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh + heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh) * 1000 / ((time() - $inbetriebnahme_ts) / 86400) * 365 / $wohnflaeche",
+          "legendFormat": "Seit Inbetriebnahme",
+          "refId": "B"
+        },
+        {
+          "expr": "vector(39)",
+          "legendFormat": "HWB Energieausweis (39)",
+          "refId": "C"
+        }
+      ],
+      "title": "Wärmebedarf: IST vs. Energieausweis (HWB 39)",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 63
+      },
+      "id": 102,
+      "title": "Energie",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "kWh",
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "spanNulls": true
+          },
+          "unit": "kwatth"
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 64
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_waermepumpe_waermemenge_vd_heizen_tag_kWh",
+          "legendFormat": "Wärmemenge Heizen (Tag)",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_waermepumpe_waermemenge_vd_warmwasser_tag_kWh",
+          "legendFormat": "Wärmemenge Warmwasser (Tag)",
+          "refId": "B"
+        },
+        {
+          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh",
+          "legendFormat": "Stromverbrauch Heizen (Tag)",
+          "refId": "C"
+        },
+        {
+          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh",
+          "legendFormat": "Stromverbrauch Warmwasser (Tag)",
+          "refId": "D"
+        }
+      ],
+      "title": "Energie Tagesverbrauch",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 64
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh",
+          "legendFormat": "Wärmemenge Heizen (MWh)",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh",
+          "legendFormat": "Wärmemenge Warmwasser (MWh)",
+          "refId": "B"
+        },
+        {
+          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh",
+          "legendFormat": "Stromverbrauch Heizen (MWh)",
+          "refId": "C"
+        },
+        {
+          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh",
+          "legendFormat": "Stromverbrauch Warmwasser (MWh)",
+          "refId": "D"
+        },
+        {
+          "expr": "heatpump_waermepumpe_waermemenge_nhz_heizen_summe_MWh",
+          "legendFormat": "NHZ Heizen (MWh)",
+          "refId": "E"
+        },
+        {
+          "expr": "heatpump_waermepumpe_waermemenge_nhz_warmwasser_summe_MWh",
+          "legendFormat": "NHZ Warmwasser (MWh)",
+          "refId": "F"
+        }
+      ],
+      "title": "Energie Gesamtbilanz",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 74
+      },
+      "id": 103,
+      "title": "Verdichter & Druck",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Hz",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          },
+          "unit": "hertz"
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 75
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_istdrehzahl_verdichter_hertz",
+          "legendFormat": "Verdichter IST",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_solldrehzahl_verdichter_hertz",
+          "legendFormat": "Verdichter SOLL",
+          "refId": "B"
+        },
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_istdrehzahl_luefter_hertz",
+          "legendFormat": "Lüfter IST",
+          "refId": "C"
+        },
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_solldrehzahl_luefter_hertz",
+          "legendFormat": "Lüfter SOLL",
+          "refId": "D"
+        }
+      ],
+      "title": "Verdichter & Lüfter Drehzahl",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "bar",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          },
+          "unit": "pressurembar"
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 75
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_druck_niederdruck_bar",
+          "legendFormat": "Niederdruck",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_druck_hochdruck_bar",
+          "legendFormat": "Hochdruck",
+          "refId": "B"
+        }
+      ],
+      "title": "Kältekreis Drücke",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 85
+      },
+      "id": 107,
+      "title": "Taktung & Verdichter Health",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Starts / Stunde",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true,
+            "thresholdsStyle": {
+              "mode": "area"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              },
+              {
+                "color": "rgba(255, 152, 48, 0.1)",
+                "value": 4
+              },
+              {
+                "color": "rgba(242, 73, 92, 0.15)",
+                "value": 8
+              }
+            ]
+          },
+          "min": 0
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Starts / Stunde"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 86
+      },
+      "id": 17,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "increase(heatpump_waermepumpe_starts_verdichter[1h])",
+          "legendFormat": "Starts / Stunde",
+          "refId": "A"
+        }
+      ],
+      "title": "Starts pro Stunde",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 25
+              },
+              {
+                "color": "orange",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 100
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 4,
+        "x": 12,
+        "y": 86
+      },
+      "id": 18,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "expr": "increase(heatpump_waermepumpe_starts_verdichter[24h])",
+          "legendFormat": "Starts / Tag",
+          "refId": "A"
+        }
+      ],
+      "title": "Starts pro Tag",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Durchschnittliche Verdichterlaufzeit pro Start (letzte 24h). Optimal: >15 min, Kritisch: <5 min (Ölrücklauf benötigt 5-10 min).",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 5
+              },
+              {
+                "color": "green",
+                "value": 15
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 4,
+        "x": 16,
+        "y": 86
+      },
+      "id": 19,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "expr": "(increase(heatpump_waermepumpe_laufzeit_vd_heizen_hours[24h]) + increase(heatpump_waermepumpe_laufzeit_vd_warmwasser_hours[24h])) * 60 / increase(heatpump_waermepumpe_starts_verdichter[24h])",
+          "legendFormat": "Laufzeit / Zyklus",
+          "refId": "A"
+        }
+      ],
+      "title": "Durchschn. Laufzeit pro Zyklus",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Durchschnittliche Verdichterstarts pro Betriebstag seit Inbetriebnahme. Benchmarks: <12 gut, 12-25 akzeptabel, >25 zu viel (Quelle: 42watt.de).",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 12
+              },
+              {
+                "color": "red",
+                "value": 25
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 4,
+        "x": 20,
+        "y": 86
+      },
+      "id": 31,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "heatpump_waermepumpe_starts_verdichter / ((time() - $inbetriebnahme_ts) / 86400)",
+          "legendFormat": "⌀ Starts/Tag (gesamt)",
+          "refId": "A"
+        }
+      ],
+      "title": "Starts / Betriebstag",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Hochrechnung der jährlichen Verdichterstarts basierend auf den letzten 24h. Designlebensdauer: 100.000-150.000 Starts.",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 9000
+              },
+              {
+                "color": "red",
+                "value": 15000
+              }
+            ]
+          },
+          "min": 0,
+          "max": 20000
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 96
+      },
+      "id": 20,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": true,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "targets": [
+        {
+          "expr": "increase(heatpump_waermepumpe_starts_verdichter[24h]) * 365",
+          "legendFormat": "Hochrechnung (24h-Basis)",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "heatpump_waermepumpe_starts_verdichter / ((time() - $inbetriebnahme_ts) / 86400) * 365",
+          "legendFormat": "Hochrechnung (seit Inbetriebnahme)",
+          "refId": "B"
+        }
+      ],
+      "title": "Hochrechnung Starts pro Jahr",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Verdichter Ein/Aus Zustand. Kurze Zyklen deuten auf Taktung hin.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "text": "AUS",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "EIN",
+                  "color": "green"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 96
+      },
+      "id": 21,
+      "options": {
+        "alignValue": "center",
+        "mergeValues": true,
+        "rowHeight": 0.9,
+        "showValue": "auto",
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_status_anlage_betriebsstatus_verdichter",
+          "legendFormat": "Verdichter",
+          "refId": "A"
+        }
+      ],
+      "title": "Verdichter State Timeline",
+      "type": "state-timeline"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Tägliche Verdichterstarts über 30 Tage. Saisonale Muster: Mehr Starts in der Übergangszeit (Frühling/Herbst).",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Starts / Tag",
+            "lineWidth": 2,
+            "fillOpacity": 20,
+            "spanNulls": true,
+            "drawStyle": "bars",
+            "barAlignment": 0,
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 25
+              },
+              {
+                "color": "red",
+                "value": 50
+              }
+            ]
+          },
+          "min": 0
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Starts / Tag"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 106
+      },
+      "id": 22,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "increase(heatpump_waermepumpe_starts_verdichter[24h])",
+          "legendFormat": "Starts / Tag",
+          "refId": "A",
+          "interval": "1d"
+        }
+      ],
+      "timeFrom": "30d",
+      "title": "Starts Trend (30 Tage)",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 116
+      },
+      "id": 104,
+      "title": "Laufzeit & Status",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 117
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "heatpump_waermepumpe_laufzeit_vd_heizen_hours",
+          "legendFormat": "VD Heizen (h)",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_waermepumpe_laufzeit_vd_warmwasser_hours",
+          "legendFormat": "VD Warmwasser (h)",
+          "refId": "B"
+        },
+        {
+          "expr": "heatpump_waermepumpe_laufzeit_vd_abtauen_hours",
+          "legendFormat": "VD Abtauen (h)",
+          "refId": "C"
+        },
+        {
+          "expr": "heatpump_waermepumpe_laufzeit_nhz_1_2_hours",
+          "legendFormat": "NHZ 1/2 (h)",
+          "refId": "D"
+        },
+        {
+          "expr": "heatpump_waermepumpe_starts_verdichter",
+          "legendFormat": "Verdichter Starts",
+          "refId": "E"
+        },
+        {
+          "expr": "heatpump_waermepumpe_laufzeit_starts_abtauen",
+          "legendFormat": "Abtauen Starts",
+          "refId": "F"
+        }
+      ],
+      "title": "Laufzeit & Starts",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "text": "AUS",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "EIN",
+                  "color": "green"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 117
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "heatpump_status_anlage_betriebsstatus_verdichter",
+          "legendFormat": "Verdichter",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_status_anlage_betriebsstatus_heizen",
+          "legendFormat": "Heizen",
+          "refId": "B"
+        },
+        {
+          "expr": "heatpump_status_anlage_betriebsstatus_heizkreis_1_pumpe",
+          "legendFormat": "Heizkreis 1 Pumpe",
+          "refId": "C"
+        },
+        {
+          "expr": "heatpump_status_anlage_status_anlage_pufferladepumpe_1",
+          "legendFormat": "Pufferladepumpe 1",
+          "refId": "D"
+        }
+      ],
+      "title": "Betriebsstatus",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 125
+      },
+      "id": 105,
+      "title": "Hydraulik & Elektrik",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          }
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 126
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_wp_wasservolumenstrom_l_per_min",
+          "legendFormat": "Volumenstrom (l/min)",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_anlage_heizung_heizungsdruck_bar",
+          "legendFormat": "Heizungsdruck (bar)",
+          "refId": "B"
+        }
+      ],
+      "title": "Hydraulik",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          }
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 126
+      },
+      "id": 14,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_strom_inverter_amperes",
+          "legendFormat": "Strom Inverter (A)",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_spannung_inverter_volts",
+          "legendFormat": "Spannung Inverter (V)",
+          "refId": "B"
+        },
+        {
+          "expr": "heatpump_waermepumpe_prozessdaten_luefterleistung_rel_percent",
+          "legendFormat": "Lüfterleistung (%)",
+          "refId": "C"
+        }
+      ],
+      "title": "Elektrik & Lüfter",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 136
+      },
+      "id": 106,
+      "title": "Raumklima",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "%",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          },
+          "unit": "humidity"
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 137
+      },
+      "id": 15,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_anlage_raumtemperatur_raumfeuchte_1_percent",
+          "legendFormat": "Raumfeuchte",
+          "refId": "A"
+        }
+      ],
+      "title": "Raumfeuchte",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "°C",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          },
+          "unit": "celsius"
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 137
+      },
+      "id": 16,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "expr": "heatpump_anlage_heizung_isttemperatur_hk_1_celsius",
+          "legendFormat": "Heizkreis 1 IST",
+          "refId": "A"
+        },
+        {
+          "expr": "heatpump_anlage_heizung_solltemperatur_hk_1_celsius",
+          "legendFormat": "Heizkreis 1 SOLL",
+          "refId": "B"
+        },
+        {
+          "expr": "heatpump_anlage_heizung_vorlaufisttemperatur_wp_celsius",
+          "legendFormat": "Vorlauf IST (WP)",
+          "refId": "C"
+        },
+        {
+          "expr": "heatpump_anlage_heizung_ruecklaufisttemperatur_wp_celsius",
+          "legendFormat": "Rücklauf IST (WP)",
+          "refId": "D"
+        }
+      ],
+      "title": "Heizkreis Details",
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": [
+    "smarthome",
+    "heatpump",
+    "stiebel-eltron"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "240",
+          "value": "240"
+        },
+        "description": "Beheizte Wohnfläche in m² (für Verbrauchsberechnung pro m²)",
+        "hide": 0,
+        "label": "Wohnfläche (m²)",
+        "name": "wohnflaeche",
+        "options": [],
+        "query": "240",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1758664800",
+          "value": "1758664800"
+        },
+        "description": "Unix-Timestamp der Inbetriebnahme (24.09.2025 00:00 CEST)",
+        "hide": 2,
+        "label": "Inbetriebnahme",
+        "name": "inbetriebnahme_ts",
+        "options": [],
+        "query": "1758664800",
+        "skipUrlSync": true,
+        "type": "constant"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "6h",
+      "12h",
+      "1d"
+    ]
+  },
+  "timezone": "Europe/Vienna",
+  "title": "Wärmepumpe - Stiebel Eltron",
+  "uid": "heatpump-overview",
+  "version": 1
+}
