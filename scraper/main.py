@@ -51,6 +51,8 @@ def isg_scrape_cycle(
         try:
             values = parse_isg_page(html, page_name)
             count = exporter.export_values(page_name, values)
+            if count > 0:
+                exporter.health.success("isg", page_name)
             total_metrics += count
             total_pages += 1
         except Exception:
@@ -79,7 +81,9 @@ def fronius_collect_cycle(
     logger.info("Starting Fronius collection cycle...")
 
     try:
-        metrics = collector.collect_all(endpoints)
+        metrics = collector.collect_all(
+            endpoints, on_success=lambda source: exporter.health.success("fronius", source)
+        )
         count = exporter.export_fronius_values(metrics)
         logger.info(
             "Fronius collection cycle complete: %d metrics", count
@@ -108,6 +112,11 @@ def main() -> None:
 
     scraper = ISGScraper(config.isg_base_url)
     exporter = OTLPExporter(config.otlp_endpoint)
+    exporter.health.register("isg", config.isg_pages.values(), config.scrape_interval)
+    if config.fronius_enabled:
+        exporter.health.register(
+            "fronius", config.fronius_endpoints, config.fronius_poll_interval
+        )
 
     fronius_collector = None
     if config.fronius_enabled:

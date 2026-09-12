@@ -72,6 +72,36 @@ All configuration is done via environment variables in the `.env` file. See [`.e
 | `LOG_LEVEL` | `INFO` | Log level (`DEBUG`, `INFO`, `WARNING`, `ERROR`) |
 | `GF_SECURITY_ADMIN_PASSWORD` | `admin` | Grafana admin password |
 
+## Metrics retention and backups
+
+Prometheus retains **5 years** of metrics, configured in
+[`prometheus/prometheus.yaml`](prometheus/prometheus.yaml). Compose mounts this
+configuration read-only and pins the LGTM image by digest. Validate the config
+with the target image's `promtool check config` before upgrading.
+
+Data lives at `${DATA_PATH:-./data}` on the host. Persistence survives container
+recreation, but does **not** protect against retention expiry or disk failure.
+Increasing retention cannot restore previously deleted measurements. Monitor
+available disk space as history grows.
+
+Local recovery archives are excluded from Git under `backups/`. On September 12,
+2026, the original Docker volume was archived, and the current Prometheus data
+was archived while the stack was stopped. `backups/SHA256SUMS` records checksums.
+These are one-time local copies on the Pi, **not automated off-device backups**.
+Copy them to another device for protection against loss of the Pi.
+
+Never start Prometheus against the original legacy volume for recovery: work on
+an extracted copy with sufficiently long retention. Do not extract recovery
+archives over the live database. A recurring off-device backup and a tested
+restore procedure still need to be set up.
+
+## Health monitoring
+
+Collection freshness and host-storage alerts are provisioned in Grafana under
+**Alerting → Alert rules → SmartHome Health**. A private node-exporter service
+provides host metrics. Notification delivery is not configured yet.
+See [Health monitoring](docs/monitoring.md) for thresholds, operation and limitations.
+
 ## Dashboards
 
 Two provisioned Grafana dashboards are included:

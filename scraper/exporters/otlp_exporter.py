@@ -8,6 +8,7 @@ from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 from opentelemetry.sdk.resources import Resource
 
+from scraper.health import CollectionHealth
 from scraper.metrics.definitions import get_otel_unit, is_counter_metric
 from scraper.parsers.isg_parser import ParsedValue, build_metric_name
 
@@ -50,6 +51,19 @@ class OTLPExporter:
 
         self.meter = metrics.get_meter("isg_heatpump", "1.0.0")
         self.fronius_meter = metrics.get_meter("fronius_solar", "1.0.0")
+
+        self.health = CollectionHealth()
+        for name, index in (
+            ("smarthome_collection_last_success_seconds", 0),
+            ("smarthome_collection_stale_after_seconds", 1),
+        ):
+            def observe_health(options, index=index):
+                for (collector, source), values in self.health.snapshot().items():
+                    yield metrics.Observation(
+                        values[index], {"collector": collector, "source": source}
+                    )
+
+            self.meter.create_observable_gauge(name, callbacks=[observe_health])
 
         # Cache for created instruments to avoid re-creating them
         self._gauges: dict[str, metrics.ObservableGauge] = {}

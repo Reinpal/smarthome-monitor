@@ -1,16 +1,20 @@
 services:
   # Grafana LGTM stack (Loki, Grafana, Tempo, Mimir) with OpenTelemetry Collector
   lgtm:
-    image: grafana/otel-lgtm:latest
+    # Pin the deployed image; validate the custom Prometheus config before upgrading.
+    image: grafana/otel-lgtm@sha256:d3683fa0629ad8c8ab20230657637600aeb42141975e635bab3299b28e5a49c0
     container_name: lgtm
+    restart: unless-stopped
     ports:
       # - "3000:3000"   # Grafana UI
       - "4317:4317"   # OTLP gRPC receiver
       - "4318:4318"   # OTLP HTTP receiver
     volumes:
       - ${DATA_PATH:-./data}:/data
+      - ./prometheus/prometheus.yaml:/otel-lgtm/prometheus.yaml:ro
       - ./grafana/provisioning/dashboards:/otel-lgtm/grafana/conf/provisioning/dashboards
       - ./grafana/provisioning/datasources:/otel-lgtm/grafana/conf/provisioning/datasources
+      - ./grafana/provisioning/alerting:/otel-lgtm/grafana/conf/provisioning/alerting:ro
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:-admin}
     networks:
@@ -22,6 +26,38 @@ services:
       - "traefik.http.routers.grafana.rule=Host(`grafana.lan`)"
       - "traefik.http.routers.grafana.entrypoints=web"
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+
+  # Host metrics, accessible only on the internal monitoring network.
+  node-exporter:
+    image: prom/node-exporter:v1.9.1
+    restart: unless-stopped
+    command:
+      # Only collect relevant Pi metrics; avoid unsupported hardware collectors.
+      - --collector.disable-defaults
+      - --collector.cpu
+      - --collector.meminfo
+      - --collector.loadavg
+      - --collector.filesystem
+      - --collector.diskstats
+      - --collector.time
+      - --collector.stat
+      - --collector.uname
+      - --collector.vmstat
+      - --collector.hwmon
+      - --collector.thermal_zone
+      - --path.rootfs=/host
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|var/lib/docker/.+|run/credentials/.+)($$|/)
+    volumes:
+      - /:/host:ro,rslave
+    networks:
+      - monitoring
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
 
   # ISG Heat Pump Scraper
   scraper:

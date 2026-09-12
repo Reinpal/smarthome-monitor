@@ -54,7 +54,7 @@ class FroniusCollector:
             "Accept": "application/json",
         })
 
-    def collect_all(self, endpoints: dict[str, str]) -> list[FroniusMetric]:
+    def collect_all(self, endpoints: dict[str, str], on_success=None) -> list[FroniusMetric]:
         """Run a full collection cycle across all endpoints.
 
         Args:
@@ -76,6 +76,8 @@ class FroniusCollector:
                 if parser:
                     metrics = parser(data)
                     all_metrics.extend(metrics)
+                    if metrics and on_success is not None:
+                        on_success(name)
                     logger.debug(
                         "Collected %d metrics from '%s'", len(metrics), name
                     )

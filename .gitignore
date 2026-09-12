@@ -25,3 +25,7 @@ Thumbs.db
 
 # Docker
 docker-compose.override.yml
+
+# Local monitoring data and recovery archives
+/data/
+/backups/

@@ -1,0 +1,152 @@
+apiVersion: 1
+
+# No contact points or notification policies are provisioned here.
+# Rules are visible in Grafana; configure delivery separately.
+groups:
+  - orgId: 1
+    name: smarthome-health
+    folder: SmartHome Health
+    interval: 1m
+    rules:
+      - uid: smarthome-collection-stale
+        title: Device collection is stale
+        condition: B
+        for: 2m
+        noDataState: Alerting
+        execErrState: Alerting
+        labels:
+          severity: warning
+          category: collection
+        annotations:
+          summary: 'Collection is stale: {{ $labels.collector }} / {{ $labels.source }}'
+          description: No successful non-empty read for three configured collection intervals (minimum 3 minutes), sustained for 2 minutes. Cached exports do not refresh this timestamp. Check scraper logs and device connectivity. An empty optional endpoint will also alert until intentionally removed from collection configuration.
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            relativeTimeRange: {from: 600, to: 0}
+            model:
+              refId: A
+              expr: '(time() - max by (collector, source) (smarthome_collection_last_success_seconds)) > bool max by (collector, source) (smarthome_collection_stale_after_seconds)'
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+          - &threshold
+            refId: B
+            datasourceUid: __expr__
+            relativeTimeRange: {from: 0, to: 0}
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              conditions:
+                - type: query
+                  evaluator: {type: gt, params: [0]}
+                  operator: {type: and}
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+
+      - uid: smarthome-ingestion-stale
+        title: Scraper metrics are not arriving
+        condition: B
+        for: 2m
+        noDataState: Alerting
+        execErrState: Alerting
+        labels: {severity: critical, category: ingestion}
+        annotations:
+          summary: Scraper health metrics have stopped arriving
+          description: No health samples received for 3 minutes, sustained for 2 minutes. Check scraper, OTLP collector and Prometheus. This measures sample arrival, separately from successful device reads.
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            relativeTimeRange: {from: 600, to: 0}
+            model:
+              refId: A
+              expr: '(time() - max(timestamp(smarthome_collection_last_success_seconds)) > bool 180) or absent(smarthome_collection_last_success_seconds)'
+              instant: true
+              range: false
+          - *threshold
+
+      - uid: smarthome-host-unavailable
+        title: Host metrics collector unavailable
+        condition: B
+        for: 2m
+        noDataState: Alerting
+        execErrState: Alerting
+        labels: {severity: critical, category: host}
+        annotations:
+          summary: Node exporter cannot be scraped
+          description: Host monitoring is unavailable. Check the node-exporter container and monitoring network. This does not replace an external Pi uptime check.
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            relativeTimeRange: {from: 600, to: 0}
+            model:
+              refId: A
+              expr: '(up{job="node"} == bool 0) or absent(up{job="node"})'
+              instant: true
+              range: false
+          - *threshold
+
+      - uid: smarthome-disk-space
+        title: Host filesystem low on space or inodes
+        condition: B
+        for: 5m
+        noDataState: Alerting
+        execErrState: Alerting
+        labels: {severity: warning, category: storage}
+        annotations:
+          summary: 'Low disk space or inodes: {{ $labels.mountpoint }}'
+          description: Less than 10 percent space or inodes available on a physical host filesystem for 5 minutes. Check disk usage before Prometheus writes fail.
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            relativeTimeRange: {from: 600, to: 0}
+            model:
+              refId: A
+              expr: 'max by (host, mountpoint) ((node_filesystem_avail_bytes{job="node",fstype=~"ext[234]|xfs|btrfs|vfat"} / node_filesystem_size_bytes < bool 0.10) or label_replace((node_filesystem_files_free{job="node",fstype=~"ext[234]|xfs|btrfs"} / node_filesystem_files < bool 0.10), "check", "inodes", "mountpoint", ".*"))'
+              instant: true
+              range: false
+          - *threshold
+
+      - uid: smarthome-disk-readonly
+        title: Host filesystem became read-only
+        condition: B
+        for: 2m
+        noDataState: Alerting
+        execErrState: Alerting
+        labels: {severity: critical, category: storage}
+        annotations:
+          summary: 'Read-only filesystem: {{ $labels.mountpoint }}'
+          description: A physical host filesystem is read-only. Investigate kernel and disk errors; metrics may no longer be saved.
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            relativeTimeRange: {from: 600, to: 0}
+            model:
+              refId: A
+              expr: 'node_filesystem_readonly{job="node",fstype=~"ext[234]|xfs|btrfs|vfat"}'
+              instant: true
+              range: false
+          - *threshold
+
+      - uid: smarthome-data-mount-missing
+        title: External data disk mount missing
+        condition: B
+        for: 2m
+        noDataState: Alerting
+        execErrState: Alerting
+        labels: {severity: critical, category: storage}
+        annotations:
+          summary: External HDD is not mounted at /mnt/external
+          description: Expected ext4 HDD mount is absent from host metrics. Check the drive and mount before restarting the stack. Update this rule if DATA_PATH is moved to another filesystem.
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            relativeTimeRange: {from: 600, to: 0}
+            model:
+              refId: A
+              expr: 'absent(node_filesystem_size_bytes{job="node",mountpoint="/mnt/external",fstype="ext4"}) or vector(0)'
+              instant: true
+              range: false
+          - *threshold
