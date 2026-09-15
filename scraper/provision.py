@@ -40,10 +40,11 @@ def render_dashboard(dashboard, installation):
     variables[:] = [v for v in variables if v["name"] not in parameters]
     variables.extend(_constant(name, label, value) for name, (label, value) in parameters.items())
     dashboard["timezone"] = str(installation.timezone)
-    return dashboard
+    from scraper.period_promql import render_period_targets
+    return render_period_targets(dashboard, installation)
 
 
-def render(installation, output=OUTPUT):
+def render(installation, output=OUTPUT, *, period_report=None):
     """Stage a complete rendering before replacing output files.
 
     Output must stay below private/generated; inputs and data stores are never
@@ -68,7 +69,27 @@ def render(installation, output=OUTPUT):
         shutil.copyfile(TEMPLATES / "dashboards.yml", staging / "dashboards.yml")
         for source in sorted(TEMPLATES.glob("*.json")):
             dashboard = render_dashboard(json.loads(source.read_text()), installation)
+            if source.name == 'period-selectable.json':
+                from scraper.period_promql import render_interactive_dashboard
+                dashboard = render_interactive_dashboard(installation)
+            if source.name == 'period-verification.json' and period_report is not None:
+                from scraper.period_render import render_dashboard as render_period_dashboard
+                dashboard = render_period_dashboard(period_report)
             (staging / source.name).write_text(json.dumps(dashboard, ensure_ascii=False, indent=2) + "\n")
+        # Price-free interval rules are consumed by existing Prometheus, not a new service.
+        # The optional private override mounts this dedicated directory read-only.
+        from scraper.period_promql import recording_rules
+        rule_output = root / 'period-rules'
+        if rule_output.is_symlink():
+            raise ConfigurationError('output: symlink not permitted')
+        rule_output.mkdir(mode=0o755, exist_ok=True)
+        rule_output.chmod(0o755)
+        rule_stage = root / 'period-rules.tmp'
+        if rule_stage.is_symlink():
+            raise ConfigurationError('output: symlink not permitted')
+        rule_stage.write_text(json.dumps(recording_rules(), indent=2) + '\n')
+        rule_stage.chmod(0o644)
+        os.replace(rule_stage, rule_output / 'intervals.json')
         names = {source.name for source in staging.iterdir()}
         for source in staging.iterdir():
             source.chmod(0o644)

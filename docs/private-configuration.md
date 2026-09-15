@@ -124,8 +124,12 @@ Only generated dashboard parameters are needed by Grafana in this slice.
 `python -m scraper.provision render` validates before writing anything, then
 renders the existing dashboard UIDs and provider into
 `private/generated/dashboards/`. Source templates remain unchanged. The provider,
-datasource references and dashboard IDs are retained. Generated JSON includes
-only installation parameters, not tariff prices/credits. The existing battery
+datasource references and dashboard IDs are retained. The original device dashboards include installation parameters, not tariff
+prices/credits. Issue #4 additionally generates native selectable-period queries
+containing effective variable prices in a separate verification dashboard; see
+[period calculations](period-calculations.md). Credits/fixed charges remain excluded.
+Authorized Grafana viewers can inspect generated prices, so protect these artifacts
+and Grafana/database backups as private inputs. The existing battery
 SOC panel (PV dashboard panel **21**) describes the configured usable kWh via
 `${usable_battery_kwh}`. It explicitly distinguishes configuration from measured
 remaining energy. Heat-pump variables `wohnflaeche` / `inbetriebnahme_ts` are
@@ -136,9 +140,9 @@ inspect them. Protect Grafana and its database/backups accordingly.
 
 Without private rendering, public templates use browser timezone and `NaN`
 (unavailable) installation placeholders, not realistic defaults or zeroes.
-Optional omitted values remain `NaN` when rendered. This does not implement or
-validate period-energy/financial panels; source-semantic corrections belong to
-issue #2 and calculations to issue #4.
+Optional omitted values remain `NaN` when rendered. The #3 parameter-only path does not calculate periods. The implemented #4
+[query/render interface](period-calculations.md) now supplies selectable-period
+panels and date-effective financial queries through the same private rendering.
 
 The output directory is dedicated to generation: obsolete JSON is removed.
 Invalid input leaves the previous rendering intact. Individual files replace
@@ -158,14 +162,16 @@ docker compose -f docker-compose.yml -f docker-compose.private.yml config --quie
 # docker compose -f docker-compose.yml -f docker-compose.private.yml up -d
 ```
 
-The override replaces only the dashboards bind mount with the generated path,
-read-only and `create_host_path: false`. It does not change `/data`, retention,
-ports, proxy authentication, datasource provisioning, or collector behavior.
+The override replaces the dashboards bind mount and, since #4, adds a private
+price-free interval-rule directory for existing Prometheus. Both are read-only
+with `create_host_path: false`. It does not change `/data`, retention, ports,
+proxy authentication or collector behavior. The existing Prometheus datasource
+uses POST for generated queries; no new datasource or plugin is required.
 Grafana remains behind the existing trusted-LAN proxy; never add a public port
 or Internet route. Base Compose remains usable without installation config;
 private commands fail clearly if it is missing. Regenerate after template or
-installation changes. Tariff-only changes require calculation reload, not a
-Grafana restart. No live deployment/restart was performed for this ticket.
+installation changes. Tariff-only changes require regenerating private queries and reopening the
+reprovisioned dashboard, not a Grafana restart or a telemetry-history rewrite. No live deployment/restart was performed for this ticket.
 
 ## Privacy audit, backup and rollback
 

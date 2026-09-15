@@ -9,3 +9,9 @@ services:
         read_only: true
         bind:
           create_host_path: false
+      - type: bind
+        source: ./private/generated/period-rules
+        target: /otel-lgtm/period-rules
+        read_only: true
+        bind:
+          create_host_path: false

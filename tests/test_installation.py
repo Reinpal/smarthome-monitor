@@ -283,7 +283,7 @@ class ProvisionTests(unittest.TestCase):
             self.assertFalse(sentinel.exists())  # obsolete generated JSON is removed
 
     @unittest.skipUnless(shutil.which("docker"), "Docker Compose CLI unavailable")
-    def test_opt_in_compose_changes_only_dashboard_mount_offline(self):
+    def test_opt_in_compose_changes_only_dashboard_and_period_rule_mounts_offline(self):
         # `config` parses files only; it never contacts the daemon or deploys.
         with tempfile.TemporaryDirectory() as temp:
             temp = Path(temp)
@@ -307,14 +307,19 @@ class ProvisionTests(unittest.TestCase):
             self.assertEqual(dashboard["source"], str(temp / "private/generated/dashboards"))
             self.assertTrue(dashboard["read_only"])
             self.assertFalse(dashboard["bind"]["create_host_path"])
-            # Restore the one changed mount and require whole-model equality:
-            # /data, networks, ports, history and all other services are unchanged.
+            rules = next(m for m in mounts if m['target'] == '/otel-lgtm/period-rules')
+            self.assertEqual(rules['source'], str(temp / 'private/generated/period-rules'))
+            self.assertTrue(rules['read_only'])
+            self.assertFalse(rules['bind']['create_host_path'])
+            mounts.remove(rules)
+            # Restore the dashboard mount, remove the new rule mount, and require
+            # /data, networks, ports, history and all other services unchanged.
             original = next(m for m in base["services"]["lgtm"]["volumes"] if m["target"] == target)
             mounts[mounts.index(dashboard)] = original
             self.assertEqual(private, base)
 
     def test_private_paths_are_ignored_and_not_tracked(self):
-        paths = ["private/installation.json", "private/generated/dashboards/heatpump.json", "private/backups/config.json", ".env.local"]
+        paths = ["private/installation.json", "private/generated/dashboards/heatpump.json", "private/generated/period-rules/intervals.json", "private/backups/config.json", ".env.local"]
         for path in paths:
             result = subprocess.run(["git", "check-ignore", "-q", path], cwd=ROOT)
             self.assertEqual(result.returncode, 0)
