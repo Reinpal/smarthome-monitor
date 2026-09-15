@@ -1,0 +1,19 @@
+#!/bin/sh
+# Fail closed: never let Docker bind the SD-card directory below a missing disk.
+set -eu
+mount_path=/mnt/external
+expected_uuid=223e23de-8d26-4f4c-a435-cfdb385f5356
+fail() { echo "SmartHome storage: $*" >&2; exit 1; }
+mountpoint -q "$mount_path" || fail "$mount_path is not mounted"
+expected_device=$(stat -Lc %r "/dev/disk/by-uuid/$expected_uuid")
+[ "$(stat -c %d "$mount_path")" = "$expected_device" ] || fail "mount is not on the expected device"
+actual_uuid=$(findmnt -n -o UUID --mountpoint "$mount_path")
+[ "$actual_uuid" = "$expected_uuid" ] || fail "wrong drive UUID: $actual_uuid"
+options=$(findmnt -n -o OPTIONS --mountpoint "$mount_path")
+case ",$options," in *,rw,*) ;; *) fail "drive is not mounted read-write" ;; esac
+[ -d "$mount_path/smarthome-data/prometheus" ] || fail "Prometheus data directory missing"
+[ -w "$mount_path/smarthome-data/prometheus" ] || fail "Prometheus data directory is not writable"
+[ ! -L "$mount_path/smarthome-data" ] || fail "data directory must not be a symlink"
+[ ! -L "$mount_path/smarthome-data/prometheus" ] || fail "Prometheus directory must not be a symlink"
+[ "$(stat -c %d "$mount_path/smarthome-data/prometheus")" = "$expected_device" ] || fail "database is not on the expected device"
+[ "$(findmnt -n -o UUID --target "$mount_path/smarthome-data/prometheus")" = "$expected_uuid" ] || fail "database is not on the expected drive"

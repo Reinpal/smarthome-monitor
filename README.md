@@ -79,8 +79,13 @@ Prometheus retains **5 years** of metrics, configured in
 configuration read-only and pins the LGTM image by digest. Validate the config
 with the target image's `promtool check config` before upgrading.
 
-Data lives at `${DATA_PATH:-./data}` on the host. Persistence survives container
-recreation, but does **not** protect against retention expiry or disk failure.
+Data lives at `${DATA_PATH:-./data}` on the host. Create that directory explicitly
+on the intended storage before the first start; Compose will not create it.
+On the deployed Pi, Docker waits for and verifies the external drive before any
+containers start. See [External-drive storage and recovery](docs/storage-recovery.md)
+for the installed guard, tests, and September 14 recovery.
+Persistence survives container recreation, but does **not** protect against
+retention expiry or disk failure.
 Increasing retention cannot restore previously deleted measurements. Monitor
 available disk space as history grows.
 

@@ -10,7 +10,13 @@ services:
       - "4317:4317"   # OTLP gRPC receiver
       - "4318:4318"   # OTLP HTTP receiver
     volumes:
-      - ${DATA_PATH:-./data}:/data
+      # Do not silently create a fresh database directory when storage is absent.
+      # On the Pi, deploy/docker-storage.conf also gates Docker on the disk mount.
+      - type: bind
+        source: ${DATA_PATH:-./data}
+        target: /data
+        bind:
+          create_host_path: false
       - ./prometheus/prometheus.yaml:/otel-lgtm/prometheus.yaml:ro
       - ./grafana/provisioning/dashboards:/otel-lgtm/grafana/conf/provisioning/dashboards
       - ./grafana/provisioning/datasources:/otel-lgtm/grafana/conf/provisioning/datasources
