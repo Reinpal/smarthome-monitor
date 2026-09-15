@@ -157,39 +157,94 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_verdampfertemperatur_celsius) and on() (count(heatpump_waermepumpe_prozessdaten_verdampfertemperatur_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.verdampfertemperatur\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.verdampfertemperatur\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.verdampfertemperatur\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_verdampfertemperatur_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.verdampfertemperatur\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.verdampfertemperatur\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.verdampfertemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_verdampfertemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.verdampfertemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_verdampfertemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_verdampfertemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_verdampfertemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_verdampfertemperatur_celsius))) <= 2)",
           "legendFormat": "Verdampfer",
           "refId": "A",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_verdampfertemperatur_celsius",
+                "name": "heatpump.waermepumpe.prozessdaten.verdampfertemperatur",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_verdichtereintrittstemperatur_celsius) and on() (count(heatpump_waermepumpe_prozessdaten_verdichtereintrittstemperatur_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.verdichtereintrittstemperatur\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.verdichtereintrittstemperatur\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.verdichtereintrittstemperatur\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_verdichtereintrittstemperatur_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.verdichtereintrittstemperatur\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.verdichtereintrittstemperatur\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.verdichtereintrittstemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_verdichtereintrittstemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.verdichtereintrittstemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_verdichtereintrittstemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_verdichtereintrittstemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_verdichtereintrittstemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_verdichtereintrittstemperatur_celsius))) <= 2)",
           "legendFormat": "Verdichtereintritt",
           "refId": "B",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_verdichtereintrittstemperatur_celsius",
+                "name": "heatpump.waermepumpe.prozessdaten.verdichtereintrittstemperatur",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_heissgastemperatur_celsius) and on() (count(heatpump_waermepumpe_prozessdaten_heissgastemperatur_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.heissgastemperatur\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.heissgastemperatur\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.heissgastemperatur\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_heissgastemperatur_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.heissgastemperatur\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.heissgastemperatur\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.heissgastemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_heissgastemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.heissgastemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_heissgastemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_heissgastemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_heissgastemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_heissgastemperatur_celsius))) <= 2)",
           "legendFormat": "Heißgas",
           "refId": "C",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_heissgastemperatur_celsius",
+                "name": "heatpump.waermepumpe.prozessdaten.heissgastemperatur",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_oelsumpftemperatur_celsius) and on() (count(heatpump_waermepumpe_prozessdaten_oelsumpftemperatur_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.oelsumpftemperatur\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.oelsumpftemperatur\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.oelsumpftemperatur\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_oelsumpftemperatur_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.oelsumpftemperatur\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.oelsumpftemperatur\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.oelsumpftemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_oelsumpftemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.oelsumpftemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_oelsumpftemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_oelsumpftemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_oelsumpftemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_oelsumpftemperatur_celsius))) <= 2)",
           "legendFormat": "Ölsumpf",
           "refId": "D",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_oelsumpftemperatur_celsius",
+                "name": "heatpump.waermepumpe.prozessdaten.oelsumpftemperatur",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_frostschutztemperatur_celsius) and on() (count(heatpump_waermepumpe_prozessdaten_frostschutztemperatur_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.frostschutztemperatur\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.frostschutztemperatur\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.frostschutztemperatur\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_frostschutztemperatur_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.frostschutztemperatur\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.frostschutztemperatur\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.frostschutztemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_frostschutztemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.frostschutztemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_frostschutztemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_frostschutztemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_frostschutztemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_frostschutztemperatur_celsius))) <= 2)",
           "legendFormat": "Frostschutz",
           "refId": "E",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_frostschutztemperatur_celsius",
+                "name": "heatpump.waermepumpe.prozessdaten.frostschutztemperatur",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Wärmepumpe Temperaturen (Detail)",
@@ -276,32 +331,76 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_calculated_cop_heizen_tag) and on() (count(heatpump_calculated_cop_heizen_tag) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.calculated.cop_heizen_tag\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_heizen_tag\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.calculated.cop_heizen_tag\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_calculated_cop_heizen_tag) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_heizen_tag\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_heizen_tag\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.calculated.cop_heizen_tag\"})) - sum(timestamp(heatpump_calculated_cop_heizen_tag))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_heizen_tag\"})) - sum(timestamp(heatpump_calculated_cop_heizen_tag))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_calculated_cop_heizen_tag))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_calculated_cop_heizen_tag))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_calculated_cop_heizen_tag))) <= 2)",
           "legendFormat": "VD ratio Heizen (Tag)",
           "refId": "A",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_calculated_cop_heizen_tag",
+                "name": "heatpump.calculated.cop_heizen_tag",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_calculated_cop_warmwasser_tag) and on() (count(heatpump_calculated_cop_warmwasser_tag) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.calculated.cop_warmwasser_tag\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_warmwasser_tag\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.calculated.cop_warmwasser_tag\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_calculated_cop_warmwasser_tag) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_warmwasser_tag\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_warmwasser_tag\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.calculated.cop_warmwasser_tag\"})) - sum(timestamp(heatpump_calculated_cop_warmwasser_tag))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_warmwasser_tag\"})) - sum(timestamp(heatpump_calculated_cop_warmwasser_tag))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_calculated_cop_warmwasser_tag))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_calculated_cop_warmwasser_tag))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_calculated_cop_warmwasser_tag))) <= 2)",
           "legendFormat": "VD ratio Warmwasser (Tag)",
           "refId": "B",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_calculated_cop_warmwasser_tag",
+                "name": "heatpump.calculated.cop_warmwasser_tag",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_calculated_cop_heizen_gesamt) and on() (count(heatpump_calculated_cop_heizen_gesamt) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.calculated.cop_heizen_gesamt\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_heizen_gesamt\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.calculated.cop_heizen_gesamt\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_calculated_cop_heizen_gesamt) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_heizen_gesamt\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_heizen_gesamt\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.calculated.cop_heizen_gesamt\"})) - sum(timestamp(heatpump_calculated_cop_heizen_gesamt))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_heizen_gesamt\"})) - sum(timestamp(heatpump_calculated_cop_heizen_gesamt))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_calculated_cop_heizen_gesamt))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_calculated_cop_heizen_gesamt))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_calculated_cop_heizen_gesamt))) <= 2)",
           "legendFormat": "VD ratio Heizen (Gesamt)",
           "refId": "C",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_calculated_cop_heizen_gesamt",
+                "name": "heatpump.calculated.cop_heizen_gesamt",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_calculated_cop_warmwasser_gesamt) and on() (count(heatpump_calculated_cop_warmwasser_gesamt) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.calculated.cop_warmwasser_gesamt\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_warmwasser_gesamt\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.calculated.cop_warmwasser_gesamt\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_calculated_cop_warmwasser_gesamt) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_warmwasser_gesamt\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_warmwasser_gesamt\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.calculated.cop_warmwasser_gesamt\"})) - sum(timestamp(heatpump_calculated_cop_warmwasser_gesamt))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.cop_warmwasser_gesamt\"})) - sum(timestamp(heatpump_calculated_cop_warmwasser_gesamt))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_calculated_cop_warmwasser_gesamt))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_calculated_cop_warmwasser_gesamt))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_calculated_cop_warmwasser_gesamt))) <= 2)",
           "legendFormat": "VD ratio Warmwasser (Gesamt)",
           "refId": "D",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_calculated_cop_warmwasser_gesamt",
+                "name": "heatpump.calculated.cop_warmwasser_gesamt",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Device VD ratios · day / counter lifetime (not annual)",
@@ -374,11 +473,22 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW) and on() (count(heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.inverter_aufnahmeleistung\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.inverter_aufnahmeleistung\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.inverter_aufnahmeleistung\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.inverter_aufnahmeleistung\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.inverter_aufnahmeleistung\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.inverter_aufnahmeleistung\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.inverter_aufnahmeleistung\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW))) <= 2)",
           "legendFormat": "Inverter Aufnahmeleistung (ISG)",
           "refId": "A",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW",
+                "name": "heatpump.waermepumpe.prozessdaten.inverter_aufnahmeleistung",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Inverterleistung (Geräteangabe)",
@@ -449,32 +559,76 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_waermepumpe_waermemenge_vd_heizen_tag_kWh) and on() (count(heatpump_waermepumpe_waermemenge_vd_heizen_tag_kWh) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.vd_heizen_tag\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_heizen_tag\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.vd_heizen_tag\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_waermemenge_vd_heizen_tag_kWh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_heizen_tag\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_heizen_tag\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.vd_heizen_tag\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_heizen_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_heizen_tag\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_heizen_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_heizen_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_heizen_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_heizen_tag_kWh))) <= 2)",
           "legendFormat": "Wärmemenge Heizen (Tag)",
           "refId": "A",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_waermemenge_vd_heizen_tag_kWh",
+                "name": "heatpump.waermepumpe.waermemenge.vd_heizen_tag",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_waermemenge_vd_warmwasser_tag_kWh) and on() (count(heatpump_waermepumpe_waermemenge_vd_warmwasser_tag_kWh) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.vd_warmwasser_tag\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_warmwasser_tag\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.vd_warmwasser_tag\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_waermemenge_vd_warmwasser_tag_kWh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_warmwasser_tag\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_warmwasser_tag\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.vd_warmwasser_tag\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_warmwasser_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_warmwasser_tag\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_warmwasser_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_warmwasser_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_warmwasser_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_warmwasser_tag_kWh))) <= 2)",
           "legendFormat": "Wärmemenge Warmwasser (Tag)",
           "refId": "B",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_waermemenge_vd_warmwasser_tag_kWh",
+                "name": "heatpump.waermepumpe.waermemenge.vd_warmwasser_tag",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh) and on() (count(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_heizen_tag\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_heizen_tag\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_heizen_tag\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_heizen_tag\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_heizen_tag\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_heizen_tag\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_heizen_tag\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh))) <= 2)",
           "legendFormat": "Stromverbrauch Heizen (Tag)",
           "refId": "C",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh",
+                "name": "heatpump.waermepumpe.leistungsaufnahme.vd_heizen_tag",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh) and on() (count(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_tag\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_tag\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_tag\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_tag\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_tag\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_tag\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_tag\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh))) <= 2)",
           "legendFormat": "Stromverbrauch Warmwasser (Tag)",
           "refId": "D",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh",
+                "name": "heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_tag",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Device day energy · resets at device midnight",
@@ -548,46 +702,112 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh) and on() (count(heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.vd_heizen_summe\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_heizen_summe\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.vd_heizen_summe\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_heizen_summe\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_heizen_summe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.vd_heizen_summe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_heizen_summe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh))) <= 2)",
           "legendFormat": "Wärmemenge Heizen (MWh)",
           "refId": "A",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh",
+                "name": "heatpump.waermepumpe.waermemenge.vd_heizen_summe",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh) and on() (count(heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.vd_warmwasser_summe\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_warmwasser_summe\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.vd_warmwasser_summe\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_warmwasser_summe\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_warmwasser_summe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.vd_warmwasser_summe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.vd_warmwasser_summe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh))) <= 2)",
           "legendFormat": "Wärmemenge Warmwasser (MWh)",
           "refId": "B",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh",
+                "name": "heatpump.waermepumpe.waermemenge.vd_warmwasser_summe",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh) and on() (count(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_heizen_summe\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_heizen_summe\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_heizen_summe\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_heizen_summe\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_heizen_summe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_heizen_summe\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_heizen_summe\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh))) <= 2)",
           "legendFormat": "Stromverbrauch Heizen (MWh)",
           "refId": "C",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh",
+                "name": "heatpump.waermepumpe.leistungsaufnahme.vd_heizen_summe",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh) and on() (count(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_summe\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_summe\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_summe\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_summe\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_summe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_summe\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_summe\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh))) <= 2)",
           "legendFormat": "Stromverbrauch Warmwasser (MWh)",
           "refId": "D",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh",
+                "name": "heatpump.waermepumpe.leistungsaufnahme.vd_warmwasser_summe",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_waermemenge_nhz_heizen_summe_MWh) and on() (count(heatpump_waermepumpe_waermemenge_nhz_heizen_summe_MWh) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.nhz_heizen_summe\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.nhz_heizen_summe\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.nhz_heizen_summe\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_waermemenge_nhz_heizen_summe_MWh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.nhz_heizen_summe\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.nhz_heizen_summe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.nhz_heizen_summe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_nhz_heizen_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.nhz_heizen_summe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_nhz_heizen_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_nhz_heizen_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_nhz_heizen_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_waermemenge_nhz_heizen_summe_MWh))) <= 2)",
           "legendFormat": "NHZ Heizen (MWh)",
           "refId": "E",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_waermemenge_nhz_heizen_summe_MWh",
+                "name": "heatpump.waermepumpe.waermemenge.nhz_heizen_summe",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_waermemenge_nhz_warmwasser_summe_MWh) and on() (count(heatpump_waermepumpe_waermemenge_nhz_warmwasser_summe_MWh) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.nhz_warmwasser_summe\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.nhz_warmwasser_summe\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.nhz_warmwasser_summe\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_waermemenge_nhz_warmwasser_summe_MWh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.nhz_warmwasser_summe\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.nhz_warmwasser_summe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.waermemenge.nhz_warmwasser_summe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_nhz_warmwasser_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.waermemenge.nhz_warmwasser_summe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_nhz_warmwasser_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_nhz_warmwasser_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_waermemenge_nhz_warmwasser_summe_MWh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_waermemenge_nhz_warmwasser_summe_MWh))) <= 2)",
           "legendFormat": "NHZ Warmwasser (MWh)",
           "refId": "F",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_waermemenge_nhz_warmwasser_summe_MWh",
+                "name": "heatpump.waermepumpe.waermemenge.nhz_warmwasser_summe",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Device cumulative VD / NHZ counters · MWh",
@@ -659,32 +879,76 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_istdrehzahl_verdichter_hertz) and on() (count(heatpump_waermepumpe_prozessdaten_istdrehzahl_verdichter_hertz) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.istdrehzahl_verdichter\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.istdrehzahl_verdichter\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.istdrehzahl_verdichter\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_istdrehzahl_verdichter_hertz) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.istdrehzahl_verdichter\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.istdrehzahl_verdichter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.istdrehzahl_verdichter\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_istdrehzahl_verdichter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.istdrehzahl_verdichter\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_istdrehzahl_verdichter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_istdrehzahl_verdichter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_istdrehzahl_verdichter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_istdrehzahl_verdichter_hertz))) <= 2)",
           "legendFormat": "Verdichter IST",
           "refId": "A",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_istdrehzahl_verdichter_hertz",
+                "name": "heatpump.waermepumpe.prozessdaten.istdrehzahl_verdichter",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_solldrehzahl_verdichter_hertz) and on() (count(heatpump_waermepumpe_prozessdaten_solldrehzahl_verdichter_hertz) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.solldrehzahl_verdichter\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.solldrehzahl_verdichter\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.solldrehzahl_verdichter\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_solldrehzahl_verdichter_hertz) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.solldrehzahl_verdichter\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.solldrehzahl_verdichter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.solldrehzahl_verdichter\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_solldrehzahl_verdichter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.solldrehzahl_verdichter\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_solldrehzahl_verdichter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_solldrehzahl_verdichter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_solldrehzahl_verdichter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_solldrehzahl_verdichter_hertz))) <= 2)",
           "legendFormat": "Verdichter SOLL",
           "refId": "B",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_solldrehzahl_verdichter_hertz",
+                "name": "heatpump.waermepumpe.prozessdaten.solldrehzahl_verdichter",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_istdrehzahl_luefter_hertz) and on() (count(heatpump_waermepumpe_prozessdaten_istdrehzahl_luefter_hertz) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.istdrehzahl_luefter\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.istdrehzahl_luefter\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.istdrehzahl_luefter\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_istdrehzahl_luefter_hertz) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.istdrehzahl_luefter\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.istdrehzahl_luefter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.istdrehzahl_luefter\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_istdrehzahl_luefter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.istdrehzahl_luefter\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_istdrehzahl_luefter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_istdrehzahl_luefter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_istdrehzahl_luefter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_istdrehzahl_luefter_hertz))) <= 2)",
           "legendFormat": "Lüfter IST",
           "refId": "C",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_istdrehzahl_luefter_hertz",
+                "name": "heatpump.waermepumpe.prozessdaten.istdrehzahl_luefter",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_solldrehzahl_luefter_hertz) and on() (count(heatpump_waermepumpe_prozessdaten_solldrehzahl_luefter_hertz) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.solldrehzahl_luefter\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.solldrehzahl_luefter\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.solldrehzahl_luefter\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_solldrehzahl_luefter_hertz) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.solldrehzahl_luefter\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.solldrehzahl_luefter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.solldrehzahl_luefter\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_solldrehzahl_luefter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.solldrehzahl_luefter\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_solldrehzahl_luefter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_solldrehzahl_luefter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_solldrehzahl_luefter_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_solldrehzahl_luefter_hertz))) <= 2)",
           "legendFormat": "Lüfter SOLL",
           "refId": "D",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_solldrehzahl_luefter_hertz",
+                "name": "heatpump.waermepumpe.prozessdaten.solldrehzahl_luefter",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Verdichter & Lüfter Drehzahl",
@@ -758,18 +1022,40 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_druck_niederdruck_bar) and on() (count(heatpump_waermepumpe_prozessdaten_druck_niederdruck_bar) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.druck_niederdruck\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.druck_niederdruck\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.druck_niederdruck\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_druck_niederdruck_bar) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.druck_niederdruck\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.druck_niederdruck\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.druck_niederdruck\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_druck_niederdruck_bar))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.druck_niederdruck\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_druck_niederdruck_bar))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_druck_niederdruck_bar))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_druck_niederdruck_bar))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_druck_niederdruck_bar))) <= 2)",
           "legendFormat": "Niederdruck",
           "refId": "A",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_druck_niederdruck_bar",
+                "name": "heatpump.waermepumpe.prozessdaten.druck_niederdruck",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_druck_hochdruck_bar) and on() (count(heatpump_waermepumpe_prozessdaten_druck_hochdruck_bar) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.druck_hochdruck\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.druck_hochdruck\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.druck_hochdruck\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_druck_hochdruck_bar) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.druck_hochdruck\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.druck_hochdruck\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.druck_hochdruck\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_druck_hochdruck_bar))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.druck_hochdruck\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_druck_hochdruck_bar))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_druck_hochdruck_bar))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_druck_hochdruck_bar))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_druck_hochdruck_bar))) <= 2)",
           "legendFormat": "Hochdruck",
           "refId": "B",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_druck_hochdruck_bar",
+                "name": "heatpump.waermepumpe.prozessdaten.druck_hochdruck",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Kältekreis Drücke",
@@ -855,46 +1141,112 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_waermepumpe_laufzeit_vd_heizen_hours) and on() (count(heatpump_waermepumpe_laufzeit_vd_heizen_hours) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.vd_heizen\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.vd_heizen\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.vd_heizen\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_laufzeit_vd_heizen_hours) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.vd_heizen\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.vd_heizen\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.vd_heizen\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_heizen_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.vd_heizen\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_heizen_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_heizen_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_heizen_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_heizen_hours))) <= 2)",
           "legendFormat": "VD Heizen (h)",
           "refId": "A",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_laufzeit_vd_heizen_hours",
+                "name": "heatpump.waermepumpe.laufzeit.vd_heizen",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_laufzeit_vd_warmwasser_hours) and on() (count(heatpump_waermepumpe_laufzeit_vd_warmwasser_hours) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.vd_warmwasser\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.vd_warmwasser\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.vd_warmwasser\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_laufzeit_vd_warmwasser_hours) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.vd_warmwasser\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.vd_warmwasser\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.vd_warmwasser\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_warmwasser_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.vd_warmwasser\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_warmwasser_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_warmwasser_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_warmwasser_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_warmwasser_hours))) <= 2)",
           "legendFormat": "VD Warmwasser (h)",
           "refId": "B",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_laufzeit_vd_warmwasser_hours",
+                "name": "heatpump.waermepumpe.laufzeit.vd_warmwasser",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_laufzeit_vd_abtauen_hours) and on() (count(heatpump_waermepumpe_laufzeit_vd_abtauen_hours) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.vd_abtauen\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.vd_abtauen\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.vd_abtauen\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_laufzeit_vd_abtauen_hours) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.vd_abtauen\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.vd_abtauen\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.vd_abtauen\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_abtauen_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.vd_abtauen\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_abtauen_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_abtauen_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_abtauen_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_laufzeit_vd_abtauen_hours))) <= 2)",
           "legendFormat": "VD Abtauen (h)",
           "refId": "C",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_laufzeit_vd_abtauen_hours",
+                "name": "heatpump.waermepumpe.laufzeit.vd_abtauen",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_laufzeit_nhz_1_2_hours) and on() (count(heatpump_waermepumpe_laufzeit_nhz_1_2_hours) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.nhz_1_2\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.nhz_1_2\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.nhz_1_2\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_laufzeit_nhz_1_2_hours) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.nhz_1_2\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.nhz_1_2\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.nhz_1_2\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_nhz_1_2_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.nhz_1_2\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_nhz_1_2_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_nhz_1_2_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_nhz_1_2_hours))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_laufzeit_nhz_1_2_hours))) <= 2)",
           "legendFormat": "NHZ 1/2 (h)",
           "refId": "D",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_laufzeit_nhz_1_2_hours",
+                "name": "heatpump.waermepumpe.laufzeit.nhz_1_2",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_starts_verdichter) and on() (count(heatpump_waermepumpe_starts_verdichter) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_starts_verdichter) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2)",
           "legendFormat": "Verdichter Starts",
           "refId": "E",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_starts_verdichter",
+                "name": "heatpump.waermepumpe.starts.verdichter",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_laufzeit_starts_abtauen) and on() (count(heatpump_waermepumpe_laufzeit_starts_abtauen) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.starts_abtauen\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.starts_abtauen\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.starts_abtauen\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_laufzeit_starts_abtauen) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.starts_abtauen\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.starts_abtauen\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.laufzeit.starts_abtauen\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_starts_abtauen))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.laufzeit.starts_abtauen\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_starts_abtauen))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_starts_abtauen))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_laufzeit_starts_abtauen))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_laufzeit_starts_abtauen))) <= 2)",
           "legendFormat": "Abtauen Starts",
           "refId": "F",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_laufzeit_starts_abtauen",
+                "name": "heatpump.waermepumpe.laufzeit.starts_abtauen",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Laufzeit & Starts",
@@ -954,32 +1306,76 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_status_anlage_betriebsstatus_verdichter) and on() (count(heatpump_status_anlage_betriebsstatus_verdichter) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.status_anlage.betriebsstatus.verdichter\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.verdichter\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.status_anlage.betriebsstatus.verdichter\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) <= 86400) and on() (abs(heatpump_status_anlage_betriebsstatus_verdichter) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.verdichter\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.verdichter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.status_anlage.betriebsstatus.verdichter\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.verdichter\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_status_anlage_betriebsstatus_verdichter))) <= 2)",
           "legendFormat": "Verdichter",
           "refId": "A",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_status_anlage_betriebsstatus_verdichter",
+                "name": "heatpump.status_anlage.betriebsstatus.verdichter",
+                "collector": "isg",
+                "endpoint": "status_anlage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_status_anlage_betriebsstatus_heizen) and on() (count(heatpump_status_anlage_betriebsstatus_heizen) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.status_anlage.betriebsstatus.heizen\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.heizen\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.status_anlage.betriebsstatus.heizen\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) <= 86400) and on() (abs(heatpump_status_anlage_betriebsstatus_heizen) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.heizen\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.heizen\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.status_anlage.betriebsstatus.heizen\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_heizen))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.heizen\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_heizen))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_heizen))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_heizen))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_status_anlage_betriebsstatus_heizen))) <= 2)",
           "legendFormat": "Heizen",
           "refId": "B",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_status_anlage_betriebsstatus_heizen",
+                "name": "heatpump.status_anlage.betriebsstatus.heizen",
+                "collector": "isg",
+                "endpoint": "status_anlage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_status_anlage_betriebsstatus_heizkreis_1_pumpe) and on() (count(heatpump_status_anlage_betriebsstatus_heizkreis_1_pumpe) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.status_anlage.betriebsstatus.heizkreis_1_pumpe\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.heizkreis_1_pumpe\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.status_anlage.betriebsstatus.heizkreis_1_pumpe\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) <= 86400) and on() (abs(heatpump_status_anlage_betriebsstatus_heizkreis_1_pumpe) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.heizkreis_1_pumpe\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.heizkreis_1_pumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.status_anlage.betriebsstatus.heizkreis_1_pumpe\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_heizkreis_1_pumpe))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.heizkreis_1_pumpe\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_heizkreis_1_pumpe))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_heizkreis_1_pumpe))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_heizkreis_1_pumpe))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_status_anlage_betriebsstatus_heizkreis_1_pumpe))) <= 2)",
           "legendFormat": "Heizkreis 1 Pumpe",
           "refId": "C",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_status_anlage_betriebsstatus_heizkreis_1_pumpe",
+                "name": "heatpump.status_anlage.betriebsstatus.heizkreis_1_pumpe",
+                "collector": "isg",
+                "endpoint": "status_anlage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_status_anlage_status_anlage_pufferladepumpe_1) and on() (count(heatpump_status_anlage_status_anlage_pufferladepumpe_1) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.status_anlage.status_anlage.pufferladepumpe_1\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.status_anlage.pufferladepumpe_1\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.status_anlage.status_anlage.pufferladepumpe_1\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) <= 86400) and on() (abs(heatpump_status_anlage_status_anlage_pufferladepumpe_1) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.status_anlage.pufferladepumpe_1\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.status_anlage.pufferladepumpe_1\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.status_anlage.status_anlage.pufferladepumpe_1\"})) - sum(timestamp(heatpump_status_anlage_status_anlage_pufferladepumpe_1))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.status_anlage.pufferladepumpe_1\"})) - sum(timestamp(heatpump_status_anlage_status_anlage_pufferladepumpe_1))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"})) - sum(timestamp(heatpump_status_anlage_status_anlage_pufferladepumpe_1))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) - sum(timestamp(heatpump_status_anlage_status_anlage_pufferladepumpe_1))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_status_anlage_status_anlage_pufferladepumpe_1))) <= 2)",
           "legendFormat": "Pufferladepumpe 1",
           "refId": "D",
           "instant": true,
-          "range": false
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_status_anlage_status_anlage_pufferladepumpe_1",
+                "name": "heatpump.status_anlage.status_anlage.pufferladepumpe_1",
+                "collector": "isg",
+                "endpoint": "status_anlage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Betriebsstatus",
@@ -1080,18 +1476,40 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_wp_wasservolumenstrom_l_per_min) and on() (count(heatpump_waermepumpe_prozessdaten_wp_wasservolumenstrom_l_per_min) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.wp_wasservolumenstrom\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.wp_wasservolumenstrom\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.wp_wasservolumenstrom\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_wp_wasservolumenstrom_l_per_min) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.wp_wasservolumenstrom\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.wp_wasservolumenstrom\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.wp_wasservolumenstrom\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_wp_wasservolumenstrom_l_per_min))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.wp_wasservolumenstrom\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_wp_wasservolumenstrom_l_per_min))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_wp_wasservolumenstrom_l_per_min))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_wp_wasservolumenstrom_l_per_min))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_wp_wasservolumenstrom_l_per_min))) <= 2)",
           "legendFormat": "Volumenstrom (l/min)",
           "refId": "A",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_wp_wasservolumenstrom_l_per_min",
+                "name": "heatpump.waermepumpe.prozessdaten.wp_wasservolumenstrom",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_anlage_heizung_heizungsdruck_bar) and on() (count(heatpump_anlage_heizung_heizungsdruck_bar) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.heizungsdruck\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.heizungsdruck\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.heizungsdruck\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) <= 86400) and on() (abs(heatpump_anlage_heizung_heizungsdruck_bar) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.heizungsdruck\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.heizungsdruck\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.heizungsdruck\"})) - sum(timestamp(heatpump_anlage_heizung_heizungsdruck_bar))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.heizungsdruck\"})) - sum(timestamp(heatpump_anlage_heizung_heizungsdruck_bar))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_heizung_heizungsdruck_bar))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_heizung_heizungsdruck_bar))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_anlage_heizung_heizungsdruck_bar))) <= 2)",
           "legendFormat": "Heizungsdruck (bar)",
           "refId": "B",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_anlage_heizung_heizungsdruck_bar",
+                "name": "heatpump.anlage.heizung.heizungsdruck",
+                "collector": "isg",
+                "endpoint": "anlage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Hydraulik",
@@ -1200,25 +1618,58 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_strom_inverter_amperes) and on() (count(heatpump_waermepumpe_prozessdaten_strom_inverter_amperes) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.strom_inverter\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.strom_inverter\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.strom_inverter\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_strom_inverter_amperes) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.strom_inverter\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.strom_inverter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.strom_inverter\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_strom_inverter_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.strom_inverter\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_strom_inverter_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_strom_inverter_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_strom_inverter_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_strom_inverter_amperes))) <= 2)",
           "legendFormat": "Strom Inverter (A)",
           "refId": "A",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_strom_inverter_amperes",
+                "name": "heatpump.waermepumpe.prozessdaten.strom_inverter",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_spannung_inverter_volts) and on() (count(heatpump_waermepumpe_prozessdaten_spannung_inverter_volts) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.spannung_inverter\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.spannung_inverter\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.spannung_inverter\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_spannung_inverter_volts) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.spannung_inverter\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.spannung_inverter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.spannung_inverter\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_spannung_inverter_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.spannung_inverter\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_spannung_inverter_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_spannung_inverter_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_spannung_inverter_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_spannung_inverter_volts))) <= 2)",
           "legendFormat": "Spannung Inverter (V)",
           "refId": "B",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_spannung_inverter_volts",
+                "name": "heatpump.waermepumpe.prozessdaten.spannung_inverter",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_waermepumpe_prozessdaten_luefterleistung_rel_percent) and on() (count(heatpump_waermepumpe_prozessdaten_luefterleistung_rel_percent) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.luefterleistung_rel\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.luefterleistung_rel\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.luefterleistung_rel\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_luefterleistung_rel_percent) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.luefterleistung_rel\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.luefterleistung_rel\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.luefterleistung_rel\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_luefterleistung_rel_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.luefterleistung_rel\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_luefterleistung_rel_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_luefterleistung_rel_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_luefterleistung_rel_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_luefterleistung_rel_percent))) <= 2)",
           "legendFormat": "Lüfterleistung (%)",
           "refId": "C",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_waermepumpe_prozessdaten_luefterleistung_rel_percent",
+                "name": "heatpump.waermepumpe.prozessdaten.luefterleistung_rel",
+                "collector": "isg",
+                "endpoint": "waermepumpe",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Elektrik & Lüfter",
@@ -1292,11 +1743,22 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_anlage_raumtemperatur_raumfeuchte_1_percent) and on() (count(heatpump_anlage_raumtemperatur_raumfeuchte_1_percent) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.raumfeuchte_1\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.raumfeuchte_1\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.raumfeuchte_1\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) <= 86400) and on() (abs(heatpump_anlage_raumtemperatur_raumfeuchte_1_percent) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.raumfeuchte_1\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.raumfeuchte_1\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.raumfeuchte_1\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_raumfeuchte_1_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.raumfeuchte_1\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_raumfeuchte_1_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_raumfeuchte_1_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_raumfeuchte_1_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_anlage_raumtemperatur_raumfeuchte_1_percent))) <= 2)",
           "legendFormat": "Raumfeuchte",
           "refId": "A",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_anlage_raumtemperatur_raumfeuchte_1_percent",
+                "name": "heatpump.anlage.raumtemperatur.raumfeuchte_1",
+                "collector": "isg",
+                "endpoint": "anlage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Raumfeuchte",
@@ -1368,32 +1830,76 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_anlage_heizung_isttemperatur_hk_1_celsius) and on() (count(heatpump_anlage_heizung_isttemperatur_hk_1_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.isttemperatur_hk_1\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.isttemperatur_hk_1\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.isttemperatur_hk_1\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) <= 86400) and on() (abs(heatpump_anlage_heizung_isttemperatur_hk_1_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.isttemperatur_hk_1\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.isttemperatur_hk_1\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.isttemperatur_hk_1\"})) - sum(timestamp(heatpump_anlage_heizung_isttemperatur_hk_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.isttemperatur_hk_1\"})) - sum(timestamp(heatpump_anlage_heizung_isttemperatur_hk_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_heizung_isttemperatur_hk_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_heizung_isttemperatur_hk_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_anlage_heizung_isttemperatur_hk_1_celsius))) <= 2)",
           "legendFormat": "Heizkreis 1 IST",
           "refId": "A",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_anlage_heizung_isttemperatur_hk_1_celsius",
+                "name": "heatpump.anlage.heizung.isttemperatur_hk_1",
+                "collector": "isg",
+                "endpoint": "anlage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_anlage_heizung_solltemperatur_hk_1_celsius) and on() (count(heatpump_anlage_heizung_solltemperatur_hk_1_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.solltemperatur_hk_1\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.solltemperatur_hk_1\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.solltemperatur_hk_1\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) <= 86400) and on() (abs(heatpump_anlage_heizung_solltemperatur_hk_1_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.solltemperatur_hk_1\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.solltemperatur_hk_1\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.solltemperatur_hk_1\"})) - sum(timestamp(heatpump_anlage_heizung_solltemperatur_hk_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.solltemperatur_hk_1\"})) - sum(timestamp(heatpump_anlage_heizung_solltemperatur_hk_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_heizung_solltemperatur_hk_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_heizung_solltemperatur_hk_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_anlage_heizung_solltemperatur_hk_1_celsius))) <= 2)",
           "legendFormat": "Heizkreis 1 SOLL",
           "refId": "B",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_anlage_heizung_solltemperatur_hk_1_celsius",
+                "name": "heatpump.anlage.heizung.solltemperatur_hk_1",
+                "collector": "isg",
+                "endpoint": "anlage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_anlage_heizung_vorlaufisttemperatur_wp_celsius) and on() (count(heatpump_anlage_heizung_vorlaufisttemperatur_wp_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.vorlaufisttemperatur_wp\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.vorlaufisttemperatur_wp\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.vorlaufisttemperatur_wp\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) <= 86400) and on() (abs(heatpump_anlage_heizung_vorlaufisttemperatur_wp_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.vorlaufisttemperatur_wp\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.vorlaufisttemperatur_wp\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.vorlaufisttemperatur_wp\"})) - sum(timestamp(heatpump_anlage_heizung_vorlaufisttemperatur_wp_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.vorlaufisttemperatur_wp\"})) - sum(timestamp(heatpump_anlage_heizung_vorlaufisttemperatur_wp_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_heizung_vorlaufisttemperatur_wp_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_heizung_vorlaufisttemperatur_wp_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_anlage_heizung_vorlaufisttemperatur_wp_celsius))) <= 2)",
           "legendFormat": "Vorlauf IST (WP)",
           "refId": "C",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_anlage_heizung_vorlaufisttemperatur_wp_celsius",
+                "name": "heatpump.anlage.heizung.vorlaufisttemperatur_wp",
+                "collector": "isg",
+                "endpoint": "anlage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_anlage_heizung_ruecklaufisttemperatur_wp_celsius) and on() (count(heatpump_anlage_heizung_ruecklaufisttemperatur_wp_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.ruecklaufisttemperatur_wp\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.ruecklaufisttemperatur_wp\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.ruecklaufisttemperatur_wp\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) <= 86400) and on() (abs(heatpump_anlage_heizung_ruecklaufisttemperatur_wp_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.ruecklaufisttemperatur_wp\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.ruecklaufisttemperatur_wp\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.anlage.heizung.ruecklaufisttemperatur_wp\"})) - sum(timestamp(heatpump_anlage_heizung_ruecklaufisttemperatur_wp_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.heizung.ruecklaufisttemperatur_wp\"})) - sum(timestamp(heatpump_anlage_heizung_ruecklaufisttemperatur_wp_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_heizung_ruecklaufisttemperatur_wp_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_heizung_ruecklaufisttemperatur_wp_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_anlage_heizung_ruecklaufisttemperatur_wp_celsius))) <= 2)",
           "legendFormat": "Rücklauf IST (WP)",
           "refId": "D",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_anlage_heizung_ruecklaufisttemperatur_wp_celsius",
+                "name": "heatpump.anlage.heizung.ruecklaufisttemperatur_wp",
+                "collector": "isg",
+                "endpoint": "anlage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Heizkreis Details",
@@ -1470,11 +1976,22 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_status_anlage_betriebsstatus_verdichter) and on() (count(heatpump_status_anlage_betriebsstatus_verdichter) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.status_anlage.betriebsstatus.verdichter\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.verdichter\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.status_anlage.betriebsstatus.verdichter\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"}) <= 86400) and on() (abs(heatpump_status_anlage_betriebsstatus_verdichter) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.verdichter\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.verdichter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.status_anlage.betriebsstatus.verdichter\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.status_anlage.betriebsstatus.verdichter\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"status_anlage\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"status_anlage\"})) - sum(timestamp(heatpump_status_anlage_betriebsstatus_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_status_anlage_betriebsstatus_verdichter))) <= 2)",
           "legendFormat": "Verdichter",
           "refId": "A",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_status_anlage_betriebsstatus_verdichter",
+                "name": "heatpump.status_anlage.betriebsstatus.verdichter",
+                "collector": "isg",
+                "endpoint": "status_anlage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Compressor state · optional parsed field",
@@ -1545,25 +2062,58 @@
       },
       "targets": [
         {
-          "expr": "(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius) and on() (count(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.isttemperatur_1\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.isttemperatur_1\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.isttemperatur_1\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) <= 86400) and on() (abs(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.isttemperatur_1\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.isttemperatur_1\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.isttemperatur_1\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.isttemperatur_1\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius))) <= 2)",
           "legendFormat": "Raumtemperatur IST",
           "refId": "A",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_anlage_raumtemperatur_isttemperatur_1_celsius",
+                "name": "heatpump.anlage.raumtemperatur.isttemperatur_1",
+                "collector": "isg",
+                "endpoint": "anlage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius) and on() (count(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.solltemperatur_1\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.solltemperatur_1\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.solltemperatur_1\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) <= 86400) and on() (abs(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.solltemperatur_1\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.solltemperatur_1\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.solltemperatur_1\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.solltemperatur_1\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius))) <= 2)",
           "legendFormat": "Raumtemperatur SOLL",
           "refId": "B",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_anlage_raumtemperatur_solltemperatur_1_celsius",
+                "name": "heatpump.anlage.raumtemperatur.solltemperatur_1",
+                "collector": "isg",
+                "endpoint": "anlage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         },
         {
-          "expr": "(heatpump_anlage_raumtemperatur_taupunkttemperatur_1_celsius) and on() (count(heatpump_anlage_raumtemperatur_taupunkttemperatur_1_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.taupunkttemperatur_1\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.taupunkttemperatur_1\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.taupunkttemperatur_1\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) <= 86400) and on() (abs(heatpump_anlage_raumtemperatur_taupunkttemperatur_1_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.taupunkttemperatur_1\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.taupunkttemperatur_1\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.taupunkttemperatur_1\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_taupunkttemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.taupunkttemperatur_1\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_taupunkttemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_taupunkttemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_taupunkttemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_anlage_raumtemperatur_taupunkttemperatur_1_celsius))) <= 2)",
           "legendFormat": "Taupunkt",
           "refId": "C",
           "instant": false,
-          "range": true
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "heatpump_anlage_raumtemperatur_taupunkttemperatur_1_celsius",
+                "name": "heatpump.anlage.raumtemperatur.taupunkttemperatur_1",
+                "collector": "isg",
+                "endpoint": "anlage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
         }
       ],
       "title": "Raumtemperatur",

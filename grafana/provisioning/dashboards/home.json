@@ -484,7 +484,7 @@
       },
       "options": {
         "mode": "markdown",
-        "content": "**This calendar month** is the default. Use the native time picker for local days/months (one calendar month for the daily chart). **Observed prefix** is not a full/extrapolated total: inspect [coverage](?from=${__from}&to=${__to}&viewPanel=90). Estimates are not bills. Prices may be provisional independently of telemetry. Blank/Unavailable is never a reassuring zero."
+        "content": "**This calendar month** is the default. Use the native time picker for local days/months (one calendar month for the daily chart). **Observed prefix** is not a full/extrapolated total: inspect [coverage](?from=${__from}&to=${__to}&viewPanel=90). Estimates are not bills. Prices may be provisional independently of telemetry. Blank/Unavailable is never a reassuring zero.\n\n[Completed-month trends · last 12 months](/d/home-energy?from=now-12M/M&to=now/M&viewPanel=75). Use the time picker for older months; only complete covered months appear."
       }
     },
     {
@@ -680,7 +680,14 @@
           "mode": "multi"
         },
         "xTickLabelRotation": -30
-      }
+      },
+      "links": [
+        {
+          "title": "Completed-month trends",
+          "url": "/d/home-energy?from=now-12M/M&to=now/M&viewPanel=75",
+          "targetBlank": false
+        }
+      ]
     },
     {
       "id": 11,
@@ -1550,6 +1557,135 @@
         "mode": "markdown",
         "content": "Headline tooltips declare units, confidence and equipment boundaries. Solar and Heating links preserve the selected period; diagnostics links appear only once provisioned templates exist. No supported annual comparison is fabricated. Integrated power uses nominal 60-second exports and linear interval estimates, not every device poll. Confirmed private tariff corrections require regeneration and reopening the dashboard; retained interval history is repriced, not rewritten."
       }
+    },
+    {
+      "id": 75,
+      "title": "Energy trends · completed local months",
+      "type": "barchart",
+      "gridPos": {
+        "x": 0,
+        "y": 45,
+        "w": 24,
+        "h": 9
+      },
+      "description": "Select up to 12 local calendar months with the native time picker, or use the panel link for the last 12 completed months. Only fully selected, completed months with complete accepted interval coverage appear; missing, partial and unsupported history is omitted, never zero-filled or annualized. Longer selections are withheld, not truncated. Month lengths and DST differ; totals are not normalized.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "household",
+          "calendarMode": "monthly"
+        },
+        {
+          "refId": "B",
+          "calendarMetric": "grid_import",
+          "calendarMode": "monthly"
+        },
+        {
+          "refId": "C",
+          "calendarMetric": "pv",
+          "calendarMode": "monthly"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns",
+            "valueLabel": "quantity"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "month": 0
+            },
+            "renameByName": {
+              "household": "Household (estimate)",
+              "grid_import": "Grid import",
+              "pv": "PV DC (estimate)"
+            }
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "month",
+                "destinationType": "time",
+                "dateFormat": "X"
+              }
+            ],
+            "fields": {}
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "month",
+                "desc": false
+              }
+            ]
+          }
+        },
+        {
+          "id": "formatTime",
+          "options": {
+            "timeField": "month",
+            "outputFormat": "YYYY-MM",
+            "timezone": "browser"
+          }
+        }
+      ],
+      "options": {
+        "xField": "month",
+        "orientation": "vertical",
+        "stacking": "none",
+        "groupWidth": 0.7,
+        "barWidth": 0.9,
+        "showValue": "never",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "xTickLabelRotation": -30
+      },
+      "links": [
+        {
+          "title": "Last 12 completed months",
+          "url": "/d/home-energy?from=now-12M/M&to=now/M&viewPanel=75",
+          "targetBlank": false
+        }
+      ]
     }
   ]
 }

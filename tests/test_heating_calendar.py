@@ -5,9 +5,8 @@ import os
 import re
 import unittest
 
-import requests
 import test_heating_browser as browser_fixtures
-import test_measurement_queries as prometheus_fixture
+from energy_fixtures import EnergyFixture, HEATING_RATES
 from scraper.installation import load_installation
 from scraper.periods import calendar_period
 from scraper.provision import render_dashboard
@@ -17,25 +16,17 @@ from test_heating_dashboards import ROOT, panel, templates
 @unittest.skipUnless(importlib.util.find_spec('scraper.calendar_promql') and os.environ.get('PROMETHEUS_TEST_BINARY'),
                      'requires integrated #5 calendar extension and isolated Prometheus')
 class HeatingCalendarTests(unittest.TestCase):
-    push_intervals = browser_fixtures.HeatingBrowserTests.push_intervals
-
     def setUp(self):
-        self.stack=prometheus_fixture.MeasurementQueryTests('runTest')
-        self.stack.setUp()
-        self.addCleanup(self.stack.doCleanups)
+        self.stack = self.enterContext(EnergyFixture())
         self.installation=load_installation(ROOT/'installation.example.json')
         self.period=calendar_period(date(2025,5,1),date(2025,5,2),self.installation)
         self.previous=calendar_period(date(2025,4,1),date(2025,4,2),self.installation)
         self.dashboard=render_dashboard(templates()[0],self.installation)
         for period,multiplier in ((self.previous,.5),(self.period,1)):
-            self.start=period.start.timestamp()
-            self.push_intervals(minutes=1440,multiplier=multiplier)
+            self.stack.push_intervals(period.start.timestamp(), 1440, rates=HEATING_RATES, multiplier=multiplier)
 
     def query(self,expr,at):
-        response=requests.post(self.stack.base+'/api/v1/query',data={'query':expr,'time':at},timeout=60)
-        body=response.json()
-        self.assertEqual(body['status'],'success','Heating calendar native query failed')
-        return body['data']['result']
+        return self.stack.query(expr, at)
 
     def values(self,period):
         from scraper.calendar_promql import calendar_variables

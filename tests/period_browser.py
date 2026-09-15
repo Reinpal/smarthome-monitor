@@ -11,6 +11,20 @@ import time
 import requests
 
 
+def wait_provisioned(base, dashboards):
+    """Health readiness can precede dashboard provisioning, even for text panels."""
+    for dashboard in dashboards:
+        for _ in range(120):
+            try:
+                if requests.get(base + '/api/dashboards/uid/' + dashboard['uid'], timeout=3).ok:
+                    break
+            except requests.RequestException:
+                pass
+            time.sleep(.25)
+        else:
+            raise AssertionError('Fictional dashboard provisioning did not complete')
+
+
 @contextmanager
 def grafana(dashboards, prometheus=None):
     with tempfile.TemporaryDirectory(prefix='fictional-period-grafana-') as directory:
@@ -68,6 +82,7 @@ admin_password = fictional-test-only
                 time.sleep(.1)
             else:
                 raise AssertionError('Isolated Grafana failed to become ready')
+            wait_provisioned(base, dashboards)
             yield base, output
         finally:
             process.terminate()

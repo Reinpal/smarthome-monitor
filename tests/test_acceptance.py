@@ -79,15 +79,13 @@ class CombinedBrowserTests(unittest.TestCase):
     def test_home_to_both_overviews_and_diagnostics_preserves_period_and_layout(self):
         from period_browser import grafana
         from playwright.sync_api import sync_playwright, expect
-        from test_heating_browser import HeatingBrowserTests, wait_provisioned
-        from test_period_queries import PeriodQueryTests
-        fixture = PeriodQueryTests('runTest')
-        fixture.setUp()
-        self.addCleanup(fixture.doCleanups)
-        self.stack = fixture.stack
+        from test_heating_browser import wait_provisioned
+        from energy_fixtures import EnergyFixture, HEATING_RATES
+        fixture = self.enterContext(EnergyFixture())
+        self.stack = fixture
         self.start = fixture.start.timestamp()
         fixture.push_intervals(self.start, 60)
-        HeatingBrowserTests.push_intervals(self, minutes=60)
+        fixture.push_intervals(self.start, 60, rates=HEATING_RATES)
         fixture.source(0, stamp=self.start + 3600)
         names = ('home.json', 'photovoltaik.json', 'heatpump.json',
                  'heatpump-diagnostics.json', 'solar-battery-diagnostics.json')

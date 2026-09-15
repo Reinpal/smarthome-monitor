@@ -771,7 +771,7 @@
       },
       "options": {
         "mode": "markdown",
-        "content": "**Period energy above; endpoint power below.** PV is a DC generator estimate, grid energy is meter differences, household is calculated site demand. Battery quantities are battery-side, not household AC delivery. Direct solar self-consumption remains **unavailable** because loss/storage allocation is unverified. No hybrid-AC production shortcut, annualization or weather-normalized efficiency claim. Inspect [coverage](?from=${__from}&to=${__to}&viewPanel=90)."
+        "content": "**Period energy above; endpoint power below.** PV is a DC generator estimate, grid energy is meter differences, household is calculated site demand. Battery quantities are battery-side, not household AC delivery. Direct solar self-consumption remains **unavailable** because loss/storage allocation is unverified. No hybrid-AC production shortcut, annualization or weather-normalized efficiency claim. Inspect [coverage](?from=${__from}&to=${__to}&viewPanel=90).\n\n[Completed-month trends · last 12 months](/d/pv-overview?from=now-12M/M&to=now/M&viewPanel=75). Use the time picker for older months; only complete covered months appear."
       }
     },
     {
@@ -894,7 +894,14 @@
           "mode": "multi"
         },
         "xTickLabelRotation": -30
-      }
+      },
+      "links": [
+        {
+          "title": "Completed-month trends",
+          "url": "/d/pv-overview?from=now-12M/M&to=now/M&viewPanel=75",
+          "targetBlank": false
+        }
+      ]
     },
     {
       "id": 80,
@@ -2315,6 +2322,135 @@
         "mode": "markdown",
         "content": "Use Solar diagnostics when its template is available; pressures, phase readings, inverter AC counters and device states belong there, not in this overview. Useful diagnostics remain owned by the parallel heating/diagnostics slice. No prior-year result is inferred from retention settings. Native interval records start only when separately approved rules run; legacy cached exports cannot retroactively prove freshness. Public templates have no prices or configuration and intentionally return no data until private rendering."
       }
+    },
+    {
+      "id": 75,
+      "title": "Energy trends · completed local months",
+      "type": "barchart",
+      "gridPos": {
+        "x": 0,
+        "y": 71,
+        "w": 24,
+        "h": 9
+      },
+      "description": "Select up to 12 local calendar months with the native time picker, or use the panel link for the last 12 completed months. Only fully selected, completed months with complete accepted interval coverage appear; missing, partial and unsupported history is omitted, never zero-filled or annualized. Longer selections are withheld, not truncated. Month lengths and DST differ; totals are not normalized.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "household",
+          "calendarMode": "monthly"
+        },
+        {
+          "refId": "B",
+          "calendarMetric": "grid_import",
+          "calendarMode": "monthly"
+        },
+        {
+          "refId": "C",
+          "calendarMetric": "pv",
+          "calendarMode": "monthly"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns",
+            "valueLabel": "quantity"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "month": 0
+            },
+            "renameByName": {
+              "household": "Household (estimate)",
+              "grid_import": "Grid import",
+              "pv": "PV DC (estimate)"
+            }
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "month",
+                "destinationType": "time",
+                "dateFormat": "X"
+              }
+            ],
+            "fields": {}
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "month",
+                "desc": false
+              }
+            ]
+          }
+        },
+        {
+          "id": "formatTime",
+          "options": {
+            "timeField": "month",
+            "outputFormat": "YYYY-MM",
+            "timezone": "browser"
+          }
+        }
+      ],
+      "options": {
+        "xField": "month",
+        "orientation": "vertical",
+        "stacking": "none",
+        "groupWidth": 0.7,
+        "barWidth": 0.9,
+        "showValue": "never",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "xTickLabelRotation": -30
+      },
+      "links": [
+        {
+          "title": "Last 12 completed months",
+          "url": "/d/pv-overview?from=now-12M/M&to=now/M&viewPanel=75",
+          "targetBlank": false
+        }
+      ]
     }
   ]
 }

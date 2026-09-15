@@ -147,7 +147,10 @@ Use local Grafana calendar selections in the configured timezone: DST days may
 contain 23/25 hours. No `/24` assumption is made. A 31-day interactive period has
 been exercised against real Prometheus and Grafana. Larger multi-month/annual
 headline ranges and hundreds of tariff revisions have **not** been performance
-validated; prefer individual calendar-month selections. A missing interval cannot
+validated; prefer individual calendar-month selections for headlines and the
+[completed-month trend panels](home-solar.md#completed-month-trends) for longer
+energy comparisons. These use bounded, independently coverage-gated local months,
+not one annual headline integral. A missing interval cannot
 be made valid by changing the Grafana resolution.
 
 ### Prices, corrections and privacy

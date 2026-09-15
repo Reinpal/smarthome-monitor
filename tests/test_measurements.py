@@ -32,19 +32,23 @@ def points(data):
     return {m.name: m for r in data.resource_metrics for s in r.scope_metrics for m in s.metrics}
 
 
-class MeasurementPathTests(unittest.TestCase):
-    def setUp(self):
+class SourceFixture:
+    """Real collector/SDK path with fictional HTTP responses; no test-case state."""
+    def __enter__(self):
         self.reader = InMemoryMetricReader()
         with patch('scraper.exporters.otlp_exporter.OTLPMetricExporter'), patch(
             'scraper.exporters.otlp_exporter.PeriodicExportingMetricReader', return_value=self.reader
         ):
             self.exporter = OTLPExporter('http://unused.invalid')
-        self.addCleanup(self.exporter.shutdown)
         self.collector = FroniusCollector('http://solar.invalid')
         self.isg = ISGScraper('http://heatpump.invalid')
         self.endpoints = Config().fronius_endpoints
         self.exporter.health.register('fronius', self.endpoints, 30)
         self.exporter.health.register('isg', ['waermepumpe'], 300)
+        return self
+
+    def __exit__(self, *exc):
+        self.exporter.shutdown()
 
     def solar(self, data, now=1000):
         replies = [response(data.get(name, {})) for name in self.endpoints]
@@ -70,6 +74,10 @@ class MeasurementPathTests(unittest.TestCase):
     def metadata(self, name, snapshot=None):
         snapshot = self.snapshot() if snapshot is None else snapshot
         return {p.attributes['metric']: p.value for p in snapshot[name].data.data_points}
+
+class MeasurementPathTests(SourceFixture, unittest.TestCase):
+    def setUp(self):
+        self.enterContext(self)
 
     def test_battery_grid_and_load_signs_including_zero(self):
         for battery, grid, load, charge, discharge, imported, exported, demand in [

@@ -2,61 +2,28 @@
 from datetime import datetime
 import os
 import re
-import time
 import unittest
 from urllib.parse import parse_qs, urlparse
 
 import requests
-import test_measurement_queries as prometheus_fixture
+from energy_fixtures import EnergyFixture, HEATING_RATES
 from scraper.installation import load_installation
-from scraper.period_promql import PREFIX
 from scraper.provision import render_dashboard
 from test_heating_dashboards import ROOT, templates
-
-
-def wait_provisioned(base, dashboards):
-    """Grafana /api/health can be ready before large query templates are saved."""
-    for dashboard in dashboards:
-        for _ in range(120):
-            try:
-                if requests.get(base+'/api/dashboards/uid/'+dashboard['uid'],timeout=3).ok:
-                    break
-            except requests.RequestException:
-                pass
-            time.sleep(.25)
-        else:
-            raise AssertionError('Fictional dashboard provisioning did not complete')
+from period_browser import wait_provisioned
 
 
 @unittest.skipUnless(all(os.environ.get(key) for key in ('PROMETHEUS_TEST_BINARY','GRAFANA_TEST_HOME','CHROMIUM_TEST_BINARY')),
                      'set isolated Prometheus/Grafana/Chromium binary variables for browser acceptance')
 class HeatingBrowserTests(unittest.TestCase):
     def setUp(self):
-        self.stack = prometheus_fixture.MeasurementQueryTests('runTest')
-        self.stack.setUp()
-        self.addCleanup(self.stack.doCleanups)
+        self.stack = self.enterContext(EnergyFixture())
         self.start = 1735689600  # Fictional 2025-01-01 UTC.
-
-    def push_intervals(self, *, minutes=60, multiplier=1):
-        from opentelemetry.proto.collector.metrics.v1.metrics_service_pb2 import ExportMetricsServiceRequest
-        request = ExportMetricsServiceRequest()
-        scope = request.resource_metrics.add().scope_metrics.add()
-        for key, per_minute in (('heating_electricity',.1),('heating_heat',.3),('water_electricity',.05),('water_heat',.15),('heating_aux_heat',0),('water_aux_heat',0)):
-            for field in ('start_seconds','end_seconds','left','right','rate','zero_seconds','shape','stale_after_seconds','valid_until_seconds'):
-                metric = scope.metrics.add(name=PREFIX+field)
-                for i in range(1,minutes+1):
-                    at = self.start + i*60
-                    value = {'start_seconds':at-60,'end_seconds':at,'left':100+(i-1)*per_minute*multiplier,'right':100+i*per_minute*multiplier,
-                             'rate':per_minute*multiplier/60,'zero_seconds':self.start,'shape':1,'stale_after_seconds':900,'valid_until_seconds':at+900}[field]
-                    point = metric.gauge.data_points.add(time_unix_nano=int(at*1e9),as_double=value)
-                    point.attributes.add(key='metric').value.string_value=key
-        response = requests.post(self.stack.base+'/api/v1/otlp/v1/metrics',data=request.SerializeToString(),headers={'Content-Type':'application/x-protobuf'},timeout=20)
-        self.assertTrue(response.ok,'Fictional interval ingestion failed')
 
     def test_period_selection_refresh_native_annotations_navigation_and_small_screen(self):
         from period_browser import grafana
         from playwright.sync_api import sync_playwright, expect, Error as BrowserError
-        self.push_intervals()
+        self.stack.push_intervals(self.start, 60, rates=HEATING_RATES)
         installation=load_installation(ROOT/'installation.example.json')
         dashboards=[render_dashboard(d,installation) for d in templates()]
         with grafana(dashboards,self.stack.base) as (base,_), sync_playwright() as pw:

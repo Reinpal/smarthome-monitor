@@ -174,8 +174,11 @@ production multi-user capacity certification. More tariff entries require anothe
 private, fictional-count-matched performance check, never copying actual prices
 into the tracked example or benchmark.
 
-Operational limits: use one calendar month, at most 32 touched local dates, and
-one actively refreshing overview at a time. Keep the existing POST datasource;
+Operational limits: use one calendar month, at most 32 touched local dates, for
+daily charts and period headlines, and one actively refreshing overview at a time.
+For longer energy comparisons use the completed-month trend panel directly
+(panel 75, linked from guidance/daily panels), with at most twelve touched local
+months. This is not a certified annual headline or multi-user workload. Keep the existing POST datasource;
 GET URL limits are not a workaround. The default one-minute refresh is not a
 multi-user capacity promise: for exploratory monthly use, prefer manual refresh
 or a longer native refresh interval; restore a suitable cadence for right-now
@@ -210,6 +213,61 @@ configuration passed promtool **3.10.0** (matching its newer config fields).
 Combined Compose configuration passed `config --quiet` in a disposable directory
 with a fictional `.env`; generated-file ignore checks and `git diff --check` passed.
 The separate populated hardware benchmark above passed as well.
+
+## Review-fix acceptance
+
+The five independent review findings are addressed on one fixes branch:
+
+- `freshness_promql.py` owns freshness construction for live snapshots, offset
+  recording-rule states and compact diagnostic markers. Diagnostic labels and
+  instant/range modes remain intact; age-only snapshots still expose stale age.
+- Fixed-report browser acceptance uses the existing disposable `grafana` context,
+  which now waits for dashboard provisioning as well as service health.
+- `EnergyFixture` exposes source injection, interval ingestion and native queries;
+  tests no longer borrow heating test methods or traverse nested test-case stacks.
+- Cycling counts exact epoch-minute subquery samples, including fractional minute
+  selections and whole-second range rounding, retaining reset/gap/freshness gates
+  and requiring two samples.
+- Home, Solar and Heating have native completed-local-month trends. Whole covered
+  months only; twelve bounded buckets, independent DST/calendar boundaries, no
+  partial totals, fabricated history or annualization. Complete-source queries
+  reuse interval integration, full coverage and validity deadlines without an
+  unnecessary observed-prefix calculation. Unsupported comparison/bucket windows
+  use short retrieval sentinels, not zero-energy fallbacks.
+
+`test_monthly_trends.py` exercises synthetic historical local months and actual
+native Grafana panels/time selections/refresh. Cycling regressions exercise the
+actual rendered panel with promtool. The existing source/rule, privacy, navigation,
+annotation and fixture suites remain required. All services are disposable and
+loopback-only. Production permissions, deployment, rule scheduling and concurrent
+workload gates above remain **unverified and unchanged**.
+
+Final full suite: **88 tests passed, zero skips**, in **872.697s**. After the final
+scaled-diagnostic marker consolidation, **six diagnostic/template tests** also
+passed (including all rendered query syntax, Wh→kWh/MWh values and missing-field
+suppression). All **117 recording rules** passed promtool 3.5.1 syntax checks;
+public Prometheus configuration passed promtool 3.10.0. `git diff --check` passed.
+
+The existing disposable benchmark passed with **346 targets**, including the new
+monthly targets. It retains the original fictional two-month dataset and selects
+one complete March; this is not a populated twelve-month/concurrent-user budget.
+All five query sets and all ten browser cold/warm loads remained below its existing
+60-second limit, without raising timeouts or sample limits:
+
+| Dashboard | Rendered MB | All-target seconds | Browser first / second seconds |
+|---|---:|---:|---:|
+| Home | 1.254 | 31.298 | 26.819 / 26.127 |
+| Solar & battery | 1.435 | 41.063 | 36.318 / 36.553 |
+| Heating & hot water | 1.163 | 34.294 | 14.807 / 14.653 |
+| Heat-pump diagnostics | 0.171 | 0.602 | 2.352 / 2.450 |
+| Solar diagnostics | 0.120 | 0.453 | 2.322 / 2.205 |
+
+Peak query samples: **325,466**; sampled Prometheus RSS: **230.8 MiB**. The separate
+monthly regressions exercise a twelve-month selection with sparse fictional
+history (leap February, both DST transitions, gaps and a year boundary), plus
+populated two-month native panels on all three overviews. Native Inspect verifies
+transformed month rows; refresh, partial selections and backwards time navigation
+verify recalculation and unavailable history. No live checks or deployment were run.
 
 ## Approved deployment checklist — guidance only, NOT performed
 
