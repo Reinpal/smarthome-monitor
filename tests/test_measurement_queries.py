@@ -38,6 +38,7 @@ class MeasurementQueryTests(unittest.TestCase):
             os.environ['PROMETHEUS_TEST_BINARY'], '--config.file=' + str(root / 'prometheus.yml'),
             '--storage.tsdb.path=' + str(root / 'data'), '--web.listen-address=127.0.0.1:' + str(port),
             '--web.enable-otlp-receiver',
+            '--storage.tsdb.retention.time=100y',  # Keep explicitly fictional historical fixtures during compaction.
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         self.addCleanup(self.stop)
         for _ in range(100):

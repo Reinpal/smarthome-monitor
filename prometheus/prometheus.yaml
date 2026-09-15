@@ -1,6 +1,9 @@
 ---
 global:
   scrape_native_histograms: true
+# Opt-in private provisioning. No matches means no calculation rules yet.
+rule_files:
+  - /otel-lgtm/period-rules/*.json
 scrape_configs:
   - job_name: node
     scrape_interval: 30s

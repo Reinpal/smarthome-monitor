@@ -1,0 +1,23 @@
+{
+  "uid": "period-verification",
+  "title": "Period calculations — fixed report",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": false,
+  "tags": ["energy", "verification", "fixed-period"],
+  "timezone": "browser",
+  "refresh": "",
+  "timepicker": {"hidden": true},
+  "panels": [
+    {
+      "id": 1,
+      "type": "text",
+      "title": "Period calculations unavailable",
+      "gridPos": {"x": 0, "y": 0, "w": 24, "h": 10},
+      "options": {
+        "mode": "markdown",
+        "content": "No private period report has been rendered. Missing energy and prices are not zero. Run `python -m scraper.period_report --help` offline from the implementation checkout; see `docs/period-calculations.md`. This verification surface displays fixed calculation periods, not live time-picker calculations."
+      }
+    }
+  ]
+}
