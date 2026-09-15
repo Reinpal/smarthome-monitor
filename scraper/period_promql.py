@@ -103,16 +103,23 @@ class PeriodQueries:
     Literal bounds/range can be supplied for deterministic query tests or a
     separately selected local calendar window. No date/reset-name heuristics.
     """
-    def __init__(self, installation, *, start='(${__from} / 1000)', end='(${__to} / 1000)', window='${__range_s}s'):
+    def __init__(self, installation, *, start='(${__from} / 1000)', end='(${__to} / 1000)', window='${__range_s}s', at=None, lookahead=None):
         self.installation, self.start, self.end, self.window = installation, start, end, window
+        # Optional numeric (or Grafana numeric-variable) historical evaluation.
+        # PromQL @ does not accept arithmetic expressions. Defaults stay unchanged.
+        self.at = '' if at is None else f' @ {at}'
+        if lookahead is not None:
+            if at is None:
+                raise ValueError('period: lookahead requires a pinned evaluation')
+            self.at += f' offset -{lookahead}'
         self.metrics, self.coverage, self.complete, self.price_status, self.observed_until = {}, {}, {}, {}, {}
         self._energy, self._accepted, self._endpoints = {}, {}, {}
         for key, source in SOURCES.items():
             energy = self._sum(self._piece(key, source))
             covered = self._sum(self._duration(key))
-            observed = f'sum(max_over_time(({self._record(key, "end_seconds")})[{window}:60s]))'
+            observed = f'sum(max_over_time(({self._record(key, "end_seconds")})[{window}:60s]{self.at}))'
             endpoint = f'(vector({end}) - clamp_min(vector({end}) - {observed}, 0))'
-            valid_until = f'sum(last_over_time({self._record(key, "valid_until_seconds")}[{window}]))'
+            valid_until = f'sum(last_over_time({self._record(key, "valid_until_seconds")}[{window}]{self.at}))'
             # Only a continuous observed prefix may be a qualified current headline.
             # Leading/internal holes and stale tails are withheld, never zero-filled.
             accepted = (f'({covered} >= ({endpoint} - {start} - 0.001)) and '
@@ -219,7 +226,7 @@ class PeriodQueries:
         marker = self._record(metric, 'end_seconds')
         # Expression retains metric labels, so timestamp freshness joins by metric.
         fresh = f'((time() - timestamp({marker})) < 60)'
-        return f'sum(sum_over_time((({expression}) and on(metric) {fresh})[{self.window}:60s]))'
+        return f'sum(sum_over_time((({expression}) and on(metric) {fresh})[{self.window}:60s]{self.at}))'
 
     def target(self, key, *, ref_id='A', field='metrics'):
         """Native Grafana instant target; pass field=coverage/complete/price_status."""
@@ -241,12 +248,23 @@ def render_period_targets(dashboard, installation):
     """
     dashboard = json.loads(json.dumps(dashboard))
     queries = PeriodQueries(installation)
+    from scraper.home_queries import render_home_extensions
+    dashboard = render_home_extensions(dashboard, installation)
     def panels(items):
         for panel in items:
             for index, target in enumerate(panel.get('targets', [])):
                 if 'periodMetric' in target:
-                    panel['targets'][index] = queries.target(target['periodMetric'], ref_id=target.get('refId', 'A'),
-                                                             field=target.get('periodField', 'metrics'))
+                    key = target['periodMetric']
+                    resolved = queries.target(key, ref_id=target.get('refId', 'A'), field=target.get('periodField', 'metrics'))
+                    if target.get('periodQualification'):
+                        value, complete = resolved['expr'], queries.complete[key]
+                        resolved['expr'] = ' or '.join(
+                            f'label_replace(({value}) and ({complete} == {flag}), "coverage", "{label}", "", "")'
+                            for flag, label in ((1, 'Full period'), (0, 'Observed prefix')))
+                        resolved['legendFormat'] = '{{coverage}}'
+                    for label, value in target.get('periodLabels', {}).items():
+                        resolved['expr'] = f'label_replace(({resolved["expr"]}), {json.dumps(label)}, {json.dumps(value)}, "", "")'
+                    panel['targets'][index] = resolved
             defaults = panel.get('fieldConfig', {}).get('defaults', {})
             if defaults.get('unit') == 'configured_currency':
                 defaults['unit'] = 'currency' + installation.currency

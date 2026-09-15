@@ -75,6 +75,8 @@ class HeatingTemplateTests(unittest.TestCase):
         self.assertEqual({t['calendarMetric'] for t in daily['targets']}, {'heating_electricity','water_electricity'})
         self.assertTrue(all(t['calendarMode'] == 'daily' for t in daily['targets']))
         self.assertEqual(daily['options']['stacking'], 'none')
+        self.assertEqual([t['id'] for t in daily['transformations']],
+                         ['labelsToFields', 'merge', 'organize', 'convertFieldType', 'sortBy', 'formatTime'])
         self.assertIn('Current/partial', daily['description'])
         for id, key in ((71,'heatpump_electricity'),(72,'heatpump_ratio')):
             targets = panel(dashboard,id)['targets']

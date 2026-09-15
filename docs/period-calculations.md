@@ -57,7 +57,17 @@ query strings:
 ```
 
 The existing `scraper.provision.render_dashboard` automatically resolves markers
-through `render_period_targets`, including targets inside nested rows. Optional
+through `render_period_targets`, including targets inside nested rows. #5 adds
+optional `periodQualification: true` (dynamic Full period / Observed prefix legend)
+and `periodLabels: {"headline": "...", "aspect": "..."}` for coverage-table pivots.
+An optional `PeriodQueries(..., at="<numeric epoch or Grafana numeric variable>")`
+pins all interval subqueries and observation/freshness endpoints to a historical
+window. Optional `lookahead="48h"` on a pinned query permits already-stored
+bracketing observations recorded after a calendar boundary, while energy remains
+clipped to the exact start/end; its subquery window must include that padding.
+It does not change default selected-period semantics. `at` must resolve to a
+number because PromQL's `@` modifier does not accept arithmetic. Calendar rendering
+is delegated to `scraper/calendar_promql.py`; existing callers need no changes. Optional
 `fieldConfig.defaults.unit: "configured_currency"` resolves to the configured
 Grafana currency unit. No expression in an unrendered marker means no data, not
 zero. This is the supported integration seam: dashboard agents need no changes
@@ -194,13 +204,16 @@ This engine requires complete coverage for a headline, unlike the explicitly
 qualified observed-prefix native path. It supplies local daily allocations and
 MTD comparisons: both comparison windows are capped to the shorter month's
 **elapsed** duration, without truncating the main requested headline. Both must
-have observations; no short-period annualization or invented prior year. Native
-interactive automatic previous-month comparison targets are **not implemented**;
-the native surface explicitly does not claim them. The complete comparison model
-is tested/rendered in the reference report; unsupported prior-year history stays
-unavailable in both paths. Do not use a Grafana `1M` time shift as an equivalent-
-elapsed comparison. A daily energy chart is layout work for #5; these instant
-period targets must not be averaged into such a chart.
+have observations; no short-period annualization or invented prior year. The #5
+`calendarMetric` targets now implement the same comparison model in **native,
+time-picker-driven Grafana queries** and test it against this reference. Live
+comparisons additionally cap to the current valid observed prefix, then require
+complete equal-duration history in both resulting windows. Non-month-start selections,
+missing previous history and zero comparison denominators remain unavailable.
+Unsupported prior-year history stays unavailable in both paths. Do not use a
+Grafana `1M` time shift as an equivalent-elapsed comparison. The #5 native calendar extension now supplies completed local daily buckets and
+interactive equivalent-elapsed comparisons; see [Home and Solar](home-solar.md).
+These instant period targets must still never be averaged into a daily chart.
 
 Offline command (read-only Prometheus access must be provided privately through
 `PERIOD_PROMETHEUS_URL`; optional `PERIOD_PROMETHEUS_LABELS` is a JSON object of

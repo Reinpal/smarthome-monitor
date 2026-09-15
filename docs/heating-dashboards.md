@@ -72,14 +72,16 @@ The daily bar chart uses `calendarMetric` / `calendarMode: daily` markers from
 **complete local days**, next to outdoor and flow/return conditions. Native query
 variables recalculate local boundaries on time changes; labels are local day-start
 dates in the installation timezone. Partially selected/current days and days with
-gaps, stale tails or resets are omitted, never shown as zero. Select up to 31
-elapsed days; today’s still-in-progress energy remains available on the cards.
+gaps, stale tails or resets are omitted, never shown as zero. Select one calendar
+month (at most 32 touched local dates, including a 745-hour autumn month);
+today’s still-in-progress energy remains available on the cards. The daily chart
+uses the shared transform sequence, including `merge` after `labelsToFields`.
 
 The two **Equivalent MTD** panels use native `current` / `previous` calendar
 markers for combined VD electricity and matching-period VD efficiency. Select
 This month, or a local month-start-to-date range: both current and previous windows
-are capped to the shorter equivalent elapsed duration, and **both** require
-complete valid history. The main headline retains the original requested range.
+are capped to the quantity's current valid observed prefix and the shorter prior
+month's elapsed duration, and **both** require complete valid history. The main headline retains the original requested range.
 Non-month selections or missing comparable history remain unavailable. Ratios
 are each computed from matching energy sums, never averaged daily ratios. No
 year-over-year history is invented. Local/DST semantics, non-hour timezones and
@@ -203,7 +205,21 @@ Verification result for this slice: local full suite **65 tests, 63 passed and 2
 explicit calendar-dependency skips**. The disposable combined #5/#6 snapshot then
 passed **all 9 heating tests**, including those two calendar tests and both browser
 journeys. `git diff --check` and private-path ignore checks passed. The combined
-repository-wide acceptance run after merging the parallel slices remains #7 work.
+repository-wide acceptance run after merging the parallel slices is recorded below.
+
+### Combined Home/heating integration
+
+The #5 shared calendar/navigation extension is now integrated. Both heating and
+Solar measurement assertions were preserved when resolving the shared test files.
+Heating uses the finalized daily `merge` transform and metric-specific comparison
+variables; its query fixture substitutes integer Grafana duration values rather
+than invalid decimal PromQL duration tokens. No duplicate query API was added.
+
+Full integrated offline acceptance: **75 tests passed, zero skips**, including
+Prometheus/promtool, Grafana/Chromium, heating daily/MTD charts, navigation and
+Home/Solar browser journeys. The temporary #5 dependency is resolved. #7 still
+owns separately authorized deployment/permissions, live data acceptance and
+production resource/concurrency validation; this run makes no live claims.
 
 All fixtures are fictional; test services bind loopback with temporary databases,
 and browser requests outside the isolated Grafana origin are blocked. Binaries used:

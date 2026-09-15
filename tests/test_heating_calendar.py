@@ -39,8 +39,8 @@ class HeatingCalendarTests(unittest.TestCase):
 
     def values(self,period):
         from scraper.calendar_promql import calendar_variables
-        values={'__from':period.start.timestamp()*1000,'__to':period.end.timestamp()*1000,'__range_s':period.seconds}
-        for variable in calendar_variables(self.installation):
+        values={'__from':int(period.start.timestamp()*1000),'__to':int(period.end.timestamp()*1000),'__range_s':int(period.seconds)}
+        for variable in calendar_variables(self.installation, comparison_keys=('heatpump_electricity', 'heatpump_ratio')):
             expression=variable['query']['query'][len('query_result('):-1]
             rows=self.query(self.substitute(expression,values),period.end.timestamp())
             self.assertEqual(len(rows),1,'Native calendar boundary unavailable')

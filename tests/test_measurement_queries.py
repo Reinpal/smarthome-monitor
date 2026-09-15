@@ -89,11 +89,15 @@ class MeasurementQueryTests(unittest.TestCase):
             self.assertEqual(self.query('heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh', now), [0.4])
             self.assertEqual(self.query('smarthome_measurement_contract_version', now), [2])
 
-        # Existing Grafana targets genuinely query the translated OTLP series.
-        dashboard = json.loads(Path('grafana/provisioning/dashboards/photovoltaik.json').read_text())
-        panel = next(p for p in dashboard['panels'] if p['id'] == 23)
-        self.assertEqual([self.query(t['expr'], start) for t in panel['targets']], [[300], [0]])
-        self.assertEqual([self.query(t['expr'], start + 60) for t in panel['targets']], [[0], [400]])
+        # Provisioned homeowner targets genuinely query translated OTLP series.
+        # The overview uses signed battery-side power, not the old split plot.
+        from scraper.installation import load_installation
+        from scraper.provision import render_dashboard
+        dashboard = render_dashboard(json.loads(Path('grafana/provisioning/dashboards/photovoltaik.json').read_text()),
+                                     load_installation('installation.example.json'))
+        panel = next(p for p in dashboard['panels'] if p['id'] == 22)
+        self.assertEqual([self.query(t['expr'], start) for t in panel['targets']], [[-300]])
+        self.assertEqual([self.query(t['expr'], start + 60) for t in panel['targets']], [[400]])
         heating = json.loads(Path('grafana/provisioning/dashboards/heatpump-diagnostics.json').read_text())
         panel = next(p for p in heating['panels'] if p['id'] == 5)
         lifetime = next(t['expr'] for t in panel['targets'] if 'gesamt' in t['expr'])
