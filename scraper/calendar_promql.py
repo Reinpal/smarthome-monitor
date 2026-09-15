@@ -13,6 +13,7 @@ DATASOURCE = {'type': 'prometheus', 'uid': 'prometheus'}
 # Explicit finite timezone-data horizon, NOT an assertion of telemetry history.
 FIRST_YEAR, UNTIL_YEAR = 2000, 2101
 DAYS = 32  # One calendar month can touch 32 dates with partial-day endpoints.
+MONTHS = 12  # Bounded completed-month trend; longer selections fail closed.
 
 
 @lru_cache(maxsize=32)
@@ -71,7 +72,7 @@ def _variable(name, expression):
             'includeAll': False, 'sort': 0}
 
 
-def calendar_variables(installation, comparison_keys=('household',)):
+def calendar_variables(installation, comparison_keys=('household',), *, monthly=False):
     """Ordered native query-variable dependency graph; re-evaluated on time change."""
     zone = installation.timezone
     variables = []
@@ -91,7 +92,10 @@ def calendar_variables(installation, comparison_keys=('household',)):
     add('current_end', '${cal_month_start} + ${cal_compare_seconds}')
     add('previous_end', '${cal_previous_start} + ${cal_compare_seconds}')
     add('selection_end', '${__to}/1000')
-    observed = PeriodQueries(installation, window='48h${__range_s}s',
+    add('observation_window', 'scalar((vector(${__range_s} + 172800) and on() '
+        '(vector(${__from}/1000) == ${cal_month_start}) and on() '
+        '(vector(${__to}/1000) <= ${cal_month_end})) or vector(1))')
+    observed = PeriodQueries(installation, window='${cal_observation_window}s',
                              at='${cal_selection_end}', lookahead='48h')
     for key in sorted(set(comparison_keys)):
         # Cap to the actual continuous observed prefix for a live MTD window.
@@ -103,6 +107,22 @@ def calendar_variables(installation, comparison_keys=('household',)):
         add(key + '_previous_end', '${cal_previous_start} + ${cal_' + key + '_seconds}')
     for day in range(DAYS + 1):
         utc(f'day_{day:02}', '${cal_day_wall} + ' + str(day * 86400))
+    if monthly:
+        add('trend_wall_00', '${cal_month_wall}')
+        utc('trend_00', '${cal_trend_wall_00}')
+        for month in range(1, MONTHS + 1):
+            previous = '${cal_trend_wall_%02d}' % (month - 1)
+            add(f'trend_wall_{month:02}', f'{previous} + scalar(days_in_month(vector({previous}))) * 86400')
+            utc(f'trend_{month:02}', '${cal_trend_wall_%02d}' % month)
+        for month in range(MONTHS):
+            start, end = '${cal_trend_%02d}' % month, '${cal_trend_%02d}' % (month + 1)
+            # A short retrieval window for excluded buckets avoids scanning 34
+            # days twelve times during ordinary day/MTD use. The target still
+            # independently gates selection and coverage; 1s is not a data zero.
+            add(f'trend_window_{month:02}', f'scalar((vector(2937600) and on() '
+                f'(vector({start}) >= ${{__from}}/1000) and on() '
+                f'(vector({end}) <= ${{__to}}/1000) and on() '
+                f'(vector(${{__to}}/1000) <= ${{cal_trend_{MONTHS:02}}})) or vector(1))')
     # Latest completed operational night: local 18:00 to 06:00, not sunset/sunrise.
     add('night_wall', 'scalar(floor(vector((${__to}/1000 + ${cal_to_offset} - 21600) / 86400))) * 86400 + 21600')
     utc('night_start', '${cal_night_wall} - 43200')
@@ -172,6 +192,24 @@ class CalendarQueries:
                          f'"quantity", "{key}", "", "")')
         return _target(' or '.join(terms), marker, '{{quantity}}')
 
+    def monthly(self, marker):
+        """Full local calendar months only, with the same interval coverage gates.
+
+        Month arithmetic is on wall dates; each boundary resolves independently
+        through TZDB. A 34-day retrieval window includes the longest month plus
+        the existing 48h closing-observation allowance, never gap interpolation.
+        """
+        key, month = marker['calendarMetric'], marker['calendarMonth']
+        start, end = '${cal_trend_%02d}' % month, '${cal_trend_%02d}' % (month + 1)
+        q = self.window(start, end, '${cal_trend_window_%02d}s' % month)
+        condition = (f'(vector({start}) >= ${{__from}}/1000) '
+                     f'and (vector({end}) <= ${{__to}}/1000) and (vector({end}) <= time()) '
+                     f'and (vector(${{__to}}/1000) <= ${{cal_trend_{MONTHS:02}}})')
+        value = _gate(q.completed_sources[key], condition)
+        expression = (f'label_replace(label_replace(({value}), "month", "{start}", "", ""), '
+                      f'"quantity", "{key}", "", "")')
+        return _target(expression, marker, '{{quantity}}')
+
     def overnight(self, marker):
         q = self.window('${cal_night_start}', '${cal_night_end}', '74h')
         keys = ('household', 'grid_import', 'pv', 'battery_charge', 'battery_discharge', 'battery_inventory_change')
@@ -188,6 +226,15 @@ class CalendarQueries:
         if self.installation.usable_battery_kwh == 0:
             condition += ' and (vector(0) == 1)'
         return _target(_gate(expr, condition), marker, key)
+
+    def targets(self, marker):
+        # Separate months keep individual native requests bounded. Grafana merges
+        # their categorical frames; there is no giant all-year PromQL request.
+        if marker['calendarMode'] == 'monthly':
+            return [self.monthly({**marker, 'calendarMonth': month,
+                                  'refId': marker.get('refId', 'A') + str(month)})
+                    for month in range(MONTHS)]
+        return [self.target(marker)]
 
     def target(self, marker):
         mode = marker['calendarMode']

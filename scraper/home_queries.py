@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 from scraper.periods import SOURCES, Source
+from scraper.freshness_promql import diagnostic_target, freshness_state
 
 LIVE = {**SOURCES,
         'grid_power': Source('fronius.powerflow.p_grid', 'watts', 'signed', 'grid interconnection'),
@@ -18,33 +19,11 @@ def live_target(marker):
     """Single-installation endpoint snapshot; OTLP export time is not read time."""
     key = marker['liveMetric']
     source = LIVE[key]
-    inputs = {
-        'value': source.prom_name,
-        'observed': 'smarthome_measurement_last_success_seconds{metric=' + json.dumps(source.name) + '}',
-        'present': 'smarthome_measurement_present{metric=' + json.dumps(source.name) + '}',
-        'version': 'smarthome_measurement_contract_version',
-        'endpoint': f'smarthome_collection_last_success_seconds{{collector="{source.collector}",source="{source.endpoint}"}}',
-        'threshold': f'smarthome_collection_stale_after_seconds{{collector="{source.collector}",source="{source.endpoint}"}}',
-    }
-    s = {k: f'sum({v})' for k, v in inputs.items()}
-    checks = [f'(count({v}) == 1)' for v in inputs.values()]
-    checks += [f'({s["version"]} == 2)', f'({s["threshold"]} > 0)', f'({s["threshold"]} <= 86400)']
-    age = f'(time() - {s["observed"]})'
-    checks.append(f'({age} >= 0)')
-    if marker.get('liveField') == 'age':
-        value = age  # Stale age is useful evidence, not a reassuring missing zero.
-    else:
-        value = s['value']
-        checks += [f'({s["present"]} == 1)', f'({age} < {s["threshold"]})',
-                   f'(time() - {s["endpoint"]} >= 0)', f'(time() - {s["endpoint"]} < {s["threshold"]})',
-                   f'(abs({value}) < Inf)']
-        checks += [f'(abs(sum(timestamp({v})) - sum(timestamp({inputs["value"]}))) <= 2)' for v in inputs.values()]
-        if source.kind in ('power', 'counter', 'soc'):
-            checks.append(f'({value} >= 0)')
-        if source.kind == 'soc':
-            checks.append(f'({value} <= 100)')
-        if key == 'household':
-            value = f'clamp_min(-{value}, 0)'
+    age_only = marker.get('liveField') == 'age'
+    s, checks = freshness_state(source, age_only=age_only)
+    value = f'(time() - {s["observed"]})' if age_only else s['value']
+    if key == 'household' and not age_only:
+        value = f'clamp_min(-{value}, 0)'
     return {'refId': marker.get('refId', 'A'), 'expr': f'({value}) and ' + ' and '.join(checks),
             'instant': True, 'range': False, 'editorMode': 'code', 'format': 'time_series',
             'legendFormat': marker.get('legendFormat', key),
@@ -65,15 +44,19 @@ def render_home_extensions(dashboard, installation):
         variables[:] = [v for v in variables if not v['name'].startswith('cal_')]
         comparison_keys = {t['calendarMetric'] for t in markers
                            if t.get('calendarMode') in ('current', 'previous', 'change')}
-        variables.extend(calendar_variables(installation, comparison_keys))
+        variables.extend(calendar_variables(installation, comparison_keys,
+                                            monthly=any(t.get('calendarMode') == 'monthly' for t in markers)))
         calendar = CalendarQueries(installation)
         for panel in panels:
-            panel['targets'] = [calendar.target(t) if 'calendarMetric' in t else t for t in panel.get('targets', [])]
+            panel['targets'] = [resolved for t in panel.get('targets', [])
+                                for resolved in (calendar.targets(t) if 'calendarMetric' in t else [t])]
             for transformation in panel.get('transformations', []):
                 if transformation['id'] == 'formatTime':
                     transformation['options']['timezone'] = str(installation.timezone)
     for panel in panels:
-        panel['targets'] = [live_target(t) if 'liveMetric' in t else t for t in panel.get('targets', [])]
+        panel['targets'] = [live_target(t) if 'liveMetric' in t else
+                            diagnostic_target(t) if 'diagnosticQuery' in t else t
+                            for t in panel.get('targets', [])]
     # Staged deliveries cannot promise diagnostics not yet present. Only local
     # template UIDs, never a network lookup or a private Grafana instance.
     if dashboard.pop('homeNavigation', False):

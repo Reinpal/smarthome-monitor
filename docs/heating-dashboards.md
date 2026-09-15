@@ -88,6 +88,14 @@ year-over-year history is invented. Local/DST semantics, non-hour timezones and
 shorter-month behavior are owned/tested by the shared #5 extension; the #6 tests
 add actual heating target and native chart-transformation acceptance.
 
+For longer comparisons, **VD electricity · completed local months** (panel 75)
+shows separate heating/hot-water totals. Follow **Completed-month trends** in the
+guidance or daily-panel link, then adjust the native picker (up to twelve touched
+local months). Only wholly selected, completely covered months appear. Leap years,
+DST and unequal month lengths remain real elapsed-time differences; absent history
+is never zero-filled. Weather/comfort context does not establish causal improvement.
+See [shared monthly semantics](home-solar.md#completed-month-trends).
+
 ## Comfort, cycling and diagnostics
 
 Actual/target room and tank temperatures, outdoor conditions and flow/return
@@ -98,12 +106,21 @@ setting's causal effect without comparable weather, duration and comfort.
 
 The concise cycling summary is **observed starts in the sampled span**:
 last-minus-first fresh cumulative starts on one-minute query samples inside the
-selection. It rejects observed resets and missing/stale query minutes; it neither
+selection. Expected samples are counted on an identical constant-vector subquery
+grid: the left-open, epoch-minute-aligned interval, including non-minute-aligned
+selections and Grafana's whole-second range rounding. For exact second bounds this
+is `floor(to/60) - floor(from/60)`. At least two samples are required. It rejects observed resets and missing/stale query minutes; it neither
 extrapolates nor reconstructs exact on/off cycles. Boundary activity before the
 first accepted sample may be omitted (up to one minute). Cached samples remain
 valid only within the configured field/endpoint freshness window. An unobserved
 reset or internally frozen device cannot be disproven. No generic technician
 limits, starts/year projections or equipment-life advice are asserted.
+
+Freshness policy is built once in `scraper/freshness_promql.py` for recording-rule
+steps, live snapshots and compact diagnostic template markers. Diagnostic range
+queries retain range evaluation and series labels; instant snapshots stay instant.
+Uniqueness, contract version, presence, field/endpoint ages and timestamp alignment
+remain required. Age-only snapshots intentionally retain stale evidence.
 
 Diagnostics preserve useful device day/lifetime ratios (explicitly **not annual**),
 raw VD/NHZ energy and runtime/start counters, internal temperatures, pressures,

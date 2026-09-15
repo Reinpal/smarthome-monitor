@@ -77,6 +77,7 @@ rerendering. Unlike a `1M` shift, both comparison windows use equal elapsed time
 
 ```json
 {"refId":"A", "calendarMetric":"household", "calendarMode":"daily"}
+{"refId":"A", "calendarMetric":"household", "calendarMode":"monthly"}
 {"refId":"A", "calendarMetric":"household", "calendarMode":"current"}
 {"refId":"B", "calendarMetric":"household", "calendarMode":"previous"}
 {"refId":"C", "calendarMetric":"household", "calendarMode":"change"}
@@ -85,7 +86,9 @@ rerendering. Unlike a `1M` shift, both comparison windows use equal elapsed time
 
 Existing `PeriodQueries` keys with a supported coverage contract are reusable
 (including heating energy and matching-period ratios; not the deliberately
-unsupported solar-self-consumption key). Optional `legendFormat` changes presentation.
+unsupported solar-self-consumption key). Monthly mode intentionally supports the
+accepted source quantities, not derived financial/ratio keys. Optional
+`legendFormat` changes presentation.
 
 **Comparison:** available only for a local month-start selection ending within
 that month. First find the current quantity's valid continuous observed prefix;
@@ -119,6 +122,29 @@ labels. Use the transform sequence in Home/Solar panel **70**:
 Use a native bar chart with `xField: day`. Native Inspect → Data → Apply panel
 transformations exposes the same date rows/values; this is not a generated image.
 Coverage tables similarly pivot labelled period targets, with an explicit merge.
+
+### Completed-month trends
+
+Home and Solar panel **75** show household, grid-import and PV-DC monthly totals;
+Heating panel **75** separates heating/hot-water VD electricity. Follow the visible
+**Completed-month trends** guidance link or the daily panel link to the last twelve
+completed months, then use the native picker for older periods. The link opens the
+trend panel directly; it does not force expensive annual headline totals. Prefer
+manual refresh for historical exploration.
+
+`calendarMode: monthly` expands to twelve bounded instant targets per quantity,
+not rolling 30-day sums. Each local month has independently resolved start/end
+boundaries and must be wholly inside the selection with complete accepted coverage.
+Missing months, partial selected months, leading/internal gaps and stale tails
+remain absent. No annual history is inferred. Selections extending beyond twelve
+touched local months withhold the chart rather than silently truncating it.
+
+Month-start labels use the daily transform sequence with `month` instead of `day`
+and `YYYY-MM` formatting in the installation timezone. Month lengths, leap years
+and DST change the totals' elapsed hours; these are not normalized comparisons.
+Retrieval windows for excluded buckets shrink to a one-second sentinel to avoid
+month-scale scans in ordinary daily/MTD views; independent target gates still
+withhold them. Eligible buckets retain the full closing-observation allowance.
 
 ### Bracketing, timezone horizon and query cost
 

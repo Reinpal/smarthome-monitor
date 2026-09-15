@@ -15,7 +15,7 @@ from scraper.provision import render_dashboard
 from scraper.calendar_promql import CalendarQueries, calendar_variables, zone_offset
 from scraper.period_promql import PREFIX, PeriodQueries
 from scraper.periods import calendar_period, month_comparison
-import test_period_queries as period_fixture
+from energy_fixtures import EnergyFixture
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -85,17 +85,12 @@ class HomeTemplateTests(unittest.TestCase):
 @unittest.skipUnless(os.environ.get('PROMETHEUS_TEST_BINARY'), 'set PROMETHEUS_TEST_BINARY for isolated Home/Solar acceptance')
 class HomeQueryTests(unittest.TestCase):
     def setUp(self):
-        self.fixture = period_fixture.PeriodQueryTests('runTest')
-        self.fixture.setUp()
-        self.addCleanup(self.fixture.doCleanups)
-        self.base = self.fixture.stack.base
+        self.fixture = self.enterContext(EnergyFixture())
+        self.base = self.fixture.base
         self.installation = self.fixture.installation
 
     def query(self, expression, at):
-        response = requests.post(self.base + '/api/v1/query', data={'query': expression, 'time': at}, timeout=60)
-        body = response.json()
-        self.assertEqual(body['status'], 'success', body.get('error', 'Native query failed'))
-        return body['data']['result']
+        return self.fixture.query(expression, at)
 
     def variables(self, period, installation=None):
         values = {'__from': int(period.start.timestamp()*1000), '__to': int(period.end.timestamp()*1000), '__range_s': int(period.seconds)}
@@ -155,7 +150,7 @@ class HomeQueryTests(unittest.TestCase):
             self.assertAlmostEqual(float(result[0]['value'][1]),expected)
         self.fixture.source(1,missing=True)
         self.assertEqual(self.query(live_target({'liveMetric':'household'})['expr'],at+60),[])
-        self.fixture.stack.push(at+360)  # Cached export is not another device read.
+        self.fixture.push(at+360)  # Cached export is not another device read.
         self.assertEqual(self.query(live_target({'liveMetric':'pv'})['expr'],at+360),[])
         age=self.query(live_target({'liveMetric':'pv','liveField':'age'})['expr'],at+360)
         self.assertEqual(float(age[0]['value'][1]),300)

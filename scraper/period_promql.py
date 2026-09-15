@@ -9,6 +9,7 @@ import json
 import re
 
 from scraper.periods import SOURCES
+from scraper.freshness_promql import freshness_state
 
 INTERVAL = 60
 PREFIX = 'smarthome_period_v1_'
@@ -27,33 +28,8 @@ def recording_rules(*, labels=None):
     selector = PrometheusHistory('http://unused.invalid', labels=labels)._selector
     rules = []
     for key, source in SOURCES.items():
-        def raw(name, shift=0, **attrs):
-            return selector(name, attrs) + (' offset 60s' if shift else '')
         def state(shift):
-            fields = {
-                'value': raw(source.prom_name, shift),
-                'observed': raw('smarthome_measurement_last_success_seconds', shift, metric=source.name),
-                'present': raw('smarthome_measurement_present', shift, metric=source.name),
-                'version': raw('smarthome_measurement_contract_version', shift),
-                'health': raw('smarthome_collection_last_success_seconds', shift, collector=source.collector, source=source.endpoint),
-                'threshold': raw('smarthome_collection_stale_after_seconds', shift, collector=source.collector, source=source.endpoint),
-            }
-            v = {k: f'sum({expr})' for k, expr in fields.items()}
-            checks = [f'(count({expr}) == 1)' for expr in fields.values()]
-            checks += [f'({v["present"]} == 1)', f'({v["version"]} == 2)',
-                       f'({v["threshold"]} > 0)', f'({v["threshold"]} <= 86400)']
-            for name in ('observed', 'health'):
-                age = f'(time() - {shift} - {v[name]})'
-                checks += [f'({age} >= 0)', f'({age} < {v["threshold"]})']
-            for expr in fields.values():
-                checks += [f'(abs(sum(timestamp({expr})) - sum(timestamp({fields["value"]}))) <= 2)']
-            if source.kind in ('counter', 'power', 'soc'):
-                checks.append(f'({v["value"]} >= 0)')
-            if source.kind == 'soc':
-                checks.append(f'({v["value"]} <= 100)')
-            # NaN and infinity must not survive as legitimate source observations.
-            checks += [f'(abs({v["value"]}) < Inf)']
-            return v, checks
+            return freshness_state(source, selector=selector, shift=shift)
         previous, before = state(60)
         current, after = state(0)
         duration = f'({current["observed"]} - {previous["observed"]})'
@@ -114,6 +90,7 @@ class PeriodQueries:
             self.at += f' offset -{lookahead}'
         self.metrics, self.coverage, self.complete, self.price_status, self.observed_until = {}, {}, {}, {}, {}
         self._energy, self._accepted, self._endpoints = {}, {}, {}
+        self.completed_sources = {}
         for key, source in SOURCES.items():
             energy = self._sum(self._piece(key, source))
             covered = self._sum(self._duration(key))
@@ -129,6 +106,12 @@ class PeriodQueries:
             self.coverage[key] = covered
             self.complete[key] = f'({covered} >= bool ({end} - {start} - 0.001))'
             self.observed_until[key] = endpoint
+            # Full source windows need neither observed-prefix discovery nor a
+            # second coverage integral. Accepted source intervals cannot overlap:
+            # complete clipped coverage already proves no leading/internal/tail
+            # holes. Keep the same validity deadline and finite-value gates.
+            self.completed_sources[key] = (f'(({energy}) and ({self.complete[key]} == 1) '
+                                           f'and (vector({end}) < {valid_until})) < Inf > -Inf')
         self.metrics['battery_inventory_change'] = f'({self.metrics["soc"]}) * {float(installation.usable_battery_kwh) / 100}'
         self._alias('battery_inventory_change', 'soc')
         self.metrics['specific_yield'] = f'({self.metrics["pv"]}) / {float(installation.panel_kwp)}'

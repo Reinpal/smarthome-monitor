@@ -68,6 +68,25 @@ class HeatingTemplateTests(unittest.TestCase):
         self.assertNotIn('configured_currency', json.dumps(cost))
         self.assertIn('NOT actual attributed spending', cost['description'])
 
+    def test_diagnostic_markers_preserve_range_modes_and_shared_freshness_policy(self):
+        for original in templates():
+            rendered = render_dashboard(original, load_installation(ROOT / 'installation.example.json'))
+            for p in original['panels']:
+                for marker, target in zip(p.get('targets', []), panel(rendered, p['id']).get('targets', [])):
+                    self.assertNotIn('smarthome_measurement_contract_version', marker.get('expr', ''),
+                                     'Freshness policy must not remain expanded in templates')
+                    if 'diagnosticQuery' not in marker:
+                        continue
+                    self.assertNotIn('expr', marker)
+                    self.assertNotIn('diagnosticQuery', target)
+                    for field in ('instant', 'range', 'legendFormat', 'refId'):
+                        self.assertEqual(marker[field], target[field])
+                    for policy in ('smarthome_measurement_contract_version', 'smarthome_measurement_present',
+                                   'smarthome_measurement_last_success_seconds', 'smarthome_collection_last_success_seconds',
+                                   'smarthome_collection_stale_after_seconds', 'count(', 'timestamp('):
+                        self.assertIn(policy, target['expr'])
+                    self.assertNotIn('__fresh_', target['expr'])
+
     def test_calendar_markers_use_complete_daily_energy_and_matching_comparisons(self):
         dashboard = templates()[0]
         daily = panel(dashboard, 70)
@@ -85,7 +104,7 @@ class HeatingTemplateTests(unittest.TestCase):
         self.assertTrue(dashboard['homeNavigation'])
 
     def test_navigation_annotations_layout_and_no_retired_claims(self):
-        for dashboard in templates():
+        for dashboard in (render_dashboard(t, load_installation(ROOT / 'installation.example.json')) for t in templates()):
             self.assertEqual(dashboard['annotations']['list'][0]['datasource']['uid'], '-- Grafana --')
             self.assertEqual(dashboard['annotations']['list'][0]['type'], 'dashboard')
             ids = [p['id'] for p in dashboard['panels']]
@@ -171,8 +190,69 @@ class HeatingPromQLTests(unittest.TestCase):
                 {'expr': expression(panel(rendered, id)['targets'][0], end), 'eval_time': str(end)+'s', 'exp_samples': []} for id in ids]})
         self.run_promtool(variants)
 
+    def test_diagnostic_metadata_gates_and_labels_survive_shared_rendering(self):
+        target = panel(render_dashboard(templates()[0], self.config()), 1)['targets'][2]
+        raw = 'heatpump_waermepumpe_prozessdaten_aussentemperatur_celsius'
+        metric = 'heatpump.waermepumpe.prozessdaten.aussentemperatur'
+        cases = []
+        for mode in ('valid', 'version', 'threshold', 'future_field', 'stale_endpoint', 'duplicate_metadata', 'timestamp_skew'):
+            data = fixture(raw + '{job="fictional"}', metric, values='-2 -2 -2 -2')
+            if mode == 'duplicate_metadata':
+                data.append({'series': 'smarthome_measurement_present{metric="' + metric + '",job="other"}', 'values': '1 1 1 1'})
+            for item in data:
+                name = item['series']
+                if mode == 'version' and name == 'smarthome_measurement_contract_version':
+                    item['values'] = '1 1 1 1'
+                if mode == 'threshold' and name.startswith('smarthome_collection_stale_after'):
+                    item['values'] = '90000 90000 90000 90000'
+                if mode == 'future_field' and name.startswith('smarthome_measurement_last_success'):
+                    item['values'] = '1000 1000 1000 1000'
+                if mode == 'stale_endpoint' and name.startswith('smarthome_collection_last_success'):
+                    item['values'] = '-900 -900 -900 -900'
+                if mode == 'timestamp_skew' and name.startswith('smarthome_measurement_present'):
+                    item['values'] = '1 1 _ _'
+            cases.append({'interval': '60s', 'input_series': data, 'promql_expr_test': [
+                {'expr': expression(target), 'eval_time': '2m', 'exp_samples':
+                 [{'labels': '{job="fictional"}', 'value': -2}] if mode == 'valid' else []}]})
+        solar = render_dashboard(templates()[2], self.config())
+        for id, name, expected in ((31, 'powerflow.e_day', 2000), (32, 'powerflow.e_year', 2000),
+                                   (33, 'powerflow.e_total', 2), (42, 'meter.energy_real_consumed', 2000),
+                                   (43, 'meter.energy_real_produced', 2000)):
+            for present in ('1 1 1 1', '1 0 0 0'):
+                data = fixture('fronius_' + name.replace('.', '_') + '_Wh', 'fronius.' + name,
+                               values='2000000 2000000 2000000 2000000', present=present,
+                               collector='fronius', endpoint=name.split('.')[0])
+                cases.append({'interval': '60s', 'input_series': data, 'promql_expr_test': [
+                    {'expr': expression(panel(solar, id)['targets'][0]), 'eval_time': '2m',
+                     'exp_samples': [{'labels': '{}', 'value': expected}] if present == '1 1 1 1' else []}]})
+        self.run_promtool(cases, rules=False)
+
+    def test_cycling_counts_all_aligned_samples_in_non_aligned_selections(self):
+        cycling = panel(render_dashboard(templates()[0], self.config()), 60)['targets'][0]
+        cases = []
+        for start, end, expected in ((0, 120, 1), (0, 150, 1), (30, 150, 1),
+                                     (30, 180, 2), (61, 180, 1), (0, 179, 1)):
+            for mode in ('fresh', 'gap', 'reset', 'stale'):
+                data = fixture('heatpump_waermepumpe_starts_verdichter',
+                               'heatpump.waermepumpe.starts.verdichter',
+                               values='10 11 1 2' if mode == 'reset' else '10 11 12 13',
+                               present='1 0 0 1' if mode == 'gap' else '1 1 1 1',
+                               observed='0 0 0 0' if mode == 'stale' else '0 60 120 180',
+                               threshold='120 120 120 120')
+                expr = cycling['expr'].replace('${__from}', str(start * 1000)).replace('${__to}', str(end * 1000)).replace('${__range_s}', str(end - start))
+                cases.append({'interval': '60s', 'input_series': data, 'promql_expr_test': [
+                    {'expr': expr, 'eval_time': f'{end}s', 'exp_samples':
+                     [{'labels': '{}', 'value': expected}] if mode == 'fresh' or (mode == 'reset' and start >= 60) else []}]})
+        # Grafana rounds the range macro to whole seconds even with millisecond
+        # picker endpoints. Count the grid actually queried, not rounded bounds.
+        data = fixture('heatpump_waermepumpe_starts_verdichter', 'heatpump.waermepumpe.starts.verdichter')
+        expr = cycling['expr'].replace('${__from}', '59900').replace('${__to}', '180000').replace('${__range_s}', '120')
+        cases.append({'interval': '60s', 'input_series': data, 'promql_expr_test': [
+            {'expr': expr, 'eval_time': '180s', 'exp_samples': [{'labels': '{}', 'value': 1}]}]})
+        self.run_promtool(cases, rules=False)
+
     def test_field_freshness_zero_missing_cached_ambiguous_and_cycling_resets(self):
-        main, hp, solar = templates()
+        main, hp, solar = [render_dashboard(t, self.config()) for t in templates()]
         cases = []
         for raw, name, t, collector, endpoint in (
             ('heatpump_waermepumpe_prozessdaten_aussentemperatur_celsius', 'heatpump.waermepumpe.prozessdaten.aussentemperatur', panel(main, 1)['targets'][2], 'isg','waermepumpe'),

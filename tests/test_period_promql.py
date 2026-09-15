@@ -90,6 +90,20 @@ class InteractiveQueryTests(unittest.TestCase):
                         {'expr': q.price_status['import_cost'], 'eval_time': '2m', 'exp_samples': [{'labels': '{}', 'value': 1}]}]
         self.run_promtool([{'interval': '60s', 'input_series': source_inputs(), 'promql_expr_test': expressions}])
 
+    def test_completed_source_queries_preserve_full_coverage_and_validity_gates(self):
+        cases = []
+        for start, end, mode in ((0, 120, 'full'), (0, 150, 'partial_tail'),
+                                 (-60, 120, 'leading'), (0, 180, 'missing'),
+                                 (0, 180, 'reset'), (0, 180, 'cached'), (0, 960, 'stale')):
+            q = PeriodQueries(self.config(), start=str(start), end=str(end), window=f'{end-start}s')
+            data = source_inputs(**{mode: True}) if mode in ('missing', 'reset', 'cached') else source_inputs()
+            key = 'grid_import' if mode == 'reset' else 'household'
+            expected = [{'labels': '{}', 'value': 1/30}] if mode == 'full' else []
+            cases.append({'interval': '60s', 'input_series': data, 'promql_expr_test': [
+                {'expr': expr, 'eval_time': f'{end}s', 'exp_samples': expected} for expr in
+                (q.completed_sources[key], f'({q.metrics[key]}) and ({q.complete[key]} == 1)')]})
+        self.run_promtool(cases)
+
     def test_real_rule_resets_missing_cached_and_unequal_periods_withhold(self):
         q = PeriodQueries(self.config(), start='0', end='180', window='180s')
         tests = []
