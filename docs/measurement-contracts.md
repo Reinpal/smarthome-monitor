@@ -103,7 +103,7 @@ or annual headline comparisons must not be promoted from this history.
 | Grid import `fronius.meter.energy_real_abs_plus` | Meter `EnergyReal_WAC_Plus_Absolute`; Wh cumulative absolute gauge | Preferred grid-import period input, conditional on unique location 0. Available. `energy_real_consumed` (`EnergyReal_WAC_Sum_Consumed`) is its duplicate here, not additional energy. |
 | Grid export `fronius.meter.energy_real_abs_minus` | Meter `EnergyReal_WAC_Minus_Absolute`; Wh cumulative absolute gauge | Preferred grid-export period input, conditional on location 0. Available. `energy_real_produced` (`EnergyReal_WAC_Sum_Produced`) is its duplicate here. |
 | Battery `fronius.powerflow.p_akku`; `fronius.calculated.battery_charge`, `.battery_discharge` | `Site.P_Akku`; W gauge, **negative charge, positive discharge**; split `max(0,-P_Akku)` / `max(0,P_Akku)` | Available. Battery-side device power; not household AC delivered power and not a stored cumulative charge/discharge counter. Integrate only with coverage/loss qualification. |
-| SOC `fronius.powerflow.soc`, `fronius.storage.soc` | Powerflow inverter `SOC` / storage controller `StateOfCharge_Relative`; percent gauges | Available, duplicate views sampled at different times; choose one, never add. SOC is not energy. Overnight coverage is observed power contribution/depletion, not future runtime. |
+| SOC `fronius.powerflow.soc`, `fronius.storage.soc` | Powerflow inverter `SOC` / storage controller `StateOfCharge_Relative`; percent gauges | Available, duplicate views sampled at different times; choose one, never add. SOC is not energy. Overnight coverage is observed power contribution/depletion, not future runtime; the #5 operational implementation is described below. |
 | Storage DC current / voltage `fronius.storage.current_dc`, `.voltage_dc` | Storage controller `Current_DC` A, `Voltage_DC` V gauges; **positive current charges** (§4.9.7), opposite `P_Akku` | Available diagnostic corroboration, not another energy source to add. Multiplying/negating asynchronous readings is not an AC battery energy counter. |
 | Capacity `fronius.storage.capacity_maximum_raw`, `.designed_capacity_raw` | `Capacity_Maximum`, `DesignedCapacity`; numeric gauges with **unit unverified** | Replaces unsupported `_Ah` exports with explicitly unitless diagnostic names. Values resembling Wh are not proof. Neither is validated usable capacity. Use separately validated private usable battery kWh (#3); manufacturer confirmation needed before using raw capacities for energy. |
 | Inverter `fronius.inverter.pac`, `.total_energy`; site `.e_total` | `PAC` W signed AC gauge; `TOTAL_ENERGY` / `E_Total` Wh cumulative AC gauges. GEN24 totals update about every 5 min (§4.1.5/§4.11) | Available. Hybrid AC output can be supplied by the battery; these do not establish pure-PV generation. Site/device totals overlap for this single inverter: choose one for diagnostics, do not sum. |
@@ -145,6 +145,21 @@ prove physical wiring or measurement validity.
   discounts, fixed charges and currency are not telemetry. Avoided purchases plus
   export revenue is benefit; import cost minus export revenue is a distinct cash
   estimate. No financial result until both price and telemetry coverage support it.
+
+### Implemented #5 overnight assessment
+
+The [Solar overview](home-solar.md#observed-overnight-battery-coverage) now queries
+the latest completed local **18:00–06:00** window wholly inside the selected period.
+It shows non-grid household share, battery-side discharge, SOC-derived inventory
+change and grid imports for the same complete window. This is an observed
+non-grid-supply proxy under measured zero PV, no battery charging and non-increasing
+SOC, **not** independently metered AC battery contribution. Missing PV/SOC,
+invalid/incomplete coverage or a selection not containing the night withholds the
+assessment. The window is not sunset/sunrise and can span 11/12/13 hours across DST.
+Other generation and the unused-grid-charging assumption remain limitations.
+No minimum-SOC threshold, time-to-empty or future-runtime guarantee is inferred.
+Calendar queries permit stored post-boundary observations to bracket midnight;
+they never extrapolate missing energy or change the source freshness contract.
 
 ## Heating, hot water and comfort inputs
 

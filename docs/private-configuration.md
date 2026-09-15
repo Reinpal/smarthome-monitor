@@ -126,11 +126,13 @@ renders the existing dashboard UIDs and provider into
 `private/generated/dashboards/`. Source templates remain unchanged. The provider,
 datasource references and dashboard IDs are retained. The original device dashboards include installation parameters, not tariff
 prices/credits. Issue #4 additionally generates native selectable-period queries
-containing effective variable prices in a separate verification dashboard; see
-[period calculations](period-calculations.md). Credits/fixed charges remain excluded.
+containing effective variable prices in a separate verification dashboard; #5
+also resolves those same markers in Home (`home-energy`) and Solar & battery
+(`pv-overview`). See [period calculations](period-calculations.md) and the
+[Home/Solar interface](home-solar.md). Credits/fixed charges remain excluded.
 Authorized Grafana viewers can inspect generated prices, so protect these artifacts
 and Grafana/database backups as private inputs. The existing battery
-SOC panel (PV dashboard panel **21**) describes the configured usable kWh via
+SOC panel (retained Solar dashboard panel **21**) describes the configured usable kWh via
 `${usable_battery_kwh}`. It explicitly distinguishes configuration from measured
 remaining energy. Heat-pump variables `wohnflaeche` / `inbetriebnahme_ts` are
 also supplied; the latter uses local midnight at commissioning. `panel_kwp` is
@@ -143,6 +145,12 @@ Without private rendering, public templates use browser timezone and `NaN`
 Optional omitted values remain `NaN` when rendered. The #3 parameter-only path does not calculate periods. The implemented #4
 [query/render interface](period-calculations.md) now supplies selectable-period
 panels and date-effective financial queries through the same private rendering.
+The #5 calendar extension adds hidden native query variables for timezone-aware
+days, previous-month comparisons and observed overnight windows. These refresh
+with Grafana time selection, not with manual report generation. Only configuration,
+tariff corrections or timezone-rule updates require regeneration. The generated
+queries are several MB and retain the existing POST datasource; they contain
+private effective prices and must stay under the ignored private output path.
 
 The output directory is dedicated to generation: obsolete JSON is removed.
 Invalid input leaves the previous rendering intact. Individual files replace

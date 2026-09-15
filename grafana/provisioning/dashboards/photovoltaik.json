@@ -1,1639 +1,2320 @@
 {
-  "annotations": {
-    "list": []
-  },
-  "editable": true,
-  "fiscalYearStartMonth": 0,
-  "graphTooltip": 1,
-  "links": [],
-  "panels": [
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
-      "id": 1,
-      "title": "Energiefluss",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "yellow", "mode": "fixed" },
-          "unit": "watt",
-          "decimals": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "text", "value": null },
-              { "color": "yellow", "value": 0 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
-      "id": 2,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "PV-Produktion",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_powerflow_p_pv_watts",
-          "legendFormat": "PV",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "fixed", "fixedColor": "orange" },
-          "unit": "watt",
-          "decimals": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "orange", "value": 0 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
-      "id": 3,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "Hausverbrauch",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_load_absolute_watts",
-          "legendFormat": "Verbrauch",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "watt",
-          "decimals": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "red", "value": 1 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
-      "id": 4,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "Netzbezug",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_grid_import_watts",
-          "legendFormat": "Bezug",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "green", "mode": "fixed" },
-          "unit": "watt",
-          "decimals": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "text", "value": null },
-              { "color": "green", "value": 0 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
-      "id": 5,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "Netzeinspeisung",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_grid_export_watts",
-          "legendFormat": "Einspeisung",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "super-light-blue", "mode": "fixed" },
-          "unit": "watt",
-          "decimals": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "text", "value": null },
-              { "color": "blue", "value": 0 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
-      "id": 6,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "Batterie Laden",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_battery_charge_watts",
-          "legendFormat": "Laden",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "purple", "mode": "fixed" },
-          "unit": "watt",
-          "decimals": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "text", "value": null },
-              { "color": "purple", "value": 0 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
-      "id": 7,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "Batterie Entladen",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_battery_discharge_watts",
-          "legendFormat": "Entladen",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisLabel": "Leistung (W)",
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "spanNulls": true,
-            "stacking": { "mode": "none" }
-          },
-          "unit": "watt"
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "PV-Produktion" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "Hausverbrauch" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "Netzbezug" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "Netzeinspeisung" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "Batterie Laden" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "super-light-blue", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "Batterie Entladen" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "purple", "mode": "fixed" } }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 5 },
-      "id": 8,
-      "options": {
-        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "multi", "sort": "desc" }
-      },
-      "title": "Energiefluss - Leistungsverlauf",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_powerflow_p_pv_watts",
-          "legendFormat": "PV-Produktion",
-          "refId": "A"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_load_absolute_watts",
-          "legendFormat": "Hausverbrauch",
-          "refId": "B"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_grid_import_watts",
-          "legendFormat": "Netzbezug",
-          "refId": "C"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_grid_export_watts",
-          "legendFormat": "Netzeinspeisung",
-          "refId": "D"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_battery_charge_watts",
-          "legendFormat": "Batterie Laden",
-          "refId": "E"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_battery_discharge_watts",
-          "legendFormat": "Batterie Entladen",
-          "refId": "F"
-        }
-      ]
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 15 },
-      "id": 20,
-      "title": "Batterie",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "max": 100,
-          "min": 0,
-          "unit": "percent",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "red", "value": null },
-              { "color": "orange", "value": 15 },
-              { "color": "yellow", "value": 30 },
-              { "color": "green", "value": 60 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 6, "w": 4, "x": 0, "y": 16 },
-      "id": 21,
-      "description": "Device-reported SOC (%). Configured usable capacity: ${usable_battery_kwh} kWh (installation input, not measured remaining energy; NaN means not configured).",
-      "options": {
-        "minVizHeight": 75,
-        "minVizWidth": 75,
-        "orientation": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "sizing": "auto"
-      },
-      "title": "Ladestand (SOC)",
-      "type": "gauge",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_powerflow_soc_percent",
-          "legendFormat": "SOC",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisLabel": "SOC (%)",
-            "lineWidth": 2,
-            "fillOpacity": 20,
-            "spanNulls": true
-          },
-          "max": 100,
-          "min": 0,
-          "unit": "percent"
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "SOC" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 6, "w": 10, "x": 4, "y": 16 },
-      "id": 22,
-      "options": {
-        "legend": { "calcs": ["mean", "min", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "title": "Ladestand (SOC) - Verlauf",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_powerflow_soc_percent",
-          "legendFormat": "SOC",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": true,
-            "axisLabel": "Leistung (W)",
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "spanNulls": true
-          },
-          "unit": "watt"
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "Laden" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "super-light-blue", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "Entladen" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "purple", "mode": "fixed" } },
-              { "id": "custom.transform", "value": "negative-Y" }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 6, "w": 10, "x": 14, "y": 16 },
-      "id": 23,
-      "options": {
-        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "multi", "sort": "desc" }
-      },
-      "title": "Batterie Leistung",
-      "description": "Solar API P_Akku: negativ Laden, positiv Entladen. Historische calculated-Laden/Entladen-Serien vor Vertragsversion 2 waren vertauscht; für Historie Rohwert P_Akku verwenden.",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_battery_charge_watts",
-          "legendFormat": "Laden",
-          "refId": "A"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_battery_discharge_watts",
-          "legendFormat": "Entladen",
-          "refId": "B"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "orange", "mode": "fixed" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Temperatur (°C)",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "celsius"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 22 },
-      "id": 24,
-      "options": {
-        "legend": { "calcs": ["mean", "min", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "title": "Batterie Temperatur",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_storage_temperature_cell_celsius",
-          "legendFormat": "Zellentemperatur",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "volt"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 22 },
-      "id": 25,
-      "options": {
-        "legend": { "calcs": ["mean", "min", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "title": "Batterie Spannung",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_storage_voltage_dc_volts",
-          "legendFormat": "Spannung DC",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "amp"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 22 },
-      "id": 26,
-      "options": {
-        "legend": { "calcs": ["mean", "min", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "title": "Batterie Strom",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_storage_current_dc_amperes",
-          "legendFormat": "Strom DC",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 28 },
-      "id": 30,
-      "title": "Wechselrichter-AC-Energie & momentane Gerätequoten",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "yellow", "mode": "fixed" },
-          "unit": "kwatth",
-          "decimals": 2,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "text", "value": null }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 29 },
-      "id": 31,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "AC-Energie heute (optional)",
-      "description": "Geräte-Tageszähler, keine reine PV-Produktion bei Hybridbetrieb. Auf GEN24 nicht verfügbar; fehlend ist nicht null Verbrauch. Perioden-PV künftig aus P_PV mit Abdeckungsprüfung (docs/measurement-contracts.md).",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_powerflow_e_day_Wh / 1000",
-          "legendFormat": "Heute",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "yellow", "mode": "fixed" },
-          "unit": "kwatth",
-          "decimals": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "text", "value": null }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 29 },
-      "id": 32,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "AC-Energie Jahr (optional)",
-      "description": "Geräte-Jahreszähler, keine reine PV-Produktion bei Hybridbetrieb. Auf GEN24 nicht verfügbar; keine Hochrechnung oder Null-Ersetzung.",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_powerflow_e_year_Wh / 1000",
-          "legendFormat": "Jahr",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "yellow", "mode": "fixed" },
-          "unit": "megwatth",
-          "decimals": 2,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "text", "value": null }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 29 },
-      "id": 33,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "Wechselrichter AC gesamt",
-      "description": "Lebenszeit-AC-Abgabe, enthält bei Hybridbetrieb Batterieabgabe. Nicht PV-Erzeugung; E_Total und TOTAL_ENERGY nicht addieren.",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_powerflow_e_total_Wh / 1000000",
-          "legendFormat": "Gesamt",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "super-light-green", "mode": "fixed" },
-          "unit": "percent",
-          "decimals": 1,
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "red", "value": null },
-              { "color": "orange", "value": 30 },
-              { "color": "yellow", "value": 50 },
-              { "color": "green", "value": 70 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 29 },
-      "id": 34,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "Autarkie (momentan, Gerät)",
-      "description": "Momentane Gerätequote, kein Periodenwert. Nicht zeitlich mitteln, um Energieautarkie zu berechnen.",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_powerflow_rel_autonomy_percent",
-          "legendFormat": "Autarkie",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "super-light-green", "mode": "fixed" },
-          "unit": "percent",
-          "decimals": 1,
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "red", "value": null },
-              { "color": "orange", "value": 30 },
-              { "color": "yellow", "value": 50 },
-              { "color": "green", "value": 70 }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 29 },
-      "id": 35,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "Eigenverbrauch (momentan, Gerät)",
-      "description": "Momentane Gerätequote mit herstellerspezifischer Batterie-/Verlustgrenze. Kein direkter Haushaltsverbrauch und kein Periodenwert.",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_powerflow_rel_self_consumption_percent",
-          "legendFormat": "Eigenverbrauch",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "yellow", "mode": "fixed" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Leistung (W)",
-            "lineWidth": 2,
-            "fillOpacity": 25,
-            "spanNulls": true,
-            "gradientMode": "opacity"
-          },
-          "unit": "watt"
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "Eigenverbrauch" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } },
-              { "id": "custom.fillOpacity", "value": 40 }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 8, "w": 16, "x": 0, "y": 33 },
-      "id": 36,
-      "options": {
-        "legend": { "calcs": ["mean", "max", "sum"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "multi", "sort": "desc" }
-      },
-      "title": "PV-Leistung (Generatorgrenze)",
-      "description": "P_PV ist bei GEN24/Symo Hybrid DC-Generatorleistung, bei SnapInverter AC-Leistung. DC-PV minus AC-Export ist kein direkter Eigenverbrauch. Null/missing und Batterie-/Umwandlungsverluste beachten.",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_powerflow_p_pv_watts",
-          "legendFormat": "PV-Produktion",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "spanNulls": true
-          },
-          "unit": "percent",
-          "max": 100,
-          "min": 0
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "Autarkie" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "Eigenverbrauch" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 33 },
-      "id": 37,
-      "options": {
-        "legend": { "calcs": ["mean", "min", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "multi", "sort": "desc" }
-      },
-      "title": "Momentane Gerätequoten - Verlauf",
-      "description": "Keine energiegewichteten Periodenquoten. Nicht als Tages-/Monatsautarkie oder direkter Eigenverbrauch verwenden.",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_powerflow_rel_autonomy_percent",
-          "legendFormat": "Autarkie",
-          "refId": "A"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_powerflow_rel_self_consumption_percent",
-          "legendFormat": "Eigenverbrauch",
-          "refId": "B"
-        }
-      ]
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 41 },
-      "id": 40,
-      "title": "Netzeinspeisung & Netzbezug",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": true,
-            "axisLabel": "Leistung (W)",
-            "lineWidth": 2,
-            "fillOpacity": 20,
-            "spanNulls": true
-          },
-          "unit": "watt"
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "Netzbezug" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "Netzeinspeisung" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } },
-              { "id": "custom.transform", "value": "negative-Y" }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 8, "w": 16, "x": 0, "y": 42 },
-      "id": 41,
-      "options": {
-        "legend": { "calcs": ["mean", "max", "sum"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "multi", "sort": "desc" }
-      },
-      "title": "Netz - Bezug vs. Einspeisung",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_grid_import_watts",
-          "legendFormat": "Netzbezug",
-          "refId": "A"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_grid_export_watts",
-          "legendFormat": "Netzeinspeisung",
-          "refId": "B"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "red", "mode": "fixed" },
-          "unit": "kwatth",
-          "decimals": 1,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "text", "value": null }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 42 },
-      "id": 42,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "Bezug Gesamt",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_meter_energy_real_consumed_Wh / 1000",
-          "legendFormat": "Bezug",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "green", "mode": "fixed" },
-          "unit": "kwatth",
-          "decimals": 1,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "text", "value": null }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 42 },
-      "id": 43,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "Einspeisung Gesamt",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_meter_energy_real_produced_Wh / 1000",
-          "legendFormat": "Einspeisung",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Leistung (W)",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "watt"
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "Phase 1" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "Phase 2" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "Phase 3" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 46 },
-      "id": 44,
-      "options": {
-        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "multi", "sort": "desc" }
-      },
-      "title": "Netz - Leistung pro Phase",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_meter_power_real_p_phase_1_watts",
-          "legendFormat": "Phase 1",
-          "refId": "A"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_meter_power_real_p_phase_2_watts",
-          "legendFormat": "Phase 2",
-          "refId": "B"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_meter_power_real_p_phase_3_watts",
-          "legendFormat": "Phase 3",
-          "refId": "C"
-        }
-      ]
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 54 },
-      "id": 50,
-      "title": "Netzdaten",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Spannung (V)",
-            "lineWidth": 2,
-            "fillOpacity": 5,
-            "spanNulls": true
-          },
-          "unit": "volt"
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "L1" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "L2" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "L3" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 55 },
-      "id": 51,
-      "options": {
-        "legend": { "calcs": ["mean", "min", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "multi", "sort": "desc" }
-      },
-      "title": "Netzspannung pro Phase",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_meter_voltage_ac_phase_1_volts",
-          "legendFormat": "L1",
-          "refId": "A"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_meter_voltage_ac_phase_2_volts",
-          "legendFormat": "L2",
-          "refId": "B"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_meter_voltage_ac_phase_3_volts",
-          "legendFormat": "L3",
-          "refId": "C"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Strom (A)",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "amp"
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "L1" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "L2" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "L3" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 55 },
-      "id": 52,
-      "options": {
-        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "multi", "sort": "desc" }
-      },
-      "title": "Netzstrom pro Phase",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_meter_current_ac_phase_1_amperes",
-          "legendFormat": "L1",
-          "refId": "A"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_meter_current_ac_phase_2_amperes",
-          "legendFormat": "L2",
-          "refId": "B"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_meter_current_ac_phase_3_amperes",
-          "legendFormat": "L3",
-          "refId": "C"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "super-light-purple", "mode": "fixed" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Frequenz (Hz)",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "hertz",
-          "decimals": 3
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 4, "x": 16, "y": 55 },
-      "id": 53,
-      "options": {
-        "legend": { "calcs": ["mean", "min", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "title": "Netzfrequenz",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_meter_frequency_hertz",
-          "legendFormat": "Frequenz",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "light-blue", "mode": "fixed" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "decimals": 3,
-          "min": -1,
-          "max": 1
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 4, "x": 20, "y": 55 },
-      "id": 54,
-      "options": {
-        "legend": { "calcs": ["mean", "min", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "title": "Leistungsfaktor (cos phi)",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_meter_power_factor_sum",
-          "legendFormat": "cos(phi)",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 63 },
-      "id": 60,
-      "title": "Wechselrichter",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "yellow", "mode": "fixed" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Leistung (W)",
-            "lineWidth": 2,
-            "fillOpacity": 20,
-            "spanNulls": true,
-            "gradientMode": "opacity"
-          },
-          "unit": "watt"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 64 },
-      "id": 61,
-      "options": {
-        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "title": "Wechselrichter AC-Leistung",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_inverter_pac_watts",
-          "legendFormat": "AC Leistung",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Spannung (V)",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "volt"
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "String 1" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "String 2" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 64 },
-      "id": 62,
-      "options": {
-        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "multi", "sort": "desc" }
-      },
-      "title": "DC-Spannung (Strings)",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_inverter_udc_volts",
-          "legendFormat": "String 1",
-          "refId": "A"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_inverter_udc_2_volts",
-          "legendFormat": "String 2",
-          "refId": "B"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Strom (A)",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "amp"
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "String 1" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }
-            ]
-          },
-          {
-            "matcher": { "id": "byName", "options": "String 2" },
-            "properties": [
-              { "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }
-            ]
-          }
-        ]
-      },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 64 },
-      "id": 63,
-      "options": {
-        "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom" },
-        "tooltip": { "mode": "multi", "sort": "desc" }
-      },
-      "title": "DC-Strom (Strings)",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_inverter_idc_amperes",
-          "legendFormat": "String 1",
-          "refId": "A"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_inverter_idc_2_amperes",
-          "legendFormat": "String 2",
-          "refId": "B"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "unit": "short",
-          "decimals": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "orange", "value": 1 },
-              { "color": "red", "value": 2 }
-            ]
-          },
-          "mappings": [
-            { "options": { "0": { "text": "Startup", "color": "blue" } }, "type": "value" },
-            { "options": { "7": { "text": "Running", "color": "green" } }, "type": "value" },
-            { "options": { "8": { "text": "Standby", "color": "yellow" } }, "type": "value" },
-            { "options": { "9": { "text": "Boot Loading", "color": "blue" } }, "type": "value" },
-            { "options": { "10": { "text": "Error", "color": "red" } }, "type": "value" },
-            { "options": { "11": { "text": "Idle", "color": "light-yellow" } }, "type": "value" },
-            { "options": { "12": { "text": "Ready", "color": "light-green" } }, "type": "value" },
-            { "options": { "13": { "text": "Sleeping", "color": "text" } }, "type": "value" }
-          ]
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 72 },
-      "id": 64,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "Wechselrichter Status",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_inverter_status_code",
-          "legendFormat": "Status",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "thresholds" },
-          "unit": "short",
-          "decimals": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "red", "value": 1 }
-            ]
-          },
-          "mappings": [
-            { "options": { "0": { "text": "Kein Fehler", "color": "green" } }, "type": "value" }
-          ]
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 72 },
-      "id": 65,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "textMode": "auto"
-      },
-      "title": "Fehlercode",
-      "type": "stat",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_inverter_error_code",
-          "legendFormat": "Error",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "volt"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 72 },
-      "id": 66,
-      "options": {
-        "legend": { "calcs": ["lastNotNull"], "displayMode": "list", "placement": "bottom" },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "title": "AC-Spannung",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_inverter_uac_volts",
-          "legendFormat": "UAC",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "amp"
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 72 },
-      "id": 67,
-      "options": {
-        "legend": { "calcs": ["lastNotNull"], "displayMode": "list", "placement": "bottom" },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "title": "AC-Strom",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_inverter_iac_amperes",
-          "legendFormat": "IAC",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "fixedColor": "super-light-purple", "mode": "fixed" },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "hertz",
-          "decimals": 3
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 72 },
-      "id": 68,
-      "options": {
-        "legend": { "calcs": ["lastNotNull"], "displayMode": "list", "placement": "bottom" },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "title": "AC-Frequenz",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_inverter_fac_hertz",
-          "legendFormat": "Frequenz",
-          "refId": "A"
-        }
-      ]
-    }
-  ],
-  "refresh": "30s",
+  "uid": "pv-overview",
+  "title": "Solar & battery · household overview",
   "schemaVersion": 39,
-  "tags": [
-    "smarthome",
-    "photovoltaik",
-    "fronius"
-  ],
-  "templating": {"list": [{"name": "usable_battery_kwh", "label": "Configured usable capacity (kWh)", "type": "constant", "hide": 2, "query": "NaN", "current": {"text": "NaN", "value": "NaN"}, "options": [{"text": "NaN", "value": "NaN", "selected": true}]}]},
+  "version": 1,
+  "timezone": "browser",
+  "editable": true,
+  "refresh": "1m",
   "time": {
-    "from": "now-24h",
+    "from": "now/M",
     "to": "now"
   },
-  "timezone": "browser",
-  "title": "Photovoltaik - Fronius",
-  "uid": "pv-overview"
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "5m",
+      "15m"
+    ],
+    "time_options": [
+      "1h",
+      "12h",
+      "24h",
+      "7d",
+      "30d"
+    ]
+  },
+  "tags": [
+    "home-energy"
+  ],
+  "homeNavigation": true,
+  "links": [
+    {
+      "title": "Home",
+      "type": "link",
+      "url": "/d/home-energy",
+      "includeTime": true
+    }
+  ],
+  "templating": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 100,
+      "title": "PV production · DC estimate",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Estimated positive generator power integral at DC boundary; NOT hybrid inverter AC energy, which can include battery output.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "pv",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 101,
+      "title": "Household electricity",
+      "type": "stat",
+      "gridPos": {
+        "x": 4,
+        "y": 0,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Estimated integral of consumption-only device-calculated primary-meter site load; not independently metered whole-house demand.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "household",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "title": "Grid import",
+      "type": "stat",
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Calculated differences of one validated grid-interconnection absolute Wh gauge, converted to kWh; proportional interval allocation. No duplicate meter totals or reset repair.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "grid_import",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "title": "Grid export",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Calculated absolute export-meter differences at the unique grid interconnection; kWh after Wh conversion.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "grid_export",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 104,
+      "title": "Self-sufficiency",
+      "type": "stat",
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 8,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Calculated (site household energy − grid imports) / household energy × 100 with matching coverage. Includes battery inventory stored before this period; not same-period direct PV use. Zero demand or inconsistent balance is unavailable. Grid charging assumed unused.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "self_sufficiency",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 105,
+      "title": "Specific PV yield",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Estimated DC generator kWh / privately configured installed kWp. Not weather-normalized equipment efficiency; no short-period annualization.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "specific_yield",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: kWh/kWp",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 106,
+      "title": "Battery charging · battery side",
+      "type": "stat",
+      "gridPos": {
+        "x": 4,
+        "y": 5,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Estimated integral of negative P_Akku, sign split at linear zero crossings. Battery-side energy, not household AC use or a cumulative counter.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "battery_charge",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 107,
+      "title": "Battery discharging · battery side",
+      "type": "stat",
+      "gridPos": {
+        "x": 8,
+        "y": 5,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Estimated integral of positive P_Akku. Battery-side energy, not an independently measured household AC contribution.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "battery_discharge",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 108,
+      "title": "Battery inventory change · estimate",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 5,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Calculated SOC change × privately configured usable capacity. Negative means depletion, not negative consumption. Estimated inventory, not another energy production counter.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "battery_inventory_change",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 109,
+      "title": "Solar self-consumption · unavailable",
+      "type": "stat",
+      "gridPos": {
+        "x": 16,
+        "y": 5,
+        "w": 8,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Unavailable: DC generator minus AC export cannot establish direct household solar use or a verified onsite-retained share. AC/DC conversion/storage losses and inventory allocation are not verified; no misleading fallback ratio.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "solar_self_consumption"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Measurement boundaries",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 10,
+        "w": 24,
+        "h": 4
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "**Period energy above; endpoint power below.** PV is a DC generator estimate, grid energy is meter differences, household is calculated site demand. Battery quantities are battery-side, not household AC delivery. Direct solar self-consumption remains **unavailable** because loss/storage allocation is unverified. No hybrid-AC production shortcut, annualization or weather-normalized efficiency claim. Inspect [coverage](?from=${__from}&to=${__to}&viewPanel=90)."
+      }
+    },
+    {
+      "id": 70,
+      "title": "Daily calendar energy · completed local days",
+      "type": "barchart",
+      "gridPos": {
+        "x": 0,
+        "y": 14,
+        "w": 24,
+        "h": 9
+      },
+      "description": "Each bar group is one COMPLETE local calendar day, labelled by its starting date. DST days are 23/25 hours when applicable; never rolling 24-hour totals or averages of period totals. Partially selected/current days and any day with gaps, stale tails or resets are omitted, NOT zero. Select one calendar month (at most 32 touched local dates); longer ranges are unavailable here. Meter import and estimated DC PV / site demand have distinct boundaries; do not stack or infer a power balance. Supported timezone horizon 2000–2100, not a claim of stored history.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "household",
+          "calendarMode": "daily"
+        },
+        {
+          "refId": "B",
+          "calendarMetric": "grid_import",
+          "calendarMode": "daily"
+        },
+        {
+          "refId": "C",
+          "calendarMetric": "pv",
+          "calendarMode": "daily"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns",
+            "valueLabel": "quantity"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "day": 0
+            },
+            "renameByName": {
+              "household": "Household (estimate)",
+              "grid_import": "Grid import",
+              "pv": "PV DC (estimate)"
+            }
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "day",
+                "destinationType": "time",
+                "dateFormat": "X"
+              }
+            ],
+            "fields": {}
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "day",
+                "desc": false
+              }
+            ]
+          }
+        },
+        {
+          "id": "formatTime",
+          "options": {
+            "timeField": "day",
+            "outputFormat": "YYYY-MM-DD",
+            "timezone": "browser"
+          }
+        }
+      ],
+      "options": {
+        "xField": "day",
+        "orientation": "vertical",
+        "stacking": "none",
+        "groupWidth": 0.7,
+        "barWidth": 0.9,
+        "showValue": "never",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "xTickLabelRotation": -30
+      }
+    },
+    {
+      "id": 80,
+      "title": "Equivalent elapsed previous month · household electricity",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 23,
+        "w": 24,
+        "h": 5
+      },
+      "description": "Native time-picker comparison, NOT a Grafana 1M shift. Available only when selection begins at local month start and ends within that month. BOTH comparison windows are capped to the current continuous observed prefix and shorter prior-month elapsed duration (including DST); main headline remains independent. Compared duration is shown explicitly. Both windows must be complete with real history; zero previous energy withholds percentage change. No annualization or invented year-over-year results.",
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "household",
+          "calendarMode": "current",
+          "legendFormat": "Current · capped elapsed window"
+        },
+        {
+          "refId": "B",
+          "calendarMetric": "household",
+          "calendarMode": "previous",
+          "legendFormat": "Previous · same elapsed seconds"
+        },
+        {
+          "refId": "C",
+          "calendarMetric": "household",
+          "calendarMode": "change",
+          "legendFormat": "Change · not weather adjusted"
+        },
+        {
+          "refId": "D",
+          "calendarMetric": "household",
+          "calendarMode": "current",
+          "periodField": "coverage",
+          "legendFormat": "Compared elapsed duration"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 120,
+      "title": "Avoided purchases · estimate",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 4,
+        "h": 6
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Estimated non-grid household supply valued at applicable all-in grid tariff; same-demand grid-only baseline. Fixed charges/restricted credits excluded. Not battery-specific profit; grid charging assumed unused.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "avoided_cost",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "configured_currency",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 121,
+      "title": "Export revenue · estimate",
+      "type": "stat",
+      "gridPos": {
+        "x": 4,
+        "y": 28,
+        "w": 4,
+        "h": 6
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Grid export valued at applicable installation-local monthly remuneration. Carried-forward/expired or configured provisional rates are explicitly provisional; not billing reconciliation.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "export_revenue",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "configured_currency",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 122,
+      "title": "Solar/battery benefit · estimate",
+      "type": "stat",
+      "gridPos": {
+        "x": 8,
+        "y": 28,
+        "w": 4,
+        "h": 6
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Estimated avoided purchases + export revenue, date-effective private prices. Same-demand grid-only baseline, not investment profit or a bill. Fixed charges/restricted credits excluded. Grid charging assumed unused; conversion and site boundaries remain qualified.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "solar_battery_benefit",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "configured_currency",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 123,
+      "title": "Variable grid purchases · estimate",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 28,
+        "w": 4,
+        "h": 6
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Imported energy valued per observed interval at date-effective private all-in variable tariff, VAT/eligible universal discounts once. No fixed charges or restricted credits.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "import_cost",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "configured_currency",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 124,
+      "title": "Grid purchases minus exports · estimate",
+      "type": "stat",
+      "gridPos": {
+        "x": 16,
+        "y": 28,
+        "w": 8,
+        "h": 6
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Variable grid purchase cost − export revenue, can be negative. DISTINCT from solar/battery benefit. Excludes fixed charges, instalments and account balances; not a bill.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "net_grid_cost",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "configured_currency",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 125,
+      "title": "Price confidence · independent of energy coverage",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 34,
+        "w": 24,
+        "h": 4
+      },
+      "description": "Any configured provisional or expired/carried-forward segment makes the selected period provisional. Before first known price is unavailable. Estimates use date-effective all-in variable prices and monthly export rates; fixed charges, restricted credits, instalments and balances excluded. Re-render after corrections and reopen Grafana; historical intervals are repriced without TSDB changes.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "0",
+          "periodMetric": "avoided_cost",
+          "periodField": "price_status"
+        },
+        {
+          "refId": "1",
+          "periodMetric": "export_revenue",
+          "periodField": "price_status"
+        },
+        {
+          "refId": "2",
+          "periodMetric": "import_cost",
+          "periodField": "price_status"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "Confirmed"
+                },
+                "2": {
+                  "text": "Provisional"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 40,
+      "title": "Observed overnight coverage · operational definition",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 38,
+        "w": 24,
+        "h": 5
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Latest **completed local 18:00–06:00** window wholly inside your selection (11/12/13 hours across DST), not sunset/sunrise. Coverage = observed **non-grid household share**, alongside battery-side discharge and SOC inventory change. Available only with complete aligned observations, **measured zero PV**, no battery charging and non-increasing SOC. Other-generation and unused-grid-charging assumptions remain; this does not meter AC battery delivery or guarantee future runtime. Depletion is estimated inventory loss, not an inferred minimum SOC threshold. Short selections, missing night readings or nonzero PV withhold the whole assessment."
+      }
+    },
+    {
+      "id": 140,
+      "title": "Overnight non-grid coverage · observed",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 43,
+        "w": 6,
+        "h": 5
+      },
+      "description": "Same latest completed local 18:00–06:00 window and measured-condition gates described above. Non-grid coverage is not separately metered AC battery contribution; no forecast.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "overnight_coverage",
+          "calendarMode": "overnight"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 141,
+      "title": "Night discharge · battery side",
+      "type": "stat",
+      "gridPos": {
+        "x": 6,
+        "y": 43,
+        "w": 6,
+        "h": 5
+      },
+      "description": "Same latest completed local 18:00–06:00 window and measured-condition gates described above. Non-grid coverage is not separately metered AC battery contribution; no forecast.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "battery_discharge",
+          "calendarMode": "overnight"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 142,
+      "title": "Night inventory change · estimate",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 43,
+        "w": 6,
+        "h": 5
+      },
+      "description": "Same latest completed local 18:00–06:00 window and measured-condition gates described above. Non-grid coverage is not separately metered AC battery contribution; no forecast.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "battery_inventory_change",
+          "calendarMode": "overnight"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 143,
+      "title": "Night grid import",
+      "type": "stat",
+      "gridPos": {
+        "x": 18,
+        "y": 43,
+        "w": 6,
+        "h": 5
+      },
+      "description": "Same latest completed local 18:00–06:00 window and measured-condition gates described above. Non-grid coverage is not separately metered AC battery contribution; no forecast.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "grid_import",
+          "calendarMode": "overnight"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 144,
+      "title": "Observed night boundaries · installation local time",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 48,
+        "w": 24,
+        "h": 4
+      },
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "night_start",
+          "calendarMode": "overnight",
+          "legendFormat": "Night starts"
+        },
+        {
+          "refId": "B",
+          "calendarMetric": "night_end",
+          "calendarMode": "overnight",
+          "legendFormat": "Night ends"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "dateTimeAsIso",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 19,
+      "title": "Endpoint snapshot · separate from energy",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 52,
+        "w": 24,
+        "h": 3
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Right now when **To=now**; historical selections show that endpoint. Signed grid power: +import / −export. Signed battery power: +discharge / −charge. Missing/stale sources are unavailable; a cached exporter timestamp is not a new measurement."
+      }
+    },
+    {
+      "id": 21,
+      "title": "Battery state of charge",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 55,
+        "w": 8,
+        "h": 4
+      },
+      "description": "Snapshot at the selected endpoint (right now when To=now), not period energy. Device-reported unless stated. Per-field presence/receipt age AND endpoint health are checked; cached exports are not fresh reads. Historical selection is a historical snapshot. Configured usable capacity: ${usable_battery_kwh} kWh; not measured remaining energy. Raw API capacity units remain unverified.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "liveMetric": "soc",
+          "legendFormat": ""
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 22,
+      "title": "Battery power · +out / −in",
+      "type": "stat",
+      "gridPos": {
+        "x": 8,
+        "y": 55,
+        "w": 8,
+        "h": 4
+      },
+      "description": "Snapshot at the selected endpoint (right now when To=now), not period energy. Device-reported unless stated. Per-field presence/receipt age AND endpoint health are checked; cached exports are not fresh reads. Historical selection is a historical snapshot. ",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "liveMetric": "battery_power",
+          "legendFormat": ""
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 23,
+      "title": "Grid power · +import / −export",
+      "type": "stat",
+      "gridPos": {
+        "x": 16,
+        "y": 55,
+        "w": 8,
+        "h": 4
+      },
+      "description": "Snapshot at the selected endpoint (right now when To=now), not period energy. Device-reported unless stated. Per-field presence/receipt age AND endpoint health are checked; cached exports are not fresh reads. Historical selection is a historical snapshot. ",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "liveMetric": "grid_power",
+          "legendFormat": ""
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 90,
+      "title": "Coverage · required context for observed-prefix values",
+      "type": "table",
+      "gridPos": {
+        "x": 0,
+        "y": 59,
+        "w": 24,
+        "h": 8
+      },
+      "description": "Coverage alone does not make a derived value valid: both/all inputs must align. Full requested period: 1=yes, 0=continuous observed prefix only (if the headline exists). Coverage can be incomplete even when its endpoint is recent. Financial confidence is independent. Absent telemetry/metadata is unavailable; unsupported prior-year history is withheld.",
+      "targets": [
+        {
+          "refId": "Q0",
+          "periodMetric": "pv",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "PV production · DC estimate",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q1",
+          "periodMetric": "pv",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "PV production · DC estimate",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q2",
+          "periodMetric": "pv",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "PV production · DC estimate",
+            "aspect": "Full requested period?"
+          }
+        },
+        {
+          "refId": "Q3",
+          "periodMetric": "household",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Household electricity",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q4",
+          "periodMetric": "household",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Household electricity",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q5",
+          "periodMetric": "household",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Household electricity",
+            "aspect": "Full requested period?"
+          }
+        },
+        {
+          "refId": "Q6",
+          "periodMetric": "grid_import",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Grid import",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q7",
+          "periodMetric": "grid_import",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Grid import",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q8",
+          "periodMetric": "grid_import",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Grid import",
+            "aspect": "Full requested period?"
+          }
+        },
+        {
+          "refId": "Q9",
+          "periodMetric": "grid_export",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Grid export",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q10",
+          "periodMetric": "grid_export",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Grid export",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q11",
+          "periodMetric": "grid_export",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Grid export",
+            "aspect": "Full requested period?"
+          }
+        },
+        {
+          "refId": "Q12",
+          "periodMetric": "self_sufficiency",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Self-sufficiency",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q13",
+          "periodMetric": "self_sufficiency",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Self-sufficiency",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q14",
+          "periodMetric": "self_sufficiency",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Self-sufficiency",
+            "aspect": "Full requested period?"
+          }
+        },
+        {
+          "refId": "Q15",
+          "periodMetric": "specific_yield",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Specific PV yield",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q16",
+          "periodMetric": "specific_yield",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Specific PV yield",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q17",
+          "periodMetric": "specific_yield",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Specific PV yield",
+            "aspect": "Full requested period?"
+          }
+        },
+        {
+          "refId": "Q18",
+          "periodMetric": "battery_charge",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Battery charging · battery side",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q19",
+          "periodMetric": "battery_charge",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Battery charging · battery side",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q20",
+          "periodMetric": "battery_charge",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Battery charging · battery side",
+            "aspect": "Full requested period?"
+          }
+        },
+        {
+          "refId": "Q21",
+          "periodMetric": "battery_discharge",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Battery discharging · battery side",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q22",
+          "periodMetric": "battery_discharge",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Battery discharging · battery side",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q23",
+          "periodMetric": "battery_discharge",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Battery discharging · battery side",
+            "aspect": "Full requested period?"
+          }
+        },
+        {
+          "refId": "Q24",
+          "periodMetric": "battery_inventory_change",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Battery inventory change · estimate",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q25",
+          "periodMetric": "battery_inventory_change",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Battery inventory change · estimate",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q26",
+          "periodMetric": "battery_inventory_change",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Battery inventory change · estimate",
+            "aspect": "Full requested period?"
+          }
+        },
+        {
+          "refId": "Q27",
+          "periodMetric": "solar_battery_benefit",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Solar/battery benefit · estimate",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q28",
+          "periodMetric": "solar_battery_benefit",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Solar/battery benefit · estimate",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q29",
+          "periodMetric": "solar_battery_benefit",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Solar/battery benefit · estimate",
+            "aspect": "Full requested period?"
+          }
+        }
+      ],
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns",
+            "valueLabel": "aspect"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "headline": 0
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "Unavailable"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Covered seconds"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Observed through"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Full requested period?"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 92,
+      "title": "Technical drill-down and historical limits",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 67,
+        "w": 24,
+        "h": 4
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Use Solar diagnostics when its template is available; pressures, phase readings, inverter AC counters and device states belong there, not in this overview. Useful diagnostics remain owned by the parallel heating/diagnostics slice. No prior-year result is inferred from retention settings. Native interval records start only when separately approved rules run; legacy cached exports cannot retroactively prove freshness. Public templates have no prices or configuration and intentionally return no data until private rendering."
+      }
+    }
+  ]
 }
