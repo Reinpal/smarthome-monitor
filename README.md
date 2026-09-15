@@ -6,9 +6,9 @@ A Dockerized monitoring stack for **Stiebel Eltron ISG** heat pumps and **Froniu
 
 - **ISG Heat Pump Scraping** -- Parses HTML pages from the Stiebel Eltron ISG web interface (temperatures, energy counters, operating status, etc.)
 - **Fronius Solar API Polling** -- Collects real-time data from the Fronius Solar API (power flow, battery storage, meter readings, inverter data)
-- **Calculated Metrics** -- Derives COP (Coefficient of Performance), temperature spreads, and inverter power from raw readings
+- **Calculated Metrics** -- Derives device VD energy ratios and temperature spreads; private provisioning adds freshness-gated period energy and dated-price estimates
 - **OpenTelemetry Export** -- Pushes all metrics via OTLP/gRPC to a local collector
-- **Grafana Dashboards** -- Ships with provisioned dashboards for heat pump and PV overview
+- **Grafana Dashboards** -- Home, Solar & battery, Heating & hot water, and linked technical diagnostics
 
 ## Architecture
 
@@ -83,15 +83,14 @@ Data lives at `${DATA_PATH:-./data}` on the host. Create that directory explicit
 on the intended storage before the first start; Compose will not create it.
 On the deployed Pi, Docker waits for and verifies the external drive before any
 containers start. See [External-drive storage and recovery](docs/storage-recovery.md)
-for the installed guard, tests, and September 14 recovery.
+for the installed guard, tests, and recovery procedure.
 Persistence survives container recreation, but does **not** protect against
 retention expiry or disk failure.
 Increasing retention cannot restore previously deleted measurements. Monitor
 available disk space as history grows.
 
-Local recovery archives are excluded from Git under `backups/`. On September 12,
-2026, the original Docker volume was archived, and the current Prometheus data
-was archived while the stack was stopped. `backups/SHA256SUMS` records checksums.
+Local recovery archives are excluded from Git under `backups/`. The legacy volume
+and stopped-stack data were archived privately; `backups/SHA256SUMS` records checksums.
 These are one-time local copies on the Pi, **not automated off-device backups**.
 Copy them to another device for protection against loss of the Pi.
 
@@ -109,17 +108,27 @@ See [Health monitoring](docs/monitoring.md) for thresholds, operation and limita
 
 ## Dashboards
 
-Two provisioned Grafana dashboards are included:
+Use [private provisioning](docs/private-configuration.md) to resolve the public
+no-data templates into native, time-picker-driven dashboards:
 
-### Heat Pump (Waermepumpe)
-Monitors temperatures, energy consumption, COP, compressor status, and more from the ISG.
+- **Home** (`home-energy`): six period headlines, separate power/comfort context,
+  completed local daily energy and equal-elapsed previous-month comparisons.
+- **Solar & battery** (`pv-overview`): site/DC/grid/battery energy, dated-price
+  financial estimates, specific yield and qualified observed overnight coverage.
+- **Heating & hot water** (`heatpump-overview`): separate VD electricity/heat,
+  matching-period efficiency, NHZ heat, comfort/weather and optional private notes.
+- **Heat-pump diagnostics** and **Solar & battery diagnostics**: technical
+  measurements and collection health, with period-preserving links.
 
-Installation inputs are supplied through [private provisioning](docs/private-configuration.md), not tracked dashboard defaults. Optional area and commissioning date remain unavailable when omitted. Certificate comparisons and their installation-specific reference constants have been removed; configured area does not establish a valid heat boundary.
+Home/Solar default to this local calendar month; Heating defaults to today.
+Missing/stale/legacy history is unavailable, not zero. Financial benefit is an
+estimate, not a bill; VD efficiency is not verified whole-system efficiency.
+Unsupported direct solar self-consumption and annual comparisons remain unavailable.
 
-### Photovoltaik (PV Overview)
-Shows solar production, grid feed-in/consumption, battery status, and power flow from the Fronius inverter.
-
-> **Note**: Public templates use the browser timezone and unavailable installation placeholders. Private rendering applies the configured IANA timezone and shows usable battery capacity in the existing SOC panel description. This input is not measured remaining energy. Tariff lookup is available for subsequent period calculations; this slice does not yet display financial results.
+See [Home/Solar](docs/home-solar.md), [Heating/diagnostics](docs/heating-dashboards.md)
+and the [final acceptance, performance and deployment/rollback guide](docs/acceptance.md).
+**Deployment has not been performed.** Existing raw history is preserved; new
+freshness-gated interval history begins only after an approved deployment.
 
 ## Project Structure
 

@@ -64,30 +64,30 @@ Run `sh tests/test_storage_guard.sh` on the Pi to test the correct drive and
 simulate missing, wrong and read-only mounts in **private mount namespaces**.
 These tests do not unmount or change the actual host drive.
 
-## September 14, 2026 recovery
+## Prior mount-order recovery
 
-Docker bound `/mnt/external/smarthome-data` from the SD card at approximately
-10:17:40 Vienna time; the external disk mounted at 10:18:03. The container kept
-its private bind to the underlying SD directory and began a new database.
-The historical database on the external disk had not been deleted.
+Docker bound the data path from the SD card before the external disk mounted.
+The container kept its private bind to the underlying SD directory and began a
+new database. The historical database on the external disk had not been deleted.
+Incident dates, exact timing and telemetry checks belong in private recovery
+records, not public documentation.
 
 Recovery procedure performed:
 
 1. Stopped the scraper and LGTM; archived the SD data and external Prometheus
-   and Grafana directories under `backups/recovery-20260914/`.
+   and Grafana directories under the ignored `backups/` tree.
 2. Replayed **copies** of both Prometheus databases with the pinned Prometheus
    3.10.0 image and five-year retention, isolated from the network.
 3. Created head-inclusive snapshots of both databases. This preserves the old
    WAL's un-compacted samples; simply adding newer blocks to the old database
    could otherwise skip that older WAL data.
-4. Compared the short overlap around the outage: zero conflicting
-   series/timestamps. The merged query returned all 20,500 samples from the
-   comparison window exactly. Prometheus compacted the overlapping blocks.
+4. Compared the overlap around the outage: no conflicting series/timestamps;
+   the merged query preserved the compared samples. Prometheus compacted the
+   overlapping blocks. Exact sample counts and windows remain private.
 5. Installed the merged database at the original external-drive path and
    recreated LGTM, restoring the external Grafana database as well.
-6. Verified historical queries on August 28, September 6, September 13 and
-   September 14, plus post-outage and current data. Retention is `5y`, with
-   zero reported WAL corruption or failed compactions.
+6. Verified representative historical, post-outage and current queries.
+   Retention is `5y`, with no reported WAL corruption or failed compactions.
 7. Tested missing, incorrect and read-only disks in private mount namespaces;
    all were rejected. Performed a real Docker service restart and confirmed
    the installed `ExecStartPre` guard succeeded before containers started.
@@ -96,12 +96,11 @@ Recovery procedure performed:
 Originals and recovery working copies are retained as checksum-verified **cold
 archives**, not additional active databases. The accidental SD directory and
 temporary extracted recovery databases are removed after verification.
-Query comparison evidence is also under `backups/recovery-20260914/` (gitignored).
+Query comparison evidence is also under `backups/` (gitignored).
 
 The recovery retains available measurements, not readings that were never
-collected during the power outage or the brief maintenance stop. Existing data
-before August 28 that had already expired under the former 15-day retention
-cannot be recovered by this merge.
+collected during the power outage or the brief maintenance stop. Data that had already expired under the former short retention cannot be
+recovered by this merge.
 
 Backups on the Pi are not off-device backups. Recurring off-device backups and
 a tested restore remain necessary for protection from hardware failure.

@@ -140,10 +140,13 @@ rather than selecting an arbitrary DST fold. Berlin 23/25-hour dates, Lord Howe'
 half-hour change and Kathmandu's quarter-hour offset are tested. Regenerate after
 TZDB rule updates. This metadata never backfills missing measurement history.
 
-Generated dashboards are several MB: native boundary-variable expressions and
-32 independently clipped buckets trade query size for no new runtime component.
-Use the existing POST datasource. Desktop monthly browser/query acceptance is
-exercised, but production resource/concurrency budgets are **not** certified.
+Native boundary variables and 32 independently clipped buckets trade query size
+for no new runtime component. #7 compacts repeated timezone spans, reducing the
+fictional Home/Solar payloads from 3.41/3.61 MB to 0.99/1.17 MB (including removal
+of duplicated headline evaluation in qualification labels) without changing
+calendar or measurement semantics. Use the existing POST datasource. See the [integrated hardware
+benchmark and deployment gates](acceptance.md#hardware-query-and-resource-acceptance);
+production concurrency budgets are **not** certified.
 Larger/multi-year daily plots are intentionally not offered. The original
 selected-period target defaults are unchanged for callers not using calendars.
 
@@ -208,9 +211,10 @@ month-long live collection run.
 
 Services bind only disposable loopback ports and temporary storage. Browser
 external requests are blocked; analytics/plugin preinstallation are disabled.
-No live service, original checkout, private input, real reading or screenshot was
-accessed or changed. No production provisioning/permissions, device metrology or
-live acceptance is claimed. Issue #7 retains that separately authorized task.
+During #5, no live service, original checkout, private input, real reading or
+screenshot was accessed or changed. Subsequent #7 [read-only validation](acceptance.md)
+records deployment gaps without changing the live stack. No production
+permissions, device metrology or live new-dashboard acceptance is claimed.
 
 Follow the existing private setup/deployment/rollback procedure. Initial interval
 rules require a separately approved deployment; raw/interval history is not

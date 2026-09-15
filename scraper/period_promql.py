@@ -258,9 +258,13 @@ def render_period_targets(dashboard, installation):
                     resolved = queries.target(key, ref_id=target.get('refId', 'A'), field=target.get('periodField', 'metrics'))
                     if target.get('periodQualification'):
                         value, complete = resolved['expr'], queries.complete[key]
-                        resolved['expr'] = ' or '.join(
-                            f'label_replace(({value}) and ({complete} == {flag}), "coverage", "{label}", "", "")'
+                        # Attach a one-valued label vector; do not evaluate the
+                        # expensive energy/financial expression in BOTH branches.
+                        # Missing values remain absent even if coverage survives.
+                        qualification = ' or '.join(
+                            f'label_replace(vector(1) and ({complete} == {flag}), "coverage", "{label}", "", "")'
                             for flag, label in ((1, 'Full period'), (0, 'Observed prefix')))
+                        resolved['expr'] = f'({value}) * on() group_left(coverage) ({qualification})'
                         resolved['legendFormat'] = '{{coverage}}'
                     for label, value in target.get('periodLabels', {}).items():
                         resolved['expr'] = f'label_replace(({resolved["expr"]}), {json.dumps(label)}, {json.dumps(value)}, "", "")'

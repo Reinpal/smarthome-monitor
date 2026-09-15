@@ -46,18 +46,20 @@ def zone_spans(zone):
 def zone_offset(epoch, zone, *, wall=False):
     """Scalar offset; ambiguous/nonexistent wall instants and horizon fail closed.
 
-    Distinct span labels retain both candidates at an autumn fold. count==1 is
-    intentional: silently choosing a fold would claim a calendar boundary that
-    the installed timezone does not uniquely establish.
+    Group disjoint spans with the same offset, retaining distinct offset labels
+    at a fold. scalar(vector) returns NaN unless exactly one candidate exists:
+    it is the same uniqueness gate without duplicating the entire TZDB expression
+    in sum/count for every hidden calendar variable. Equal-offset wall spans
+    cannot overlap (both are translated by the same amount).
     """
-    pieces = []
-    for index, (start, end, offset) in enumerate(zone_spans(zone)):
+    offsets = {}
+    for start, end, offset in zone_spans(zone):
         if wall:
             start, end = start + offset, end + offset
-        pieces.append(f'(label_replace(vector({offset}), "span", "{index}", "", "") '
-                      f'and on() (vector({epoch}) >= {start}) and on() (vector({epoch}) < {end}))')
-    candidates = '(' + ' or '.join(pieces) + ')'
-    return f'scalar(sum({candidates}) and (count({candidates}) == 1))'
+        offsets.setdefault(offset, []).append(f'(vector({epoch}) >= {start} < {end})')
+    pieces = [f'(label_replace(vector({offset}), "zone_offset", "{offset}", "", "") '
+              f'and on() ({" or ".join(spans)}))' for offset, spans in offsets.items()]
+    return 'scalar(' + ' or '.join(pieces) + ')'
 
 
 def _variable(name, expression):
