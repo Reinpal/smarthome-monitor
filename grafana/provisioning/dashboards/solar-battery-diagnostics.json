@@ -1,0 +1,2270 @@
+{
+  "uid": "solar-battery-diagnostics",
+  "title": "Solar & battery diagnostics",
+  "schemaVersion": 39,
+  "version": 2,
+  "editable": true,
+  "timezone": "browser",
+  "time": {
+    "from": "now/d",
+    "to": "now"
+  },
+  "refresh": "1m",
+  "graphTooltip": 1,
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "5m",
+      "15m"
+    ]
+  },
+  "tags": [
+    "energy",
+    "solar",
+    "diagnostics"
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": false,
+        "iconColor": "rgba(100, 180, 255, 1)",
+        "name": "Settings & comfort notes",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "templating": {
+    "list": []
+  },
+  "links": [
+    {
+      "title": "Solar & battery",
+      "type": "link",
+      "url": "/d/pv-overview",
+      "includeTime": true,
+      "keepTime": true,
+      "targetBlank": false
+    },
+    {
+      "title": "Heating & hot water",
+      "type": "link",
+      "url": "/d/heatpump-overview",
+      "includeTime": true,
+      "keepTime": true,
+      "targetBlank": false
+    },
+    {
+      "title": "Heat-pump diagnostics",
+      "type": "link",
+      "url": "/d/heatpump-diagnostics",
+      "includeTime": true,
+      "keepTime": true,
+      "targetBlank": false
+    },
+    {
+      "title": "Solar & battery diagnostics",
+      "type": "link",
+      "url": "/d/solar-battery-diagnostics",
+      "includeTime": true,
+      "keepTime": true,
+      "targetBlank": false
+    }
+  ],
+  "panels": [
+    {
+      "id": 900,
+      "type": "text",
+      "title": "Solar & battery technical context",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 4
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Raw device diagnostics, not period energy or billing meters. Hybrid inverter AC output includes possible battery output and is not pure PV production. Grid meter location must be the unique validated interconnection; never add duplicate meter counters. Battery current is **positive charging**, opposite powerflow P_Akku. Capacity API units are unverified; no Ah/kWh inference. Optional AC day/year counters may be unavailable. Neutral colors are not manufacturer limits."
+      }
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisLabel": "SOC (%)",
+            "lineWidth": 2,
+            "fillOpacity": 20,
+            "spanNulls": false
+          },
+          "unit": "percent",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SOC"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "id": 22,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Ladestand (SOC) - Verlauf",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_powerflow_soc_percent) and on() (count(fronius_powerflow_soc_percent) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.powerflow.soc\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.soc\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.powerflow.soc\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) <= 86400) and on() (abs(fronius_powerflow_soc_percent) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.soc\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.soc\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.powerflow.soc\"})) - sum(timestamp(fronius_powerflow_soc_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.soc\"})) - sum(timestamp(fronius_powerflow_soc_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_soc_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_soc_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_powerflow_soc_percent))) <= 2)",
+          "legendFormat": "SOC",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Temperatur (°C)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "celsius",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "id": 24,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Batterie Temperatur",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_storage_temperature_cell_celsius) and on() (count(fronius_storage_temperature_cell_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.storage.temperature_cell\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.storage.temperature_cell\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"storage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.storage.temperature_cell\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"}) <= 86400) and on() (abs(fronius_storage_temperature_cell_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.storage.temperature_cell\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.storage.temperature_cell\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"storage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"storage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.storage.temperature_cell\"})) - sum(timestamp(fronius_storage_temperature_cell_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.storage.temperature_cell\"})) - sum(timestamp(fronius_storage_temperature_cell_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"storage\"})) - sum(timestamp(fronius_storage_temperature_cell_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"})) - sum(timestamp(fronius_storage_temperature_cell_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_storage_temperature_cell_celsius))) <= 2)",
+          "legendFormat": "Zellentemperatur",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "volt",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 12,
+        "h": 8
+      },
+      "id": 25,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Batterie Spannung",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_storage_voltage_dc_volts) and on() (count(fronius_storage_voltage_dc_volts) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.storage.voltage_dc\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.storage.voltage_dc\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"storage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.storage.voltage_dc\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"}) <= 86400) and on() (abs(fronius_storage_voltage_dc_volts) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.storage.voltage_dc\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.storage.voltage_dc\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"storage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"storage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.storage.voltage_dc\"})) - sum(timestamp(fronius_storage_voltage_dc_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.storage.voltage_dc\"})) - sum(timestamp(fronius_storage_voltage_dc_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"storage\"})) - sum(timestamp(fronius_storage_voltage_dc_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"})) - sum(timestamp(fronius_storage_voltage_dc_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_storage_voltage_dc_volts))) <= 2)",
+          "legendFormat": "Spannung DC",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "amp",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 12,
+        "w": 12,
+        "h": 8
+      },
+      "id": 26,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Batterie Strom",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_storage_current_dc_amperes) and on() (count(fronius_storage_current_dc_amperes) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.storage.current_dc\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.storage.current_dc\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"storage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.storage.current_dc\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"}) <= 86400) and on() (abs(fronius_storage_current_dc_amperes) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.storage.current_dc\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.storage.current_dc\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"storage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"storage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.storage.current_dc\"})) - sum(timestamp(fronius_storage_current_dc_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.storage.current_dc\"})) - sum(timestamp(fronius_storage_current_dc_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"storage\"})) - sum(timestamp(fronius_storage_current_dc_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"storage\"})) - sum(timestamp(fronius_storage_current_dc_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_storage_current_dc_amperes))) <= 2)",
+          "legendFormat": "Strom DC",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "kwatth",
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "id": 31,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "AC-Energie heute (optional)",
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. Geräte-Tageszähler, keine reine PV-Produktion bei Hybridbetrieb. Auf GEN24 nicht verfügbar; fehlend ist nicht null Verbrauch. Perioden-PV künftig aus P_PV mit Abdeckungsprüfung (docs/measurement-contracts.md).",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_powerflow_e_day_Wh / 1000) and on() (count(fronius_powerflow_e_day_Wh) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.powerflow.e_day\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.e_day\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.powerflow.e_day\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) <= 86400) and on() (abs(fronius_powerflow_e_day_Wh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.e_day\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.e_day\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.powerflow.e_day\"})) - sum(timestamp(fronius_powerflow_e_day_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.e_day\"})) - sum(timestamp(fronius_powerflow_e_day_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_e_day_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_e_day_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_powerflow_e_day_Wh))) <= 2)",
+          "legendFormat": "Heute",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "kwatth",
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "id": 32,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "AC-Energie Jahr (optional)",
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. Geräte-Jahreszähler, keine reine PV-Produktion bei Hybridbetrieb. Auf GEN24 nicht verfügbar; keine Hochrechnung oder Null-Ersetzung.",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_powerflow_e_year_Wh / 1000) and on() (count(fronius_powerflow_e_year_Wh) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.powerflow.e_year\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.e_year\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.powerflow.e_year\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) <= 86400) and on() (abs(fronius_powerflow_e_year_Wh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.e_year\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.e_year\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.powerflow.e_year\"})) - sum(timestamp(fronius_powerflow_e_year_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.e_year\"})) - sum(timestamp(fronius_powerflow_e_year_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_e_year_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_e_year_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_powerflow_e_year_Wh))) <= 2)",
+          "legendFormat": "Jahr",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "megwatth",
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 12,
+        "h": 8
+      },
+      "id": 33,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "Wechselrichter AC gesamt",
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. Lebenszeit-AC-Abgabe, enthält bei Hybridbetrieb Batterieabgabe. Nicht PV-Erzeugung; E_Total und TOTAL_ENERGY nicht addieren.",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_powerflow_e_total_Wh / 1000000) and on() (count(fronius_powerflow_e_total_Wh) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.powerflow.e_total\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.e_total\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.powerflow.e_total\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) <= 86400) and on() (abs(fronius_powerflow_e_total_Wh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.e_total\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.e_total\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.powerflow.e_total\"})) - sum(timestamp(fronius_powerflow_e_total_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.e_total\"})) - sum(timestamp(fronius_powerflow_e_total_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_e_total_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_e_total_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_powerflow_e_total_Wh))) <= 2)",
+          "legendFormat": "Gesamt",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "percent",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 28,
+        "w": 12,
+        "h": 8
+      },
+      "id": 34,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "Autarkie (momentan, Gerät)",
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. Momentane Gerätequote, kein Periodenwert. Nicht zeitlich mitteln, um Energieautarkie zu berechnen.",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_powerflow_rel_autonomy_percent) and on() (count(fronius_powerflow_rel_autonomy_percent) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.powerflow.rel_autonomy\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_autonomy\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.powerflow.rel_autonomy\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) <= 86400) and on() (abs(fronius_powerflow_rel_autonomy_percent) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_autonomy\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_autonomy\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.powerflow.rel_autonomy\"})) - sum(timestamp(fronius_powerflow_rel_autonomy_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_autonomy\"})) - sum(timestamp(fronius_powerflow_rel_autonomy_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_rel_autonomy_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_rel_autonomy_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_powerflow_rel_autonomy_percent))) <= 2)",
+          "legendFormat": "Autarkie",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "percent",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "w": 12,
+        "h": 8
+      },
+      "id": 35,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "Eigenverbrauch (momentan, Gerät)",
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. Momentane Gerätequote mit herstellerspezifischer Batterie-/Verlustgrenze. Kein direkter Haushaltsverbrauch und kein Periodenwert.",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_powerflow_rel_self_consumption_percent) and on() (count(fronius_powerflow_rel_self_consumption_percent) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.powerflow.rel_self_consumption\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_self_consumption\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.powerflow.rel_self_consumption\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) <= 86400) and on() (abs(fronius_powerflow_rel_self_consumption_percent) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_self_consumption\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_self_consumption\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.powerflow.rel_self_consumption\"})) - sum(timestamp(fronius_powerflow_rel_self_consumption_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_self_consumption\"})) - sum(timestamp(fronius_powerflow_rel_self_consumption_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_rel_self_consumption_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_rel_self_consumption_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_powerflow_rel_self_consumption_percent))) <= 2)",
+          "legendFormat": "Eigenverbrauch",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "spanNulls": false
+          },
+          "unit": "percent",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Autarkie"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Eigenverbrauch"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 36,
+        "w": 12,
+        "h": 8
+      },
+      "id": 37,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Momentane Gerätequoten - Verlauf",
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. Keine energiegewichteten Periodenquoten. Nicht als Tages-/Monatsautarkie oder direkter Eigenverbrauch verwenden.",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_powerflow_rel_autonomy_percent) and on() (count(fronius_powerflow_rel_autonomy_percent) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.powerflow.rel_autonomy\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_autonomy\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.powerflow.rel_autonomy\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) <= 86400) and on() (abs(fronius_powerflow_rel_autonomy_percent) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_autonomy\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_autonomy\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.powerflow.rel_autonomy\"})) - sum(timestamp(fronius_powerflow_rel_autonomy_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_autonomy\"})) - sum(timestamp(fronius_powerflow_rel_autonomy_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_rel_autonomy_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_rel_autonomy_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_powerflow_rel_autonomy_percent))) <= 2)",
+          "legendFormat": "Autarkie",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_powerflow_rel_self_consumption_percent) and on() (count(fronius_powerflow_rel_self_consumption_percent) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.powerflow.rel_self_consumption\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_self_consumption\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.powerflow.rel_self_consumption\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"}) <= 86400) and on() (abs(fronius_powerflow_rel_self_consumption_percent) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_self_consumption\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_self_consumption\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.powerflow.rel_self_consumption\"})) - sum(timestamp(fronius_powerflow_rel_self_consumption_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.powerflow.rel_self_consumption\"})) - sum(timestamp(fronius_powerflow_rel_self_consumption_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_rel_self_consumption_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"powerflow\"})) - sum(timestamp(fronius_powerflow_rel_self_consumption_percent))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_powerflow_rel_self_consumption_percent))) <= 2)",
+          "legendFormat": "Eigenverbrauch",
+          "refId": "B",
+          "instant": false,
+          "range": true
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "kwatth",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 44,
+        "w": 12,
+        "h": 8
+      },
+      "id": 42,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "Bezug Gesamt",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_meter_energy_real_consumed_Wh / 1000) and on() (count(fronius_meter_energy_real_consumed_Wh) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.meter.energy_real_consumed\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.energy_real_consumed\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.meter.energy_real_consumed\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) <= 86400) and on() (abs(fronius_meter_energy_real_consumed_Wh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.energy_real_consumed\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.energy_real_consumed\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.meter.energy_real_consumed\"})) - sum(timestamp(fronius_meter_energy_real_consumed_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.energy_real_consumed\"})) - sum(timestamp(fronius_meter_energy_real_consumed_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_energy_real_consumed_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_energy_real_consumed_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_meter_energy_real_consumed_Wh))) <= 2)",
+          "legendFormat": "Bezug",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "kwatth",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 44,
+        "w": 12,
+        "h": 8
+      },
+      "id": 43,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "Einspeisung Gesamt",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_meter_energy_real_produced_Wh / 1000) and on() (count(fronius_meter_energy_real_produced_Wh) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.meter.energy_real_produced\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.energy_real_produced\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.meter.energy_real_produced\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) <= 86400) and on() (abs(fronius_meter_energy_real_produced_Wh) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.energy_real_produced\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.energy_real_produced\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.meter.energy_real_produced\"})) - sum(timestamp(fronius_meter_energy_real_produced_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.energy_real_produced\"})) - sum(timestamp(fronius_meter_energy_real_produced_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_energy_real_produced_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_energy_real_produced_Wh))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_meter_energy_real_produced_Wh))) <= 2)",
+          "legendFormat": "Einspeisung",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Leistung (W)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "watt",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Phase 1"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Phase 2"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Phase 3"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 52,
+        "w": 12,
+        "h": 8
+      },
+      "id": 44,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Netz - Leistung pro Phase",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_meter_power_real_p_phase_1_watts) and on() (count(fronius_meter_power_real_p_phase_1_watts) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.meter.power_real_p_phase_1\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_real_p_phase_1\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.meter.power_real_p_phase_1\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) <= 86400) and on() (abs(fronius_meter_power_real_p_phase_1_watts) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_real_p_phase_1\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_real_p_phase_1\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.meter.power_real_p_phase_1\"})) - sum(timestamp(fronius_meter_power_real_p_phase_1_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_real_p_phase_1\"})) - sum(timestamp(fronius_meter_power_real_p_phase_1_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_power_real_p_phase_1_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_power_real_p_phase_1_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_meter_power_real_p_phase_1_watts))) <= 2)",
+          "legendFormat": "Phase 1",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_meter_power_real_p_phase_2_watts) and on() (count(fronius_meter_power_real_p_phase_2_watts) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.meter.power_real_p_phase_2\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_real_p_phase_2\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.meter.power_real_p_phase_2\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) <= 86400) and on() (abs(fronius_meter_power_real_p_phase_2_watts) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_real_p_phase_2\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_real_p_phase_2\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.meter.power_real_p_phase_2\"})) - sum(timestamp(fronius_meter_power_real_p_phase_2_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_real_p_phase_2\"})) - sum(timestamp(fronius_meter_power_real_p_phase_2_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_power_real_p_phase_2_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_power_real_p_phase_2_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_meter_power_real_p_phase_2_watts))) <= 2)",
+          "legendFormat": "Phase 2",
+          "refId": "B",
+          "instant": false,
+          "range": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_meter_power_real_p_phase_3_watts) and on() (count(fronius_meter_power_real_p_phase_3_watts) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.meter.power_real_p_phase_3\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_real_p_phase_3\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.meter.power_real_p_phase_3\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) <= 86400) and on() (abs(fronius_meter_power_real_p_phase_3_watts) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_real_p_phase_3\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_real_p_phase_3\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.meter.power_real_p_phase_3\"})) - sum(timestamp(fronius_meter_power_real_p_phase_3_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_real_p_phase_3\"})) - sum(timestamp(fronius_meter_power_real_p_phase_3_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_power_real_p_phase_3_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_power_real_p_phase_3_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_meter_power_real_p_phase_3_watts))) <= 2)",
+          "legendFormat": "Phase 3",
+          "refId": "C",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Spannung (V)",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "spanNulls": false
+          },
+          "unit": "volt",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L1"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L2"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L3"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 52,
+        "w": 12,
+        "h": 8
+      },
+      "id": 51,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Netzspannung pro Phase",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_meter_voltage_ac_phase_1_volts) and on() (count(fronius_meter_voltage_ac_phase_1_volts) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.meter.voltage_ac_phase_1\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.voltage_ac_phase_1\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.meter.voltage_ac_phase_1\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) <= 86400) and on() (abs(fronius_meter_voltage_ac_phase_1_volts) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.voltage_ac_phase_1\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.voltage_ac_phase_1\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.meter.voltage_ac_phase_1\"})) - sum(timestamp(fronius_meter_voltage_ac_phase_1_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.voltage_ac_phase_1\"})) - sum(timestamp(fronius_meter_voltage_ac_phase_1_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_voltage_ac_phase_1_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_voltage_ac_phase_1_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_meter_voltage_ac_phase_1_volts))) <= 2)",
+          "legendFormat": "L1",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_meter_voltage_ac_phase_2_volts) and on() (count(fronius_meter_voltage_ac_phase_2_volts) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.meter.voltage_ac_phase_2\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.voltage_ac_phase_2\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.meter.voltage_ac_phase_2\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) <= 86400) and on() (abs(fronius_meter_voltage_ac_phase_2_volts) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.voltage_ac_phase_2\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.voltage_ac_phase_2\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.meter.voltage_ac_phase_2\"})) - sum(timestamp(fronius_meter_voltage_ac_phase_2_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.voltage_ac_phase_2\"})) - sum(timestamp(fronius_meter_voltage_ac_phase_2_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_voltage_ac_phase_2_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_voltage_ac_phase_2_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_meter_voltage_ac_phase_2_volts))) <= 2)",
+          "legendFormat": "L2",
+          "refId": "B",
+          "instant": false,
+          "range": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_meter_voltage_ac_phase_3_volts) and on() (count(fronius_meter_voltage_ac_phase_3_volts) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.meter.voltage_ac_phase_3\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.voltage_ac_phase_3\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.meter.voltage_ac_phase_3\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) <= 86400) and on() (abs(fronius_meter_voltage_ac_phase_3_volts) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.voltage_ac_phase_3\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.voltage_ac_phase_3\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.meter.voltage_ac_phase_3\"})) - sum(timestamp(fronius_meter_voltage_ac_phase_3_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.voltage_ac_phase_3\"})) - sum(timestamp(fronius_meter_voltage_ac_phase_3_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_voltage_ac_phase_3_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_voltage_ac_phase_3_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_meter_voltage_ac_phase_3_volts))) <= 2)",
+          "legendFormat": "L3",
+          "refId": "C",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Strom (A)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "amp",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L1"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L2"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L3"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 60,
+        "w": 12,
+        "h": 8
+      },
+      "id": 52,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Netzstrom pro Phase",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_meter_current_ac_phase_1_amperes) and on() (count(fronius_meter_current_ac_phase_1_amperes) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.meter.current_ac_phase_1\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.current_ac_phase_1\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.meter.current_ac_phase_1\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) <= 86400) and on() (abs(fronius_meter_current_ac_phase_1_amperes) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.current_ac_phase_1\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.current_ac_phase_1\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.meter.current_ac_phase_1\"})) - sum(timestamp(fronius_meter_current_ac_phase_1_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.current_ac_phase_1\"})) - sum(timestamp(fronius_meter_current_ac_phase_1_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_current_ac_phase_1_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_current_ac_phase_1_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_meter_current_ac_phase_1_amperes))) <= 2)",
+          "legendFormat": "L1",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_meter_current_ac_phase_2_amperes) and on() (count(fronius_meter_current_ac_phase_2_amperes) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.meter.current_ac_phase_2\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.current_ac_phase_2\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.meter.current_ac_phase_2\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) <= 86400) and on() (abs(fronius_meter_current_ac_phase_2_amperes) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.current_ac_phase_2\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.current_ac_phase_2\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.meter.current_ac_phase_2\"})) - sum(timestamp(fronius_meter_current_ac_phase_2_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.current_ac_phase_2\"})) - sum(timestamp(fronius_meter_current_ac_phase_2_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_current_ac_phase_2_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_current_ac_phase_2_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_meter_current_ac_phase_2_amperes))) <= 2)",
+          "legendFormat": "L2",
+          "refId": "B",
+          "instant": false,
+          "range": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_meter_current_ac_phase_3_amperes) and on() (count(fronius_meter_current_ac_phase_3_amperes) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.meter.current_ac_phase_3\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.current_ac_phase_3\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.meter.current_ac_phase_3\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) <= 86400) and on() (abs(fronius_meter_current_ac_phase_3_amperes) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.current_ac_phase_3\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.current_ac_phase_3\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.meter.current_ac_phase_3\"})) - sum(timestamp(fronius_meter_current_ac_phase_3_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.current_ac_phase_3\"})) - sum(timestamp(fronius_meter_current_ac_phase_3_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_current_ac_phase_3_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_current_ac_phase_3_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_meter_current_ac_phase_3_amperes))) <= 2)",
+          "legendFormat": "L3",
+          "refId": "C",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Frequenz (Hz)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "hertz",
+          "decimals": 3,
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 60,
+        "w": 12,
+        "h": 8
+      },
+      "id": 53,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Netzfrequenz",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_meter_frequency_hertz) and on() (count(fronius_meter_frequency_hertz) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.meter.frequency\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.frequency\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.meter.frequency\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) <= 86400) and on() (abs(fronius_meter_frequency_hertz) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.frequency\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.frequency\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.meter.frequency\"})) - sum(timestamp(fronius_meter_frequency_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.frequency\"})) - sum(timestamp(fronius_meter_frequency_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_frequency_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_frequency_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_meter_frequency_hertz))) <= 2)",
+          "legendFormat": "Frequenz",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "decimals": 3,
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 68,
+        "w": 12,
+        "h": 8
+      },
+      "id": 54,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Leistungsfaktor (cos phi)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_meter_power_factor_sum) and on() (count(fronius_meter_power_factor_sum) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.meter.power_factor_sum\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_factor_sum\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.meter.power_factor_sum\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"}) <= 86400) and on() (abs(fronius_meter_power_factor_sum) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_factor_sum\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_factor_sum\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.meter.power_factor_sum\"})) - sum(timestamp(fronius_meter_power_factor_sum))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.meter.power_factor_sum\"})) - sum(timestamp(fronius_meter_power_factor_sum))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_power_factor_sum))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"meter\"})) - sum(timestamp(fronius_meter_power_factor_sum))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_meter_power_factor_sum))) <= 2)",
+          "legendFormat": "cos(phi)",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Leistung (W)",
+            "lineWidth": 2,
+            "fillOpacity": 20,
+            "spanNulls": false,
+            "gradientMode": "opacity"
+          },
+          "unit": "watt",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 68,
+        "w": 12,
+        "h": 8
+      },
+      "id": 61,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Wechselrichter AC-Leistung",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_inverter_pac_watts) and on() (count(fronius_inverter_pac_watts) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.inverter.pac\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.pac\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.inverter.pac\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) <= 86400) and on() (abs(fronius_inverter_pac_watts) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.pac\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.pac\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.inverter.pac\"})) - sum(timestamp(fronius_inverter_pac_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.pac\"})) - sum(timestamp(fronius_inverter_pac_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_pac_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_pac_watts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_inverter_pac_watts))) <= 2)",
+          "legendFormat": "AC Leistung",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Spannung (V)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "volt",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "String 1"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "String 2"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 76,
+        "w": 12,
+        "h": 8
+      },
+      "id": 62,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "DC-Spannung (Strings)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_inverter_udc_volts) and on() (count(fronius_inverter_udc_volts) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.inverter.udc\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.udc\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.inverter.udc\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) <= 86400) and on() (abs(fronius_inverter_udc_volts) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.udc\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.udc\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.inverter.udc\"})) - sum(timestamp(fronius_inverter_udc_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.udc\"})) - sum(timestamp(fronius_inverter_udc_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_udc_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_udc_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_inverter_udc_volts))) <= 2)",
+          "legendFormat": "String 1",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_inverter_udc_2_volts) and on() (count(fronius_inverter_udc_2_volts) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.inverter.udc_2\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.udc_2\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.inverter.udc_2\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) <= 86400) and on() (abs(fronius_inverter_udc_2_volts) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.udc_2\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.udc_2\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.inverter.udc_2\"})) - sum(timestamp(fronius_inverter_udc_2_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.udc_2\"})) - sum(timestamp(fronius_inverter_udc_2_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_udc_2_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_udc_2_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_inverter_udc_2_volts))) <= 2)",
+          "legendFormat": "String 2",
+          "refId": "B",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Strom (A)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "amp",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "String 1"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "String 2"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 76,
+        "w": 12,
+        "h": 8
+      },
+      "id": 63,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "DC-Strom (Strings)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_inverter_idc_amperes) and on() (count(fronius_inverter_idc_amperes) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.inverter.idc\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.idc\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.inverter.idc\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) <= 86400) and on() (abs(fronius_inverter_idc_amperes) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.idc\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.idc\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.inverter.idc\"})) - sum(timestamp(fronius_inverter_idc_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.idc\"})) - sum(timestamp(fronius_inverter_idc_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_idc_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_idc_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_inverter_idc_amperes))) <= 2)",
+          "legendFormat": "String 1",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_inverter_idc_2_amperes) and on() (count(fronius_inverter_idc_2_amperes) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.inverter.idc_2\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.idc_2\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.inverter.idc_2\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) <= 86400) and on() (abs(fronius_inverter_idc_2_amperes) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.idc_2\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.idc_2\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.inverter.idc_2\"})) - sum(timestamp(fronius_inverter_idc_2_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.idc_2\"})) - sum(timestamp(fronius_inverter_idc_2_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_idc_2_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_idc_2_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_inverter_idc_2_amperes))) <= 2)",
+          "legendFormat": "String 2",
+          "refId": "B",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short",
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 84,
+        "w": 12,
+        "h": 8
+      },
+      "id": 64,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "Wechselrichter Status",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_inverter_status_code) and on() (count(fronius_inverter_status_code) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.inverter.status_code\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.status_code\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.inverter.status_code\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) <= 86400) and on() (abs(fronius_inverter_status_code) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.status_code\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.status_code\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.inverter.status_code\"})) - sum(timestamp(fronius_inverter_status_code))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.status_code\"})) - sum(timestamp(fronius_inverter_status_code))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_status_code))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_status_code))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_inverter_status_code))) <= 2)",
+          "legendFormat": "Status",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short",
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 84,
+        "w": 12,
+        "h": 8
+      },
+      "id": 65,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "Fehlercode",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_inverter_error_code) and on() (count(fronius_inverter_error_code) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.inverter.error_code\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.error_code\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.inverter.error_code\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) <= 86400) and on() (abs(fronius_inverter_error_code) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.error_code\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.error_code\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.inverter.error_code\"})) - sum(timestamp(fronius_inverter_error_code))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.error_code\"})) - sum(timestamp(fronius_inverter_error_code))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_error_code))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_error_code))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_inverter_error_code))) <= 2)",
+          "legendFormat": "Error",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "volt",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 92,
+        "w": 12,
+        "h": 8
+      },
+      "id": 66,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "AC-Spannung",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_inverter_uac_volts) and on() (count(fronius_inverter_uac_volts) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.inverter.uac\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.uac\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.inverter.uac\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) <= 86400) and on() (abs(fronius_inverter_uac_volts) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.uac\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.uac\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.inverter.uac\"})) - sum(timestamp(fronius_inverter_uac_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.uac\"})) - sum(timestamp(fronius_inverter_uac_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_uac_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_uac_volts))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_inverter_uac_volts))) <= 2)",
+          "legendFormat": "UAC",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "amp",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 92,
+        "w": 12,
+        "h": 8
+      },
+      "id": 67,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "AC-Strom",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_inverter_iac_amperes) and on() (count(fronius_inverter_iac_amperes) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.inverter.iac\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.iac\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.inverter.iac\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) <= 86400) and on() (abs(fronius_inverter_iac_amperes) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.iac\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.iac\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.inverter.iac\"})) - sum(timestamp(fronius_inverter_iac_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.iac\"})) - sum(timestamp(fronius_inverter_iac_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_iac_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_iac_amperes))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_inverter_iac_amperes))) <= 2)",
+          "legendFormat": "IAC",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "hertz",
+          "decimals": 3,
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 100,
+        "w": 12,
+        "h": 8
+      },
+      "id": 68,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "AC-Frequenz",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fronius_inverter_fac_hertz) and on() (count(fronius_inverter_fac_hertz) == 1) and on() (count(smarthome_measurement_present{metric=\"fronius.inverter.fac\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.fac\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"fronius.inverter.fac\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"}) <= 86400) and on() (abs(fronius_inverter_fac_hertz) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.fac\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.fac\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"fronius.inverter.fac\"})) - sum(timestamp(fronius_inverter_fac_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"fronius.inverter.fac\"})) - sum(timestamp(fronius_inverter_fac_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_fac_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"fronius\",source=\"inverter\"})) - sum(timestamp(fronius_inverter_fac_hertz))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(fronius_inverter_fac_hertz))) <= 2)",
+          "legendFormat": "Frequenz",
+          "refId": "A",
+          "instant": false,
+          "range": true
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "id": 910,
+      "type": "timeseries",
+      "title": "Collection receipt age · per endpoint",
+      "description": "time() minus last non-empty endpoint receipt. This does not establish every field’s presence or sensor-internal freshness. Gaps are not zero. Compare to configured thresholds; missing exporter samples are unavailable.",
+      "gridPos": {
+        "x": 0,
+        "y": 108,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "time() - smarthome_collection_last_success_seconds{collector=\"fronius\"}",
+          "legendFormat": "{{source}} receipt age",
+          "instant": false,
+          "range": true,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        },
+        {
+          "refId": "B",
+          "expr": "smarthome_collection_stale_after_seconds{collector=\"fronius\"}",
+          "legendFormat": "{{source}} stale threshold",
+          "instant": false,
+          "range": true,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ]
+    },
+    {
+      "id": 911,
+      "type": "timeseries",
+      "title": "Field presence · last processed collection",
+      "description": "1 present, 0 omitted/invalid in last processed result; absent metadata is unknown. Presence alone is not freshness. Collection receipt ages and source-specific thresholds are shown separately.",
+      "gridPos": {
+        "x": 12,
+        "y": 108,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "smarthome_measurement_present{metric=~\"fronius\\\\..*\"}",
+          "legendFormat": "{{metric}}",
+          "instant": false,
+          "range": true,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ]
+    }
+  ],
+  "homeNavigation": true
+}
