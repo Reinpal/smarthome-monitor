@@ -485,7 +485,8 @@
           "refId": "D"
         }
       ],
-      "title": "COP (Coefficient of Performance)",
+      "title": "VD-Energieverhältnis (Tag / Lebenszeit)",
+      "description": "Geräte-Wärmemenge / Geräte-Stromenergie für VD, ohne NHZ. Tag seit Tagesreset, Gesamt seit Zählerbeginn; keine JAZ oder belegte Gesamtsystemeffizienz. Einheiten werden vor Division angeglichen. Historische Werte vor Vertragsversion 2 auf Einheiten prüfen.",
       "type": "timeseries"
     },
     {
@@ -534,14 +535,10 @@
           "expr": "heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW",
           "legendFormat": "Inverter Aufnahmeleistung (ISG)",
           "refId": "A"
-        },
-        {
-          "expr": "heatpump_calculated_inverter_leistung_berechnet_kW",
-          "legendFormat": "Inverter Leistung (berechnet V*A)",
-          "refId": "B"
         }
       ],
-      "title": "Elektrische Leistung",
+      "title": "Inverterleistung (Geräteangabe)",
+      "description": "Keine belegte gesamte Wärmepumpen-Leistungsaufnahme. V*A entfernt: Phasenzahl, Leistungsfaktor und AC/DC-Grenze unbestätigt.",
       "type": "timeseries"
     },
     {
@@ -720,37 +717,15 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Aktuelle Jahresarbeitszahl (COP) für Heizen. Mindestens 3.0 empfohlen (Fördervoraussetzung), 3.5-4.0 gut für Luft-WP, >4.0 ausgezeichnet.",
+      "description": "VD-Wärme / VD-Strom für Tag bzw. Lebenszeit. Keine Jahresarbeitszahl oder Hersteller-Grenzwerte. NHZ und weitere Hilfsenergie nicht als enthalten bestätigt. Periodenwerte benötigen gleiche Zeitgrenzen und geprüfte Abdeckung.",
       "fieldConfig": {
         "defaults": {
           "decimals": 2,
           "thresholds": {
             "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 2.5
-              },
-              {
-                "color": "yellow",
-                "value": 3.0
-              },
-              {
-                "color": "green",
-                "value": 3.5
-              },
-              {
-                "color": "dark-green",
-                "value": 4.0
-              }
-            ]
+            "steps": [{ "color": "blue", "value": null }]
           },
-          "min": 0,
-          "max": 6
+          "min": 0
         }
       },
       "gridPos": {
@@ -787,7 +762,7 @@
           "refId": "B"
         }
       ],
-      "title": "JAZ / COP Heizen",
+      "title": "VD-Energieverhältnis Heizen (keine JAZ)",
       "type": "gauge"
     },
     {
@@ -1011,7 +986,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Aktuelle Leistungsaufnahme des Inverters. Zeigt das Lastprofil der Wärmepumpe im Tagesverlauf.",
+      "description": "Inverter-Geräteangabe, nicht belegte Gesamtsystemleistung. Elektrische Nacherwärmung, Pumpen, Lüfter und Standby-Abdeckung sind nicht bestätigt.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1100,16 +1075,11 @@
       "targets": [
         {
           "expr": "heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW",
-          "legendFormat": "Aufnahmeleistung (ISG)",
+          "legendFormat": "Inverter-Aufnahmeleistung (ISG)",
           "refId": "A"
-        },
-        {
-          "expr": "heatpump_calculated_inverter_leistung_berechnet_kW",
-          "legendFormat": "Leistung berechnet (V*A)",
-          "refId": "B"
         }
       ],
-      "title": "Momentane Leistungsaufnahme",
+      "title": "Momentane Inverter-Aufnahmeleistung",
       "type": "timeseries"
     },
     {

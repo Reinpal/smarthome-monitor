@@ -1,5 +1,17 @@
 """Metric definitions and unit mappings for OpenTelemetry export."""
 
+import math
+
+
+def energy_in_kwh(value: float, unit: str) -> float | None:
+    """Normalize a nonnegative device energy reading; unknown units are unavailable."""
+    factor = {"Wh": 0.001, "kWh": 1.0, "KWh": 1.0, "MWh": 1000.0}.get(unit)
+    if factor is None or not math.isfinite(value) or value < 0:
+        return None
+    result = value * factor
+    return result if math.isfinite(result) else None
+
+
 # Map ISG/Fronius units to OTel-compatible unit strings
 # See: https://opentelemetry.io/docs/specs/semconv/general/metrics/
 UNIT_MAP = {
@@ -17,6 +29,7 @@ UNIT_MAP = {
     "MWh": "MWh",
     "Ah": "Ah",
     "VA": "VA",
+    "var": "var",
     "l/min": "l/min",
     "%": "%",
     "h": "h",
@@ -30,8 +43,8 @@ def get_otel_unit(isg_unit: str) -> str:
     return UNIT_MAP.get(isg_unit, isg_unit)
 
 
-# Metrics that represent cumulative counters (monotonically increasing).
-# All others are treated as gauges.
+# Device cumulative readings (can reset). Exported as gauges for compatibility.
+# Daily/yearly reset values and rolling energy balances are not lifetime totals.
 # These are identified by page_name.section_normalized.key_normalized patterns.
 COUNTER_PATTERNS = [
     # Wärmepumpe page - Wärmemenge (cumulative energy totals)
@@ -52,24 +65,13 @@ COUNTER_PATTERNS = [
     "waermepumpe.laufzeit.starts_abtauen",
     # Wärmepumpe page - Starts
     "waermepumpe.starts.verdichter",
-    # Energiebilanz page - cumulative totals (12M and 24M periods)
-    "energiebilanz.waermemenge.heizen_1_12_m",
-    "energiebilanz.waermemenge.heizen_13_24_m",
-    "energiebilanz.waermemenge.warmwasser_1_12_m",
-    "energiebilanz.waermemenge.warmwasser_13_24_m",
-    "energiebilanz.stromverbrauch.heizen_1_12_m",
-    "energiebilanz.stromverbrauch.heizen_13_24_m",
-    "energiebilanz.stromverbrauch.warmwasser_1_12_m",
-    "energiebilanz.stromverbrauch.warmwasser_13_24_m",
 ]
 
 # Fronius metrics that represent cumulative counters
 FRONIUS_COUNTER_PATTERNS = [
     # Energy totals (monotonically increasing)
     "fronius.powerflow.e_total",
-    "fronius.powerflow.e_year",
     "fronius.inverter.total_energy",
-    "fronius.inverter.year_energy",
     # Grid meter cumulative energy
     "fronius.meter.energy_real_consumed",
     "fronius.meter.energy_real_produced",

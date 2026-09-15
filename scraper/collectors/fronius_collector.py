@@ -5,6 +5,7 @@ for PV production, battery status, grid interaction, and inverter health.
 """
 
 import logging
+import math
 from dataclasses import dataclass
 
 import requests
@@ -30,6 +31,13 @@ class FroniusMetric:
     value: float
     unit: str
     description: str
+
+
+def _number(value) -> float | None:
+    """Accept finite JSON numbers only; malformed fields must not lose siblings."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    return float(value) if math.isfinite(value) else None
 
 
 class FroniusCollector:
@@ -145,17 +153,17 @@ class FroniusCollector:
         site_metrics = [
             ("p_pv", "P_PV", "W", "Current PV production"),
             ("p_grid", "P_Grid", "W", "Grid power (+ import, - export)"),
-            ("p_load", "P_Load", "W", "Current load/consumption"),
-            ("p_akku", "P_Akku", "W", "Battery power (+ charge, - discharge)"),
-            ("e_day", "E_Day", "Wh", "Energy produced today"),
-            ("e_year", "E_Year", "Wh", "Energy produced this year"),
-            ("e_total", "E_Total", "Wh", "Total energy produced"),
+            ("p_load", "P_Load", "W", "Load power (- consumption, + generation)"),
+            ("p_akku", "P_Akku", "W", "Battery power (- charge, + discharge)"),
+            ("e_day", "E_Day", "Wh", "Inverter AC energy today; not pure PV on hybrid systems"),
+            ("e_year", "E_Year", "Wh", "Inverter AC energy this year; not pure PV on hybrid systems"),
+            ("e_total", "E_Total", "Wh", "Lifetime inverter AC energy; includes battery output on hybrids"),
             ("rel_autonomy", "rel_Autonomy", "%", "Autonomy percentage"),
             ("rel_self_consumption", "rel_SelfConsumption", "%", "Self-consumption percentage"),
         ]
 
         for metric_name, api_key, unit, description in site_metrics:
-            value = site.get(api_key)
+            value = _number(site.get(api_key))
             if value is not None:
                 metrics.append(FroniusMetric(
                     name=f"fronius.powerflow.{metric_name}",
@@ -169,7 +177,7 @@ class FroniusCollector:
         inv1 = inverters.get("1", {})
 
         if inv1:
-            soc = inv1.get("SOC")
+            soc = _number(inv1.get("SOC"))
             if soc is not None:
                 metrics.append(FroniusMetric(
                     name="fronius.powerflow.soc",
@@ -178,14 +186,15 @@ class FroniusCollector:
                     description="Battery state of charge",
                 ))
 
-            battery_mode = inv1.get("Battery_Mode", "").lower()
-            mode_value = BATTERY_MODE_MAP.get(battery_mode, -1)
-            metrics.append(FroniusMetric(
-                name="fronius.powerflow.battery_mode",
-                value=float(mode_value),
-                unit="",
-                description="Battery mode (0=normal, 1=charge, 2=discharge)",
-            ))
+            battery_mode = inv1.get("Battery_Mode")
+            if isinstance(battery_mode, str) and battery_mode.strip():
+                mode_value = BATTERY_MODE_MAP.get(battery_mode.lower(), -1)
+                metrics.append(FroniusMetric(
+                    name="fronius.powerflow.battery_mode",
+                    value=float(mode_value),
+                    unit="",
+                    description="Legacy battery operating-mode enum; not charge/discharge direction",
+                ))
 
         return metrics
 
@@ -197,24 +206,32 @@ class FroniusCollector:
         metrics: list[FroniusMetric] = []
         body = data.get("Body", {}).get("Data", {})
 
-        # Storage data is keyed by device ID (usually "0")
-        for device_id, storage in body.items():
+        # The unlabelled series support one storage device only. Never silently
+        # switch between devices based on response order.
+        stores = [s for s in body.values() if isinstance(s, dict) and s.get("Controller")]
+        if len(stores) != 1:
+            return metrics
+        for storage in stores:
             controller = storage.get("Controller", {})
+            if controller.get("Enable") != 1:
+                continue
             if not controller:
                 continue
 
             storage_metrics = [
                 ("soc", "StateOfCharge_Relative", "%", "Battery state of charge"),
                 ("voltage_dc", "Voltage_DC", "V", "Battery DC voltage"),
-                ("current_dc", "Current_DC", "A", "Battery DC current"),
+                ("current_dc", "Current_DC", "A", "Battery DC current (+ charging); opposite P_Akku convention"),
                 ("temperature_cell", "Temperature_Cell", "°C", "Battery cell temperature"),
-                ("capacity_maximum", "Capacity_Maximum", "Ah", "Maximum battery capacity"),
-                ("designed_capacity", "DesignedCapacity", "Ah", "Designed battery capacity"),
+                # Solar API channel table does not declare capacity units.
+                # Retire the unsupported Ah claim; use private usable kWh for insights.
+                ("capacity_maximum_raw", "Capacity_Maximum", "", "Reported maximum capacity; unit unverified, not usable energy"),
+                ("designed_capacity_raw", "DesignedCapacity", "", "Reported design capacity; unit unverified, not usable energy"),
                 ("status_battery_cell", "Status_BatteryCell", "", "Battery cell status code"),
             ]
 
             for metric_name, api_key, unit, description in storage_metrics:
-                value = controller.get(api_key)
+                value = _number(controller.get(api_key))
                 if value is not None:
                     metrics.append(FroniusMetric(
                         name=f"fronius.storage.{metric_name}",
@@ -237,9 +254,16 @@ class FroniusCollector:
         metrics: list[FroniusMetric] = []
         body = data.get("Body", {}).get("Data", {})
 
-        # Meter data is keyed by device ID (usually "0")
-        for device_id, meter in body.items():
-            if not isinstance(meter, dict):
+        # Grid semantics require a unique grid-interconnection meter (location 0).
+        # Load/external-generation meters reverse meanings; response order is not identity.
+        grid_meters = [
+            m for m in body.values()
+            if isinstance(m, dict) and m.get("Meter_Location_Current") == 0
+        ]
+        if len(grid_meters) != 1:
+            return metrics
+        for meter in grid_meters:
+            if meter.get("Enable") != 1 or meter.get("Visible") != 1:
                 continue
 
             meter_metrics = [
@@ -259,13 +283,13 @@ class FroniusCollector:
                 ("energy_real_produced", "EnergyReal_WAC_Sum_Produced", "Wh", "Total energy fed to grid"),
                 ("energy_real_abs_minus", "EnergyReal_WAC_Minus_Absolute", "Wh", "Absolute energy fed to grid"),
                 ("energy_real_abs_plus", "EnergyReal_WAC_Plus_Absolute", "Wh", "Absolute energy from grid"),
-                ("power_apparent_s_sum", "PowerApparent_S_Sum", "W", "Total apparent power"),
+                ("power_apparent_s_sum", "PowerApparent_S_Sum", "VA", "Total apparent power"),
                 ("power_factor_sum", "PowerFactor_Sum", "", "Power factor"),
-                ("power_reactive_q_sum", "PowerReactive_Q_Sum", "W", "Total reactive power"),
+                ("power_reactive_q_sum", "PowerReactive_Q_Sum", "var", "Total reactive power"),
             ]
 
             for metric_name, api_key, unit, description in meter_metrics:
-                value = meter.get(api_key)
+                value = _number(meter.get(api_key))
                 if value is not None:
                     metrics.append(FroniusMetric(
                         name=f"fronius.meter.{metric_name}",
@@ -291,9 +315,9 @@ class FroniusCollector:
         # Value fields have {Unit, Value} structure
         value_metrics = [
             ("pac", "PAC", "W", "Inverter AC power output"),
-            ("day_energy", "DAY_ENERGY", "Wh", "Today's energy production"),
-            ("year_energy", "YEAR_ENERGY", "Wh", "This year's energy production"),
-            ("total_energy", "TOTAL_ENERGY", "Wh", "Lifetime energy production"),
+            ("day_energy", "DAY_ENERGY", "Wh", "Today's inverter AC energy; not pure PV on hybrids"),
+            ("year_energy", "YEAR_ENERGY", "Wh", "This year's inverter AC energy; not pure PV on hybrids"),
+            ("total_energy", "TOTAL_ENERGY", "Wh", "Lifetime inverter AC energy; includes battery output on hybrids"),
             ("uac", "UAC", "V", "Inverter AC voltage"),
             ("iac", "IAC", "A", "Inverter AC current"),
             ("fac", "FAC", "Hz", "Inverter AC frequency"),
@@ -307,7 +331,9 @@ class FroniusCollector:
         for metric_name, api_key, unit, description in value_metrics:
             field = body.get(api_key)
             if isinstance(field, dict):
-                value = field.get("Value")
+                if field.get("Unit") != unit:
+                    continue
+                value = _number(field.get("Value"))
                 if value is not None:
                     metrics.append(FroniusMetric(
                         name=f"fronius.inverter.{metric_name}",
@@ -319,7 +345,7 @@ class FroniusCollector:
         # Device status (flat numeric fields)
         device_status = body.get("DeviceStatus", {})
         if device_status:
-            status_code = device_status.get("StatusCode")
+            status_code = _number(device_status.get("StatusCode"))
             if status_code is not None:
                 metrics.append(FroniusMetric(
                     name="fronius.inverter.status_code",
@@ -328,7 +354,7 @@ class FroniusCollector:
                     description="Inverter status code",
                 ))
 
-            error_code = device_status.get("ErrorCode")
+            error_code = _number(device_status.get("ErrorCode"))
             if error_code is not None:
                 metrics.append(FroniusMetric(
                     name="fronius.inverter.error_code",
@@ -373,37 +399,28 @@ class FroniusCollector:
         if p_akku is not None:
             derived.append(FroniusMetric(
                 name="fronius.calculated.battery_charge",
-                value=max(0.0, p_akku),
+                value=max(0.0, -p_akku),
                 unit="W",
                 description="Battery charging power",
             ))
             derived.append(FroniusMetric(
                 name="fronius.calculated.battery_discharge",
-                value=max(0.0, -p_akku),
+                value=max(0.0, p_akku),
                 unit="W",
                 description="Battery discharging power",
             ))
 
-        # Self-consumption power (PV production minus grid export)
-        p_pv = lookup.get("fronius.powerflow.p_pv")
-        if p_pv is not None and p_grid is not None:
-            grid_export = max(0.0, -p_grid)
-            self_consumption = max(0.0, p_pv - grid_export)
-            derived.append(FroniusMetric(
-                name="fronius.calculated.self_consumption_power",
-                value=self_consumption,
-                unit="W",
-                description="PV power consumed directly (not exported)",
-            ))
+        # Do not subtract AC grid export from hybrid DC PV production and call
+        # it direct consumption: storage flows and conversion losses intervene.
 
-        # Load absolute (P_Load is negative in the API)
+        # Consumption only: a positive P_Load denotes generation, not demand.
         p_load = lookup.get("fronius.powerflow.p_load")
         if p_load is not None:
             derived.append(FroniusMetric(
                 name="fronius.calculated.load_absolute",
-                value=abs(p_load),
+                value=max(0.0, -p_load),
                 unit="W",
-                description="Absolute house consumption",
+                description="Calculated site load consumption; excludes positive load-path generation",
             ))
 
         return derived

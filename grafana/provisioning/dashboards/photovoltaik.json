@@ -469,6 +469,7 @@
         "tooltip": { "mode": "multi", "sort": "desc" }
       },
       "title": "Batterie Leistung",
+      "description": "Solar API P_Akku: negativ Laden, positiv Entladen. Historische calculated-Laden/Entladen-Serien vor Vertragsversion 2 waren vertauscht; für Historie Rohwert P_Akku verwenden.",
       "type": "timeseries",
       "targets": [
         {
@@ -588,7 +589,7 @@
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 28 },
       "id": 30,
-      "title": "Tagesproduktion & Energie",
+      "title": "Wechselrichter-AC-Energie & momentane Gerätequoten",
       "type": "row"
     },
     {
@@ -616,7 +617,8 @@
         "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
-      "title": "Heute",
+      "title": "AC-Energie heute (optional)",
+      "description": "Geräte-Tageszähler, keine reine PV-Produktion bei Hybridbetrieb. Auf GEN24 nicht verfügbar; fehlend ist nicht null Verbrauch. Perioden-PV künftig aus P_PV mit Abdeckungsprüfung (docs/measurement-contracts.md).",
       "type": "stat",
       "targets": [
         {
@@ -652,7 +654,8 @@
         "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
-      "title": "Dieses Jahr",
+      "title": "AC-Energie Jahr (optional)",
+      "description": "Geräte-Jahreszähler, keine reine PV-Produktion bei Hybridbetrieb. Auf GEN24 nicht verfügbar; keine Hochrechnung oder Null-Ersetzung.",
       "type": "stat",
       "targets": [
         {
@@ -688,7 +691,8 @@
         "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
-      "title": "Gesamt",
+      "title": "Wechselrichter AC gesamt",
+      "description": "Lebenszeit-AC-Abgabe, enthält bei Hybridbetrieb Batterieabgabe. Nicht PV-Erzeugung; E_Total und TOTAL_ENERGY nicht addieren.",
       "type": "stat",
       "targets": [
         {
@@ -729,7 +733,8 @@
         "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
-      "title": "Autarkie",
+      "title": "Autarkie (momentan, Gerät)",
+      "description": "Momentane Gerätequote, kein Periodenwert. Nicht zeitlich mitteln, um Energieautarkie zu berechnen.",
       "type": "stat",
       "targets": [
         {
@@ -770,7 +775,8 @@
         "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "textMode": "auto"
       },
-      "title": "Eigenverbrauch",
+      "title": "Eigenverbrauch (momentan, Gerät)",
+      "description": "Momentane Gerätequote mit herstellerspezifischer Batterie-/Verlustgrenze. Kein direkter Haushaltsverbrauch und kein Periodenwert.",
       "type": "stat",
       "targets": [
         {
@@ -812,7 +818,8 @@
         "legend": { "calcs": ["mean", "max", "sum"], "displayMode": "table", "placement": "bottom" },
         "tooltip": { "mode": "multi", "sort": "desc" }
       },
-      "title": "PV-Produktion & Eigenverbrauch",
+      "title": "PV-Leistung (Generatorgrenze)",
+      "description": "P_PV ist bei GEN24/Symo Hybrid DC-Generatorleistung, bei SnapInverter AC-Leistung. DC-PV minus AC-Export ist kein direkter Eigenverbrauch. Null/missing und Batterie-/Umwandlungsverluste beachten.",
       "type": "timeseries",
       "targets": [
         {
@@ -820,12 +827,6 @@
           "expr": "fronius_powerflow_p_pv_watts",
           "legendFormat": "PV-Produktion",
           "refId": "A"
-        },
-        {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "fronius_calculated_self_consumption_power_watts",
-          "legendFormat": "Eigenverbrauch",
-          "refId": "B"
         }
       ]
     },
@@ -866,7 +867,8 @@
         "legend": { "calcs": ["mean", "min", "max"], "displayMode": "table", "placement": "bottom" },
         "tooltip": { "mode": "multi", "sort": "desc" }
       },
-      "title": "Autarkie & Eigenverbrauch - Verlauf",
+      "title": "Momentane Gerätequoten - Verlauf",
+      "description": "Keine energiegewichteten Periodenquoten. Nicht als Tages-/Monatsautarkie oder direkter Eigenverbrauch verwenden.",
       "type": "timeseries",
       "targets": [
         {
