@@ -18,11 +18,12 @@ class MeasurementDashboardTests(unittest.TestCase):
             self.assertIn('AC', solar_panels[panel]['title'])
             self.assertIn('Hybrid', solar_panels[panel]['description'])
         self.assertIn('nicht verfügbar', solar_panels[31]['description'])
-        heating_panels = {p['id']: p for p in heating['panels']}
-        self.assertIn('keine JAZ', heating_panels[24]['title'])
-        self.assertEqual(len(heating_panels[24]['fieldConfig']['defaults']['thresholds']['steps']), 1)
+        diagnostics = json.loads((root / 'heatpump-diagnostics.json').read_text())
+        heating_panels = {p['id']: p for p in diagnostics['panels']}
+        self.assertIn('not annual', heating_panels[5]['title'])
+        self.assertEqual(len(heating_panels[5]['fieldConfig']['defaults']['thresholds']['steps']), 1)
         self.assertIn('NHZ', heating_panels[5]['description'])
-        self.assertIn('Gesamtsystem', heating_panels[27]['description'])
+        self.assertIn('gesamte', heating_panels[6]['description'])
 
 
 if __name__ == '__main__':

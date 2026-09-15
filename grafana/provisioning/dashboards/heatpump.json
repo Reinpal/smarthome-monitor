@@ -1,1038 +1,118 @@
 {
+  "uid": "heatpump-overview",
+  "title": "Heating & hot water",
+  "schemaVersion": 39,
+  "version": 2,
+  "editable": true,
+  "timezone": "browser",
+  "time": {
+    "from": "now/d",
+    "to": "now"
+  },
+  "refresh": "1m",
+  "graphTooltip": 1,
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "5m",
+      "15m"
+    ]
+  },
+  "tags": [
+    "energy",
+    "heating",
+    "overview"
+  ],
   "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": false,
+        "iconColor": "rgba(100, 180, 255, 1)",
+        "name": "Settings & comfort notes",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "templating": {
     "list": []
   },
-  "editable": true,
-  "fiscalYearStartMonth": 0,
-  "graphTooltip": 1,
-  "links": [],
+  "links": [
+    {
+      "title": "Solar & battery",
+      "type": "link",
+      "url": "/d/pv-overview",
+      "includeTime": true,
+      "keepTime": true,
+      "targetBlank": false
+    },
+    {
+      "title": "Heating & hot water",
+      "type": "link",
+      "url": "/d/heatpump-overview",
+      "includeTime": true,
+      "keepTime": true,
+      "targetBlank": false
+    },
+    {
+      "title": "Heat-pump diagnostics",
+      "type": "link",
+      "url": "/d/heatpump-diagnostics",
+      "includeTime": true,
+      "keepTime": true,
+      "targetBlank": false
+    },
+    {
+      "title": "Solar & battery diagnostics",
+      "type": "link",
+      "url": "/d/solar-battery-diagnostics",
+      "includeTime": true,
+      "keepTime": true,
+      "targetBlank": false
+    }
+  ],
   "panels": [
     {
-      "collapsed": false,
+      "id": 900,
+      "type": "text",
+      "title": "Daily heating check — selected local period",
       "gridPos": {
-        "h": 1,
+        "x": 0,
+        "y": 0,
         "w": 24,
-        "x": 0,
-        "y": 0
+        "h": 5
       },
-      "id": 100,
-      "title": "Temperaturen",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisLabel": "Temperatur (°C)",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "celsius"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Vorlauf"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Rücklauf"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Außentemperatur"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Spread (VL-RL)"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "orange",
-                  "mode": "fixed"
-                }
-              },
-              {
-                "id": "custom.lineStyle",
-                "value": {
-                  "fill": "dash",
-                  "dash": [
-                    10,
-                    10
-                  ]
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 0,
-        "y": 1
-      },
-      "id": 1,
       "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "min",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_vorlauftemperatur_celsius",
-          "legendFormat": "Vorlauf",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_ruecklauftemperatur_celsius",
-          "legendFormat": "Rücklauf",
-          "refId": "B"
-        },
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_aussentemperatur_celsius",
-          "legendFormat": "Außentemperatur",
-          "refId": "C"
-        },
-        {
-          "expr": "heatpump_calculated_vorlauf_ruecklauf_spread_celsius",
-          "legendFormat": "Spread (VL-RL)",
-          "refId": "D"
-        }
-      ],
-      "title": "Vorlauf / Rücklauf / Außentemperatur",
-      "type": "timeseries"
+        "mode": "markdown",
+        "content": "**Device-reported VD accounting, calculated period values — not whole-system metering.** VD means compressor-related device accounting; pumps, fans, controls, standby and NHZ electricity are not verified. A value may cover only the continuous observed prefix shown on its card. Missing/stale data and gaps are unavailable, never zero. Use the native time picker for a day or calendar month; no unsupported annual comparisons. [Today](/d/heatpump-overview?from=now/d&to=now) · [Yesterday](/d/heatpump-overview?from=now-1d/d&to=now/d) · [This month](/d/heatpump-overview?from=now/M&to=now) · [Previous month](/d/heatpump-overview?from=now-1M/M&to=now/M)"
+      }
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Temperatur (°C)",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "celsius"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Warmwasser IST"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Warmwasser SOLL"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "yellow",
-                  "mode": "fixed"
-                }
-              },
-              {
-                "id": "custom.lineStyle",
-                "value": {
-                  "fill": "dash",
-                  "dash": [
-                    10,
-                    10
-                  ]
-                }
-              }
-            ]
-          }
-        ]
-      },
+      "id": 40,
+      "type": "stat",
+      "title": "Heating · VD electricity",
+      "description": "MWh counter differences × 1000; VD electricity, not NHZ electricity. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
       "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 1
-      },
-      "id": 2,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "min",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_anlage_warmwasser_isttemperatur_celsius",
-          "legendFormat": "Warmwasser IST",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_anlage_warmwasser_solltemperatur_celsius",
-          "legendFormat": "Warmwasser SOLL",
-          "refId": "B"
-        }
-      ],
-      "title": "Warmwasser",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Temperatur (°C)",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "celsius"
-        }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
         "x": 0,
-        "y": 11
+        "y": 5,
+        "w": 8,
+        "h": 3
       },
-      "id": 3,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_anlage_raumtemperatur_isttemperatur_1_celsius",
-          "legendFormat": "Raumtemperatur IST",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_anlage_raumtemperatur_solltemperatur_1_celsius",
-          "legendFormat": "Raumtemperatur SOLL",
-          "refId": "B"
-        },
-        {
-          "expr": "heatpump_anlage_raumtemperatur_taupunkttemperatur_1_celsius",
-          "legendFormat": "Taupunkt",
-          "refId": "C"
-        }
-      ],
-      "title": "Raumtemperatur",
-      "type": "timeseries"
-    },
-    {
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Temperatur (°C)",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "celsius"
-        }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 11
-      },
-      "id": 4,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_verdampfertemperatur_celsius",
-          "legendFormat": "Verdampfer",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_verdichtereintrittstemperatur_celsius",
-          "legendFormat": "Verdichtereintritt",
-          "refId": "B"
-        },
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_heissgastemperatur_celsius",
-          "legendFormat": "Heißgas",
-          "refId": "C"
-        },
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_oelsumpftemperatur_celsius",
-          "legendFormat": "Ölsumpf",
-          "refId": "D"
-        },
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_frostschutztemperatur_celsius",
-          "legendFormat": "Frostschutz",
-          "refId": "E"
-        }
-      ],
-      "title": "Wärmepumpe Temperaturen (Detail)",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 21
-      },
-      "id": 101,
-      "title": "Effizienz & Leistung",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "COP",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 2
-              },
-              {
-                "color": "yellow",
-                "value": 3
-              },
-              {
-                "color": "green",
-                "value": 4
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 0,
-        "y": 22
-      },
-      "id": 5,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "min",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_calculated_cop_heizen_tag",
-          "legendFormat": "COP Heizen (Tag)",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_calculated_cop_warmwasser_tag",
-          "legendFormat": "COP Warmwasser (Tag)",
-          "refId": "B"
-        },
-        {
-          "expr": "heatpump_calculated_cop_heizen_gesamt",
-          "legendFormat": "COP Heizen (Gesamt)",
-          "refId": "C"
-        },
-        {
-          "expr": "heatpump_calculated_cop_warmwasser_gesamt",
-          "legendFormat": "COP Warmwasser (Gesamt)",
-          "refId": "D"
-        }
-      ],
-      "title": "VD-Energieverhältnis (Tag / Lebenszeit)",
-      "description": "Geräte-Wärmemenge / Geräte-Stromenergie für VD, ohne NHZ. Tag seit Tagesreset, Gesamt seit Zählerbeginn; keine JAZ oder belegte Gesamtsystemeffizienz. Einheiten werden vor Division angeglichen. Historische Werte vor Vertragsversion 2 auf Einheiten prüfen.",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "kW",
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "spanNulls": true
-          },
-          "unit": "kwatt"
-        }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 22
-      },
-      "id": 6,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW",
-          "legendFormat": "Inverter Aufnahmeleistung (ISG)",
-          "refId": "A"
-        }
-      ],
-      "title": "Inverterleistung (Geräteangabe)",
-      "description": "Keine belegte gesamte Wärmepumpen-Leistungsaufnahme. V*A entfernt: Phasenzahl, Leistungsfaktor und AC/DC-Grenze unbestätigt.",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 32
-      },
-      "id": 108,
-      "title": "Verbrauchsanalyse",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Device-reported daily electricity counters. No energy-certificate comparison: measurement boundaries are not established.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "kWh / Tag",
-            "lineWidth": 2,
-            "fillOpacity": 30,
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
-            "thresholdsStyle": {
-              "mode": "area"
-            }
-          },
           "unit": "kwatth",
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent",
-                "value": null
-              },
-              {
-                "color": "rgba(255, 152, 48, 0.1)",
-                "value": 20
-              },
-              {
-                "color": "rgba(242, 73, 92, 0.15)",
-                "value": 30
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 0,
-        "y": 33
-      },
-      "id": 23,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh",
-          "legendFormat": "Heizen",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh",
-          "legendFormat": "Warmwasser",
-          "refId": "B"
-        }
-      ],
-      "title": "Täglicher Stromverbrauch",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "VD-Wärme / VD-Strom für Tag bzw. Lebenszeit. Keine Jahresarbeitszahl oder Hersteller-Grenzwerte. NHZ und weitere Hilfsenergie nicht als enthalten bestätigt. Periodenwerte benötigen gleiche Zeitgrenzen und geprüfte Abdeckung.",
-      "fieldConfig": {
-        "defaults": {
-          "decimals": 2,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [{ "color": "blue", "value": null }]
-          },
-          "min": 0
-        }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 6,
-        "x": 12,
-        "y": 33
-      },
-      "id": 24,
-      "options": {
-        "minVizHeight": 75,
-        "minVizWidth": 75,
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": true,
-        "showThresholdMarkers": true,
-        "sizing": "auto"
-      },
-      "targets": [
-        {
-          "expr": "heatpump_calculated_cop_heizen_tag",
-          "legendFormat": "COP Heizen (Tag)",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_calculated_cop_heizen_gesamt",
-          "legendFormat": "COP Heizen (Gesamt)",
-          "refId": "B"
-        }
-      ],
-      "title": "VD-Energieverhältnis Heizen (keine JAZ)",
-      "type": "gauge"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Korrelation zwischen Stromverbrauch und Außentemperatur. Bei milden Temperaturen sollte der Verbrauch niedrig sein. Bleibt er hoch, stimmen die Einstellungen nicht.",
-      "fieldConfig": {
-        "defaults": {
+          "noValue": "Unavailable",
           "color": {
             "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Außentemperatur"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              },
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "unit",
-                "value": "celsius"
-              },
-              {
-                "id": "custom.axisLabel",
-                "value": "Außentemperatur (°C)"
-              },
-              {
-                "id": "custom.fillOpacity",
-                "value": 5
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Stromverbrauch Heizen"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "orange",
-                  "mode": "fixed"
-                }
-              },
-              {
-                "id": "unit",
-                "value": "kwatth"
-              },
-              {
-                "id": "custom.axisLabel",
-                "value": "Stromverbrauch (kWh/Tag)"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Stromverbrauch WW"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              },
-              {
-                "id": "unit",
-                "value": "kwatth"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 0,
-        "y": 43
-      },
-      "id": 26,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh",
-          "legendFormat": "Stromverbrauch Heizen",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh",
-          "legendFormat": "Stromverbrauch WW",
-          "refId": "B"
-        },
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_aussentemperatur_celsius",
-          "legendFormat": "Außentemperatur",
-          "refId": "C"
-        }
-      ],
-      "title": "Stromverbrauch vs. Außentemperatur",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Inverter-Geräteangabe, nicht belegte Gesamtsystemleistung. Elektrische Nacherwärmung, Pumpen, Lüfter und Standby-Abdeckung sind nicht bestätigt.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "kW",
-            "lineWidth": 2,
-            "fillOpacity": 20,
-            "spanNulls": true,
-            "thresholdsStyle": {
-              "mode": "line"
-            }
-          },
-          "unit": "kwatt",
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 8
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Aufnahmeleistung (ISG)"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Leistung berechnet (V*A)"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "yellow",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 43
-      },
-      "id": 27,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_inverter_aufnahmeleistung_kW",
-          "legendFormat": "Inverter-Aufnahmeleistung (ISG)",
-          "refId": "A"
-        }
-      ],
-      "title": "Momentane Inverter-Aufnahmeleistung",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Device-reported electricity counters split by heating and hot water; no building-certificate benchmark.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "unit": "kwatth"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Heizen (Gesamt MWh)"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Warmwasser (Gesamt MWh)"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 9,
-        "x": 0,
-        "y": 53
-      },
-      "id": 28,
-      "options": {
-        "displayLabels": [
-          "name",
-          "value",
-          "percent"
-        ],
-        "legend": {
-          "displayMode": "table",
-          "placement": "right",
-          "values": [
-            "value",
-            "percent"
-          ]
-        },
-        "pieType": "donut",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh * 1000",
-          "legendFormat": "Heizen (Gesamt MWh)",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh * 1000",
-          "legendFormat": "Warmwasser (Gesamt MWh)",
-          "refId": "B"
-        }
-      ],
-      "title": "Heizen vs. Warmwasser Anteil",
-      "type": "piechart"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Betriebstage seit Inbetriebnahme und durchschnittliche Verdichterstarts pro Tag über die gesamte Laufzeit.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
           },
           "thresholds": {
             "mode": "absolute",
@@ -1042,162 +122,88 @@
                 "value": null
               }
             ]
-          }
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
         },
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "Betriebstage"
+              "id": "byFrameRefID",
+              "options": "A"
             },
             "properties": [
               {
-                "id": "decimals",
-                "value": 0
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "⌀ Starts/Tag"
-            },
-            "properties": [
+                "id": "unit",
+                "value": "kwatth"
+              },
               {
-                "id": "decimals",
-                "value": 1
+                "id": "displayName",
+                "value": "Observed value"
               }
             ]
           }
         ]
       },
-      "gridPos": {
-        "h": 10,
-        "w": 3,
-        "x": 9,
-        "y": 53
-      },
-      "id": 30,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "vertical",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value_and_name"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "(time() - $inbetriebnahme_ts) / 86400",
-          "legendFormat": "Betriebstage",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "heatpump_waermepumpe_starts_verdichter / ((time() - $inbetriebnahme_ts) / 86400)",
-          "legendFormat": "⌀ Starts/Tag",
-          "refId": "B"
-        }
-      ],
-      "title": "Betriebsinfo",
-      "type": "stat"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 63
-      },
-      "id": 102,
-      "title": "Energie",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "kWh",
-            "lineWidth": 2,
-            "fillOpacity": 15,
-            "spanNulls": true
-          },
-          "unit": "kwatth"
-        }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 0,
-        "y": 64
-      },
-      "id": 7,
       "options": {
         "legend": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom"
         },
         "tooltip": {
           "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 20,
+          "titleSize": 12
         }
       },
       "targets": [
         {
-          "expr": "heatpump_waermepumpe_waermemenge_vd_heizen_tag_kWh",
-          "legendFormat": "Wärmemenge Heizen (Tag)",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_waermepumpe_waermemenge_vd_warmwasser_tag_kWh",
-          "legendFormat": "Wärmemenge Warmwasser (Tag)",
-          "refId": "B"
-        },
-        {
-          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_heizen_tag_kWh",
-          "legendFormat": "Stromverbrauch Heizen (Tag)",
-          "refId": "C"
-        },
-        {
-          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh",
-          "legendFormat": "Stromverbrauch Warmwasser (Tag)",
-          "refId": "D"
+          "refId": "A",
+          "periodMetric": "heating_electricity",
+          "periodField": "metrics"
         }
-      ],
-      "title": "Energie Tagesverbrauch",
-      "type": "timeseries"
+      ]
     },
     {
+      "id": 41,
+      "type": "stat",
+      "title": "Heating · VD delivered heat",
+      "description": "MWh counter differences × 1000; device heat, not calibrated room-delivered heat. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 8,
+        "y": 5,
+        "w": 8,
+        "h": 3
+      },
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
+          "unit": "kwatth",
+          "noValue": "Unavailable",
           "color": {
             "mode": "palette-classic"
           },
@@ -1205,1211 +211,2737 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "blue",
                 "value": null
               }
             ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatth"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed value"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 20,
+          "titleSize": 12
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "heating_heat",
+          "periodField": "metrics"
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "type": "stat",
+      "title": "Heating · period efficiency",
+      "description": "Matching-period VD heat / VD electricity; not instantaneous COP, annual efficiency or JAZ. NHZ heat excluded; zero input is unavailable. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 16,
+        "y": 5,
+        "w": 8,
+        "h": 3
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: kWh/kWh",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "suffix: kWh/kWh"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed value"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 20,
+          "titleSize": 12
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "heating_ratio",
+          "periodField": "metrics"
+        }
+      ]
+    },
+    {
+      "id": 140,
+      "type": "stat",
+      "title": "Coverage · Heating · VD electricity",
+      "description": "Required context for the value immediately above. MWh counter differences × 1000; VD electricity, not NHZ electricity. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 8,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "displayName",
+                "value": "Covered duration"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "displayName",
+                "value": "Selected period"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Observed prefix only"
+                      },
+                      "1": {
+                        "text": "Full period"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed through"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 14,
+          "titleSize": 11
+        }
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "periodMetric": "heating_electricity",
+          "periodField": "coverage"
+        },
+        {
+          "refId": "C",
+          "periodMetric": "heating_electricity",
+          "periodField": "complete"
+        },
+        {
+          "refId": "D",
+          "periodMetric": "heating_electricity",
+          "periodField": "observed_until"
+        }
+      ]
+    },
+    {
+      "id": 141,
+      "type": "stat",
+      "title": "Coverage · Heating · VD delivered heat",
+      "description": "Required context for the value immediately above. MWh counter differences × 1000; device heat, not calibrated room-delivered heat. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 8,
+        "y": 8,
+        "w": 8,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "displayName",
+                "value": "Covered duration"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "displayName",
+                "value": "Selected period"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Observed prefix only"
+                      },
+                      "1": {
+                        "text": "Full period"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed through"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 14,
+          "titleSize": 11
+        }
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "periodMetric": "heating_heat",
+          "periodField": "coverage"
+        },
+        {
+          "refId": "C",
+          "periodMetric": "heating_heat",
+          "periodField": "complete"
+        },
+        {
+          "refId": "D",
+          "periodMetric": "heating_heat",
+          "periodField": "observed_until"
+        }
+      ]
+    },
+    {
+      "id": 142,
+      "type": "stat",
+      "title": "Coverage · Heating · period efficiency",
+      "description": "Required context for the value immediately above. Matching-period VD heat / VD electricity; not instantaneous COP, annual efficiency or JAZ. NHZ heat excluded; zero input is unavailable. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 16,
+        "y": 8,
+        "w": 8,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: kWh/kWh",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "displayName",
+                "value": "Covered duration"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "displayName",
+                "value": "Selected period"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Observed prefix only"
+                      },
+                      "1": {
+                        "text": "Full period"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed through"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 14,
+          "titleSize": 11
+        }
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "periodMetric": "heating_ratio",
+          "periodField": "coverage"
+        },
+        {
+          "refId": "C",
+          "periodMetric": "heating_ratio",
+          "periodField": "complete"
+        },
+        {
+          "refId": "D",
+          "periodMetric": "heating_ratio",
+          "periodField": "observed_until"
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "type": "stat",
+      "title": "Hot water · VD electricity",
+      "description": "Separate water-purpose VD electricity, not verified whole-system input. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 8,
+        "h": 3
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatth"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed value"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 20,
+          "titleSize": 12
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "water_electricity",
+          "periodField": "metrics"
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "type": "stat",
+      "title": "Hot water · VD delivered heat",
+      "description": "Separate water-purpose VD heat, not measured useful tap heat. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 8,
+        "y": 12,
+        "w": 8,
+        "h": 3
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatth"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed value"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 20,
+          "titleSize": 12
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "water_heat",
+          "periodField": "metrics"
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "type": "stat",
+      "title": "Hot water · period efficiency",
+      "description": "Matching-period water VD heat / water VD electricity. No daily-ratio averaging; zero input is unavailable. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 16,
+        "y": 12,
+        "w": 8,
+        "h": 3
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: kWh/kWh",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "suffix: kWh/kWh"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed value"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 20,
+          "titleSize": 12
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "water_ratio",
+          "periodField": "metrics"
+        }
+      ]
+    },
+    {
+      "id": 143,
+      "type": "stat",
+      "title": "Coverage · Hot water · VD electricity",
+      "description": "Required context for the value immediately above. Separate water-purpose VD electricity, not verified whole-system input. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 0,
+        "y": 15,
+        "w": 8,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "displayName",
+                "value": "Covered duration"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "displayName",
+                "value": "Selected period"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Observed prefix only"
+                      },
+                      "1": {
+                        "text": "Full period"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed through"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 14,
+          "titleSize": 11
+        }
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "periodMetric": "water_electricity",
+          "periodField": "coverage"
+        },
+        {
+          "refId": "C",
+          "periodMetric": "water_electricity",
+          "periodField": "complete"
+        },
+        {
+          "refId": "D",
+          "periodMetric": "water_electricity",
+          "periodField": "observed_until"
+        }
+      ]
+    },
+    {
+      "id": 144,
+      "type": "stat",
+      "title": "Coverage · Hot water · VD delivered heat",
+      "description": "Required context for the value immediately above. Separate water-purpose VD heat, not measured useful tap heat. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 8,
+        "y": 15,
+        "w": 8,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "displayName",
+                "value": "Covered duration"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "displayName",
+                "value": "Selected period"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Observed prefix only"
+                      },
+                      "1": {
+                        "text": "Full period"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed through"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 14,
+          "titleSize": 11
+        }
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "periodMetric": "water_heat",
+          "periodField": "coverage"
+        },
+        {
+          "refId": "C",
+          "periodMetric": "water_heat",
+          "periodField": "complete"
+        },
+        {
+          "refId": "D",
+          "periodMetric": "water_heat",
+          "periodField": "observed_until"
+        }
+      ]
+    },
+    {
+      "id": 145,
+      "type": "stat",
+      "title": "Coverage · Hot water · period efficiency",
+      "description": "Required context for the value immediately above. Matching-period water VD heat / water VD electricity. No daily-ratio averaging; zero input is unavailable. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 16,
+        "y": 15,
+        "w": 8,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: kWh/kWh",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "displayName",
+                "value": "Covered duration"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "displayName",
+                "value": "Selected period"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Observed prefix only"
+                      },
+                      "1": {
+                        "text": "Full period"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed through"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 14,
+          "titleSize": 11
+        }
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "periodMetric": "water_ratio",
+          "periodField": "coverage"
+        },
+        {
+          "refId": "C",
+          "periodMetric": "water_ratio",
+          "periodField": "complete"
+        },
+        {
+          "refId": "D",
+          "periodMetric": "water_ratio",
+          "periodField": "observed_until"
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "type": "stat",
+      "title": "Heating · separate NHZ heat",
+      "description": "Verified source distinction: NHZ auxiliary heat only, not auxiliary electricity. A observed zero is valid; missing is not zero. Never added only to the VD ratio numerator. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 0,
+        "y": 19,
+        "w": 8,
+        "h": 3
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatth"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed value"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 20,
+          "titleSize": 12
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "heating_aux_heat",
+          "periodField": "metrics"
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "type": "stat",
+      "title": "Hot water · separate NHZ heat",
+      "description": "NHZ auxiliary heat only, not electrical contribution. Zero is valid only with accepted observations; missing heat is unavailable. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 8,
+        "y": 19,
+        "w": 8,
+        "h": 3
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatth"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed value"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 20,
+          "titleSize": 12
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "water_aux_heat",
+          "periodField": "metrics"
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "type": "stat",
+      "title": "VD grid-tariff reference cost",
+      "description": "Estimated VD electricity valued at date-effective household grid tariffs. Reference, NOT actual attributed spending during solar/battery supply. Excludes fixed charges and restricted credits; efficiency remains separate. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 16,
+        "y": 19,
+        "w": 8,
+        "h": 3
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "configured_currency",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Observed value"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 20,
+          "titleSize": 12
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "heatpump_reference_cost",
+          "periodField": "metrics"
+        }
+      ]
+    },
+    {
+      "id": 146,
+      "type": "stat",
+      "title": "Coverage · Heating · separate NHZ heat",
+      "description": "Required context for the value immediately above. Verified source distinction: NHZ auxiliary heat only, not auxiliary electricity. A observed zero is valid; missing is not zero. Never added only to the VD ratio numerator. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 0,
+        "y": 22,
+        "w": 8,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "displayName",
+                "value": "Covered duration"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "displayName",
+                "value": "Selected period"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Observed prefix only"
+                      },
+                      "1": {
+                        "text": "Full period"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed through"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 14,
+          "titleSize": 11
+        }
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "periodMetric": "heating_aux_heat",
+          "periodField": "coverage"
+        },
+        {
+          "refId": "C",
+          "periodMetric": "heating_aux_heat",
+          "periodField": "complete"
+        },
+        {
+          "refId": "D",
+          "periodMetric": "heating_aux_heat",
+          "periodField": "observed_until"
+        }
+      ]
+    },
+    {
+      "id": 147,
+      "type": "stat",
+      "title": "Coverage · Hot water · separate NHZ heat",
+      "description": "Required context for the value immediately above. NHZ auxiliary heat only, not electrical contribution. Zero is valid only with accepted observations; missing heat is unavailable. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 8,
+        "y": 22,
+        "w": 8,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "displayName",
+                "value": "Covered duration"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "displayName",
+                "value": "Selected period"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Observed prefix only"
+                      },
+                      "1": {
+                        "text": "Full period"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed through"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 14,
+          "titleSize": 11
+        }
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "periodMetric": "water_aux_heat",
+          "periodField": "coverage"
+        },
+        {
+          "refId": "C",
+          "periodMetric": "water_aux_heat",
+          "periodField": "complete"
+        },
+        {
+          "refId": "D",
+          "periodMetric": "water_aux_heat",
+          "periodField": "observed_until"
+        }
+      ]
+    },
+    {
+      "id": 148,
+      "type": "stat",
+      "title": "Coverage · VD grid-tariff reference cost",
+      "description": "Required context for the value immediately above. Estimated VD electricity valued at date-effective household grid tariffs. Reference, NOT actual attributed spending during solar/battery supply. Excludes fixed charges and restricted credits; efficiency remains separate. Selected local period; calculated from device-reported VD/NHZ counters at nominal 60-second interval recording resolution. No extrapolation or billing-grade claim. Coverage may describe only the left dependency: an unavailable combined value stays unavailable even if coverage is present.",
+      "gridPos": {
+        "x": 16,
+        "y": 22,
+        "w": 8,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "configured_currency",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          },
+          "decimals": 2,
+          "links": [
+            {
+              "title": "Inspect device & collection health",
+              "url": "/d/heatpump-diagnostics?from=${__from}&to=${__to}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "displayName",
+                "value": "Covered duration"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "displayName",
+                "value": "Selected period"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "Observed prefix only"
+                      },
+                      "1": {
+                        "text": "Full period"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              },
+              {
+                "id": "displayName",
+                "value": "Observed through"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "E"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "displayName",
+                "value": "Tariff confidence"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "Confirmed"
+                      },
+                      "2": {
+                        "text": "Provisional"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "text": {
+          "valueSize": 14,
+          "titleSize": 11
+        }
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "periodMetric": "heatpump_reference_cost",
+          "periodField": "coverage"
+        },
+        {
+          "refId": "C",
+          "periodMetric": "heatpump_reference_cost",
+          "periodField": "complete"
+        },
+        {
+          "refId": "D",
+          "periodMetric": "heatpump_reference_cost",
+          "periodField": "observed_until"
+        },
+        {
+          "refId": "E",
+          "periodMetric": "heatpump_reference_cost",
+          "periodField": "price_status"
+        }
+      ]
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false
           }
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 64
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
       },
-      "id": 8,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "vertical",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "expr": "heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh",
-          "legendFormat": "Wärmemenge Heizen (MWh)",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh",
-          "legendFormat": "Wärmemenge Warmwasser (MWh)",
-          "refId": "B"
-        },
-        {
-          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh",
-          "legendFormat": "Stromverbrauch Heizen (MWh)",
-          "refId": "C"
-        },
-        {
-          "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh",
-          "legendFormat": "Stromverbrauch Warmwasser (MWh)",
-          "refId": "D"
-        },
-        {
-          "expr": "heatpump_waermepumpe_waermemenge_nhz_heizen_summe_MWh",
-          "legendFormat": "NHZ Heizen (MWh)",
-          "refId": "E"
-        },
-        {
-          "expr": "heatpump_waermepumpe_waermemenge_nhz_warmwasser_summe_MWh",
-          "legendFormat": "NHZ Warmwasser (MWh)",
-          "refId": "F"
-        }
-      ],
-      "title": "Energie Gesamtbilanz",
-      "type": "stat"
-    },
-    {
-      "collapsed": false,
+      "id": 70,
+      "title": "Daily VD electricity · completed local days",
+      "type": "barchart",
       "gridPos": {
-        "h": 1,
-        "w": 24,
         "x": 0,
-        "y": 74
-      },
-      "id": 103,
-      "title": "Verdichter & Druck",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Hz",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "hertz"
-        }
-      },
-      "gridPos": {
-        "h": 10,
+        "y": 26,
         "w": 12,
-        "x": 0,
-        "y": 75
+        "h": 8
       },
-      "id": 9,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
+      "description": "Calculated device VD counter differences, kWh per COMPLETE local day. Heating and hot-water purposes stay separate. DST days use actual local boundaries, not 24-hour assumptions. Current/partial selected days and missing/stale/reset days are omitted, never zero; select up to 31 elapsed days. Today’s observed energy is on the cards above. Outdoor conditions are adjacent context, not weather normalization or causal proof.",
       "targets": [
         {
-          "expr": "heatpump_waermepumpe_prozessdaten_istdrehzahl_verdichter_hertz",
-          "legendFormat": "Verdichter IST",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_solldrehzahl_verdichter_hertz",
-          "legendFormat": "Verdichter SOLL",
-          "refId": "B"
-        },
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_istdrehzahl_luefter_hertz",
-          "legendFormat": "Lüfter IST",
-          "refId": "C"
-        },
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_solldrehzahl_luefter_hertz",
-          "legendFormat": "Lüfter SOLL",
-          "refId": "D"
-        }
-      ],
-      "title": "Verdichter & Lüfter Drehzahl",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "bar",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "pressurembar"
-        }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 75
-      },
-      "id": 10,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "min",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_druck_niederdruck_bar",
-          "legendFormat": "Niederdruck",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_druck_hochdruck_bar",
-          "legendFormat": "Hochdruck",
-          "refId": "B"
-        }
-      ],
-      "title": "Kältekreis Drücke",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 85
-      },
-      "id": 107,
-      "title": "Taktung & Verdichter Health",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Starts / Stunde",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true,
-            "thresholdsStyle": {
-              "mode": "area"
-            }
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent",
-                "value": null
-              },
-              {
-                "color": "rgba(255, 152, 48, 0.1)",
-                "value": 4
-              },
-              {
-                "color": "rgba(242, 73, 92, 0.15)",
-                "value": 8
-              }
-            ]
-          },
-          "min": 0
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Starts / Stunde"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 0,
-        "y": 86
-      },
-      "id": 17,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "increase(heatpump_waermepumpe_starts_verdichter[1h])",
-          "legendFormat": "Starts / Stunde",
-          "refId": "A"
-        }
-      ],
-      "title": "Starts pro Stunde",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 25
-              },
-              {
-                "color": "orange",
-                "value": 50
-              },
-              {
-                "color": "red",
-                "value": 100
-              }
-            ]
-          }
-        }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 4,
-        "x": 12,
-        "y": 86
-      },
-      "id": 18,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value_and_name"
-      },
-      "targets": [
-        {
-          "expr": "increase(heatpump_waermepumpe_starts_verdichter[24h])",
-          "legendFormat": "Starts / Tag",
-          "refId": "A"
-        }
-      ],
-      "title": "Starts pro Tag",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Durchschnittliche Verdichterlaufzeit pro Start (letzte 24h). Optimal: >15 min, Kritisch: <5 min (Ölrücklauf benötigt 5-10 min).",
-      "fieldConfig": {
-        "defaults": {
-          "unit": "m",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 5
-              },
-              {
-                "color": "green",
-                "value": 15
-              }
-            ]
-          }
-        }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 4,
-        "x": 16,
-        "y": 86
-      },
-      "id": 19,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value_and_name"
-      },
-      "targets": [
-        {
-          "expr": "(increase(heatpump_waermepumpe_laufzeit_vd_heizen_hours[24h]) + increase(heatpump_waermepumpe_laufzeit_vd_warmwasser_hours[24h])) * 60 / increase(heatpump_waermepumpe_starts_verdichter[24h])",
-          "legendFormat": "Laufzeit / Zyklus",
-          "refId": "A"
-        }
-      ],
-      "title": "Durchschn. Laufzeit pro Zyklus",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Durchschnittliche Verdichterstarts pro Betriebstag seit Inbetriebnahme. Benchmarks: <12 gut, 12-25 akzeptabel, >25 zu viel (Quelle: 42watt.de).",
-      "fieldConfig": {
-        "defaults": {
-          "decimals": 1,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 12
-              },
-              {
-                "color": "red",
-                "value": 25
-              }
-            ]
-          }
-        }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 4,
-        "x": 20,
-        "y": 86
-      },
-      "id": 31,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value_and_name"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "heatpump_waermepumpe_starts_verdichter / ((time() - $inbetriebnahme_ts) / 86400)",
-          "legendFormat": "⌀ Starts/Tag (gesamt)",
-          "refId": "A"
-        }
-      ],
-      "title": "Starts / Betriebstag",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Hochrechnung der jährlichen Verdichterstarts basierend auf den letzten 24h. Designlebensdauer: 100.000-150.000 Starts.",
-      "fieldConfig": {
-        "defaults": {
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 9000
-              },
-              {
-                "color": "red",
-                "value": 15000
-              }
-            ]
-          },
-          "min": 0,
-          "max": 20000
-        }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 0,
-        "y": 96
-      },
-      "id": 20,
-      "options": {
-        "minVizHeight": 75,
-        "minVizWidth": 75,
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": true,
-        "showThresholdMarkers": true,
-        "sizing": "auto"
-      },
-      "targets": [
-        {
-          "expr": "increase(heatpump_waermepumpe_starts_verdichter[24h]) * 365",
-          "legendFormat": "Hochrechnung (24h-Basis)",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "heatpump_waermepumpe_starts_verdichter / ((time() - $inbetriebnahme_ts) / 86400) * 365",
-          "legendFormat": "Hochrechnung (seit Inbetriebnahme)",
-          "refId": "B"
-        }
-      ],
-      "title": "Hochrechnung Starts pro Jahr",
-      "type": "gauge"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Verdichter Ein/Aus Zustand. Kurze Zyklen deuten auf Taktung hin.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "text": "AUS",
-                  "color": "red"
-                },
-                "1": {
-                  "text": "EIN",
-                  "color": "green"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              }
-            ]
-          }
-        }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 96
-      },
-      "id": 21,
-      "options": {
-        "alignValue": "center",
-        "mergeValues": true,
-        "rowHeight": 0.9,
-        "showValue": "auto",
-        "tooltip": {
-          "mode": "single"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_status_anlage_betriebsstatus_verdichter",
-          "legendFormat": "Verdichter",
-          "refId": "A"
-        }
-      ],
-      "title": "Verdichter State Timeline",
-      "type": "state-timeline"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Tägliche Verdichterstarts über 30 Tage. Saisonale Muster: Mehr Starts in der Übergangszeit (Frühling/Herbst).",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "Starts / Tag",
-            "lineWidth": 2,
-            "fillOpacity": 20,
-            "spanNulls": true,
-            "drawStyle": "bars",
-            "barAlignment": 0,
-            "thresholdsStyle": {
-              "mode": "line"
-            }
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 25
-              },
-              {
-                "color": "red",
-                "value": 50
-              }
-            ]
-          },
-          "min": 0
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Starts / Tag"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 24,
-        "x": 0,
-        "y": 106
-      },
-      "id": 22,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "min",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "increase(heatpump_waermepumpe_starts_verdichter[24h])",
-          "legendFormat": "Starts / Tag",
           "refId": "A",
-          "interval": "1d"
+          "calendarMetric": "heating_electricity",
+          "calendarMode": "daily"
+        },
+        {
+          "refId": "B",
+          "calendarMetric": "water_electricity",
+          "calendarMode": "daily"
         }
       ],
-      "timeFrom": "30d",
-      "title": "Starts Trend (30 Tage)",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 116
-      },
-      "id": 104,
-      "title": "Laufzeit & Status",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns",
+            "valueLabel": "quantity"
           }
-        }
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 117
-      },
-      "id": 11,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "targets": [
-        {
-          "expr": "heatpump_waermepumpe_laufzeit_vd_heizen_hours",
-          "legendFormat": "VD Heizen (h)",
-          "refId": "A"
         },
         {
-          "expr": "heatpump_waermepumpe_laufzeit_vd_warmwasser_hours",
-          "legendFormat": "VD Warmwasser (h)",
-          "refId": "B"
-        },
-        {
-          "expr": "heatpump_waermepumpe_laufzeit_vd_abtauen_hours",
-          "legendFormat": "VD Abtauen (h)",
-          "refId": "C"
-        },
-        {
-          "expr": "heatpump_waermepumpe_laufzeit_nhz_1_2_hours",
-          "legendFormat": "NHZ 1/2 (h)",
-          "refId": "D"
-        },
-        {
-          "expr": "heatpump_waermepumpe_starts_verdichter",
-          "legendFormat": "Verdichter Starts",
-          "refId": "E"
-        },
-        {
-          "expr": "heatpump_waermepumpe_laufzeit_starts_abtauen",
-          "legendFormat": "Abtauen Starts",
-          "refId": "F"
-        }
-      ],
-      "title": "Laufzeit & Starts",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "text": "AUS",
-                  "color": "red"
-                },
-                "1": {
-                  "text": "EIN",
-                  "color": "green"
-                }
-              },
-              "type": "value"
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "day": 0
+            },
+            "renameByName": {
+              "heating_electricity": "Heating VD",
+              "water_electricity": "Hot-water VD"
             }
-          ],
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "day",
+                "destinationType": "time",
+                "dateFormat": "X"
+              }
+            ],
+            "fields": {}
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "day",
+                "desc": false
+              }
+            ]
+          }
+        },
+        {
+          "id": "formatTime",
+          "options": {
+            "timeField": "day",
+            "outputFormat": "YYYY-MM-DD",
+            "timezone": "browser"
+          }
+        }
+      ],
+      "options": {
+        "xField": "day",
+        "orientation": "vertical",
+        "stacking": "none",
+        "groupWidth": 0.7,
+        "barWidth": 0.9,
+        "showValue": "never",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "xTickLabelRotation": -30
+      }
+    },
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Outdoor, flow & return conditions",
+      "description": "Device-reported sensor/control-zone context, freshness-gated per field and endpoint. Gaps are not joined. Room sensor is not whole-house comfort; tank temperature is not tap temperature. Weather context is not weather normalization or evidence that a setting caused improvement.",
+      "gridPos": {
+        "x": 12,
+        "y": 26,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
+                "color": "blue",
                 "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
               }
             ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
           }
-        }
+        },
+        "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 117
-      },
-      "id": 12,
       "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "horizontal",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
-          "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name"
       },
       "targets": [
         {
-          "expr": "heatpump_status_anlage_betriebsstatus_verdichter",
-          "legendFormat": "Verdichter",
-          "refId": "A"
+          "refId": "A",
+          "expr": "(heatpump_waermepumpe_prozessdaten_vorlauftemperatur_celsius) and on() (count(heatpump_waermepumpe_prozessdaten_vorlauftemperatur_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.vorlauftemperatur\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.vorlauftemperatur\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.vorlauftemperatur\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_vorlauftemperatur_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.vorlauftemperatur\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.vorlauftemperatur\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.vorlauftemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_vorlauftemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.vorlauftemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_vorlauftemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_vorlauftemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_vorlauftemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_vorlauftemperatur_celsius))) <= 2)",
+          "legendFormat": "Vorlauf",
+          "instant": false,
+          "range": true,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "heatpump_status_anlage_betriebsstatus_heizen",
-          "legendFormat": "Heizen",
-          "refId": "B"
+          "refId": "B",
+          "expr": "(heatpump_waermepumpe_prozessdaten_ruecklauftemperatur_celsius) and on() (count(heatpump_waermepumpe_prozessdaten_ruecklauftemperatur_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.ruecklauftemperatur\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.ruecklauftemperatur\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.ruecklauftemperatur\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_ruecklauftemperatur_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.ruecklauftemperatur\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.ruecklauftemperatur\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.ruecklauftemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_ruecklauftemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.ruecklauftemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_ruecklauftemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_ruecklauftemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_ruecklauftemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_ruecklauftemperatur_celsius))) <= 2)",
+          "legendFormat": "Rücklauf",
+          "instant": false,
+          "range": true,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "heatpump_status_anlage_betriebsstatus_heizkreis_1_pumpe",
-          "legendFormat": "Heizkreis 1 Pumpe",
-          "refId": "C"
+          "refId": "C",
+          "expr": "(heatpump_waermepumpe_prozessdaten_aussentemperatur_celsius) and on() (count(heatpump_waermepumpe_prozessdaten_aussentemperatur_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.aussentemperatur\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.aussentemperatur\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.aussentemperatur\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_prozessdaten_aussentemperatur_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.aussentemperatur\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.aussentemperatur\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.prozessdaten.aussentemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_aussentemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.prozessdaten.aussentemperatur\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_aussentemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_aussentemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_prozessdaten_aussentemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_prozessdaten_aussentemperatur_celsius))) <= 2)",
+          "legendFormat": "Außentemperatur",
+          "instant": false,
+          "range": true,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "heatpump_status_anlage_status_anlage_pufferladepumpe_1",
-          "legendFormat": "Pufferladepumpe 1",
-          "refId": "D"
-        }
-      ],
-      "title": "Betriebsstatus",
-      "type": "stat"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 125
-      },
-      "id": 105,
-      "title": "Hydraulik & Elektrik",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
+          "refId": "D",
+          "expr": "(heatpump_calculated_vorlauf_ruecklauf_spread_celsius) and on() (count(heatpump_calculated_vorlauf_ruecklauf_spread_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.calculated.vorlauf_ruecklauf_spread\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.vorlauf_ruecklauf_spread\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.calculated.vorlauf_ruecklauf_spread\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_calculated_vorlauf_ruecklauf_spread_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.vorlauf_ruecklauf_spread\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.vorlauf_ruecklauf_spread\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.calculated.vorlauf_ruecklauf_spread\"})) - sum(timestamp(heatpump_calculated_vorlauf_ruecklauf_spread_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.calculated.vorlauf_ruecklauf_spread\"})) - sum(timestamp(heatpump_calculated_vorlauf_ruecklauf_spread_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_calculated_vorlauf_ruecklauf_spread_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_calculated_vorlauf_ruecklauf_spread_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_calculated_vorlauf_ruecklauf_spread_celsius))) <= 2)",
+          "legendFormat": "Spread (VL-RL)",
+          "instant": false,
+          "range": true,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
           }
         }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 0,
-        "y": 126
-      },
-      "id": 13,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_wp_wasservolumenstrom_l_per_min",
-          "legendFormat": "Volumenstrom (l/min)",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_anlage_heizung_heizungsdruck_bar",
-          "legendFormat": "Heizungsdruck (bar)",
-          "refId": "B"
-        }
-      ],
-      "title": "Hydraulik",
-      "type": "timeseries"
+      ]
     },
     {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Room · actual & target",
+      "description": "Device-reported sensor/control-zone context, freshness-gated per field and endpoint. Gaps are not joined. Room sensor is not whole-house comfort; tank temperature is not tap temperature. Weather context is not weather normalization or evidence that a setting caused improvement.",
+      "gridPos": {
+        "x": 0,
+        "y": 34,
+        "w": 12,
+        "h": 8
+      },
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
+          "unit": "celsius",
+          "noValue": "Unavailable",
           "color": {
             "mode": "palette-classic"
           },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
           "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
+            "spanNulls": false,
+            "axisCenteredZero": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius) and on() (count(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.isttemperatur_1\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.isttemperatur_1\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.isttemperatur_1\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) <= 86400) and on() (abs(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.isttemperatur_1\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.isttemperatur_1\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.isttemperatur_1\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.isttemperatur_1\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_anlage_raumtemperatur_isttemperatur_1_celsius))) <= 2)",
+          "legendFormat": "Raumtemperatur IST",
+          "instant": false,
+          "range": true,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        },
+        {
+          "refId": "B",
+          "expr": "(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius) and on() (count(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.solltemperatur_1\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.solltemperatur_1\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.solltemperatur_1\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) <= 86400) and on() (abs(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.solltemperatur_1\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.solltemperatur_1\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.anlage.raumtemperatur.solltemperatur_1\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.raumtemperatur.solltemperatur_1\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_anlage_raumtemperatur_solltemperatur_1_celsius))) <= 2)",
+          "legendFormat": "Raumtemperatur SOLL",
+          "instant": false,
+          "range": true,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
           }
         }
-      },
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Hot water · actual & target",
+      "description": "Device-reported sensor/control-zone context, freshness-gated per field and endpoint. Gaps are not joined. Room sensor is not whole-house comfort; tank temperature is not tap temperature. Weather context is not weather normalization or evidence that a setting caused improvement.",
       "gridPos": {
-        "h": 10,
-        "w": 12,
         "x": 12,
-        "y": 126
+        "y": 34,
+        "w": 12,
+        "h": 8
       },
-      "id": 14,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          }
+        },
+        "overrides": []
+      },
       "options": {
         "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom"
         },
         "tooltip": {
           "mode": "multi"
-        }
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name"
       },
       "targets": [
         {
-          "expr": "heatpump_waermepumpe_prozessdaten_strom_inverter_amperes",
-          "legendFormat": "Strom Inverter (A)",
-          "refId": "A"
+          "refId": "A",
+          "expr": "(heatpump_anlage_warmwasser_isttemperatur_celsius) and on() (count(heatpump_anlage_warmwasser_isttemperatur_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.anlage.warmwasser.isttemperatur\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.warmwasser.isttemperatur\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.anlage.warmwasser.isttemperatur\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) <= 86400) and on() (abs(heatpump_anlage_warmwasser_isttemperatur_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.warmwasser.isttemperatur\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.warmwasser.isttemperatur\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.anlage.warmwasser.isttemperatur\"})) - sum(timestamp(heatpump_anlage_warmwasser_isttemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.warmwasser.isttemperatur\"})) - sum(timestamp(heatpump_anlage_warmwasser_isttemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_warmwasser_isttemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_warmwasser_isttemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_anlage_warmwasser_isttemperatur_celsius))) <= 2)",
+          "legendFormat": "Warmwasser IST",
+          "instant": false,
+          "range": true,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "heatpump_waermepumpe_prozessdaten_spannung_inverter_volts",
-          "legendFormat": "Spannung Inverter (V)",
-          "refId": "B"
-        },
-        {
-          "expr": "heatpump_waermepumpe_prozessdaten_luefterleistung_rel_percent",
-          "legendFormat": "Lüfterleistung (%)",
-          "refId": "C"
+          "refId": "B",
+          "expr": "(heatpump_anlage_warmwasser_solltemperatur_celsius) and on() (count(heatpump_anlage_warmwasser_solltemperatur_celsius) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.anlage.warmwasser.solltemperatur\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.warmwasser.solltemperatur\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.anlage.warmwasser.solltemperatur\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"}) <= 86400) and on() (abs(heatpump_anlage_warmwasser_solltemperatur_celsius) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.warmwasser.solltemperatur\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.warmwasser.solltemperatur\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.anlage.warmwasser.solltemperatur\"})) - sum(timestamp(heatpump_anlage_warmwasser_solltemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.anlage.warmwasser.solltemperatur\"})) - sum(timestamp(heatpump_anlage_warmwasser_solltemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_warmwasser_solltemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"anlage\"})) - sum(timestamp(heatpump_anlage_warmwasser_solltemperatur_celsius))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_anlage_warmwasser_solltemperatur_celsius))) <= 2)",
+          "legendFormat": "Warmwasser SOLL",
+          "instant": false,
+          "range": true,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
-      ],
-      "title": "Elektrik & Lüfter",
-      "type": "timeseries"
+      ]
     },
     {
-      "collapsed": false,
+      "id": 60,
+      "type": "stat",
+      "title": "Cycling · observed starts (sampled span)",
+      "description": "Calculated last-minus-first device starts over accepted one-minute query samples inside the selected range, not exact on/off cycles or extrapolated full-period starts. A reset, missing minute, stale field or absent state withholds. First/last sampling can omit boundary activity (up to one minute). Zero observed starts is legitimate. No manufacturer limits or lifetime/annual projections. Inspect raw starts, runtimes and optional state in diagnostics.",
       "gridPos": {
-        "h": 1,
+        "x": 0,
+        "y": 42,
+        "w": 8,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(last_over_time(((heatpump_waermepumpe_starts_verdichter) and on() (count(heatpump_waermepumpe_starts_verdichter) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_starts_verdichter) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2))[${__range_s}s:60s]) - min_over_time(((heatpump_waermepumpe_starts_verdichter) and on() (count(heatpump_waermepumpe_starts_verdichter) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_starts_verdichter) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2))[${__range_s}s:60s])) and (resets(((heatpump_waermepumpe_starts_verdichter) and on() (count(heatpump_waermepumpe_starts_verdichter) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_starts_verdichter) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2))[${__range_s}s:60s]) == 0) and (count_over_time(((heatpump_waermepumpe_starts_verdichter) and on() (count(heatpump_waermepumpe_starts_verdichter) == 1) and on() (count(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (count(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (count(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) == 1) and on() (count(smarthome_measurement_contract_version) == 1) and on() (sum(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"}) == 1) and on() (sum(smarthome_measurement_contract_version) == 2) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) > 0) and on() (sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"}) <= 86400) and on() (abs(heatpump_waermepumpe_starts_verdichter) < Inf) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) >= 0) and on() (time() - sum(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) >= 0) and on() (time() - sum(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"}) < sum(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) and on() (abs(sum(timestamp(smarthome_measurement_present{metric=\"heatpump.waermepumpe.starts.verdichter\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_last_success_seconds{metric=\"heatpump.waermepumpe.starts.verdichter\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_last_success_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_collection_stale_after_seconds{collector=\"isg\",source=\"waermepumpe\"})) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2) and on() (abs(sum(timestamp(smarthome_measurement_contract_version)) - sum(timestamp(heatpump_waermepumpe_starts_verdichter))) <= 2))[${__range_s}s:60s]) >= (${__range_s} / 60))",
+          "legendFormat": "Observed starts",
+          "instant": true,
+          "range": false,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ]
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "id": 71,
+      "title": "Equivalent MTD · VD electricity",
+      "type": "stat",
+      "gridPos": {
+        "x": 8,
+        "y": 42,
+        "w": 8,
+        "h": 7
+      },
+      "description": "Calculated matching VD equipment boundary. Available only for a local month-start selection; compares equal elapsed current/prior-month windows capped to the shorter month. BOTH windows require complete valid history, otherwise unavailable. Main requested headlines are not shortened. Not an annual comparison or daily-ratio average. Weather, comfort targets and occupancy confound unadjusted consumption comparisons; no causal improvement is claimed. Comparison duration: ${cal_compare_seconds} seconds per window.",
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "heatpump_electricity",
+          "calendarMode": "current",
+          "legendFormat": "Current comparable window"
+        },
+        {
+          "refId": "B",
+          "calendarMetric": "heatpump_electricity",
+          "calendarMode": "previous",
+          "legendFormat": "Previous comparable window"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "vertical",
+        "text": {
+          "valueSize": 20,
+          "titleSize": 12
+        }
+      }
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: kWh/kWh",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "id": 72,
+      "title": "Equivalent MTD · VD efficiency",
+      "type": "stat",
+      "gridPos": {
+        "x": 16,
+        "y": 42,
+        "w": 8,
+        "h": 7
+      },
+      "description": "Calculated matching VD equipment boundary. Available only for a local month-start selection; compares equal elapsed current/prior-month windows capped to the shorter month. BOTH windows require complete valid history, otherwise unavailable. Main requested headlines are not shortened. Not an annual comparison or daily-ratio average. Weather, comfort targets and occupancy confound unadjusted consumption comparisons; no causal improvement is claimed. Comparison duration: ${cal_compare_seconds} seconds per window.",
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "heatpump_ratio",
+          "calendarMode": "current",
+          "legendFormat": "Current comparable window"
+        },
+        {
+          "refId": "B",
+          "calendarMetric": "heatpump_ratio",
+          "calendarMode": "previous",
+          "legendFormat": "Previous comparable window"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "vertical",
+        "text": {
+          "valueSize": 20,
+          "titleSize": 12
+        }
+      }
+    },
+    {
+      "id": 901,
+      "type": "text",
+      "title": "Comfort notes & comparisons",
+      "gridPos": {
+        "x": 0,
+        "y": 49,
         "w": 24,
-        "x": 0,
-        "y": 136
+        "h": 7
       },
-      "id": 106,
-      "title": "Raumklima",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "%",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "humidity"
-        }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 0,
-        "y": 137
-      },
-      "id": 15,
       "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "min",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_anlage_raumtemperatur_raumfeuchte_1_percent",
-          "legendFormat": "Raumfeuchte",
-          "refId": "A"
-        }
-      ],
-      "title": "Raumfeuchte",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "°C",
-            "lineWidth": 2,
-            "fillOpacity": 10,
-            "spanNulls": true
-          },
-          "unit": "celsius"
-        }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 137
-      },
-      "id": 16,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "targets": [
-        {
-          "expr": "heatpump_anlage_heizung_isttemperatur_hk_1_celsius",
-          "legendFormat": "Heizkreis 1 IST",
-          "refId": "A"
-        },
-        {
-          "expr": "heatpump_anlage_heizung_solltemperatur_hk_1_celsius",
-          "legendFormat": "Heizkreis 1 SOLL",
-          "refId": "B"
-        },
-        {
-          "expr": "heatpump_anlage_heizung_vorlaufisttemperatur_wp_celsius",
-          "legendFormat": "Vorlauf IST (WP)",
-          "refId": "C"
-        },
-        {
-          "expr": "heatpump_anlage_heizung_ruecklaufisttemperatur_wp_celsius",
-          "legendFormat": "Rücklauf IST (WP)",
-          "refId": "D"
-        }
-      ],
-      "title": "Heizkreis Details",
-      "type": "timeseries"
+        "mode": "markdown",
+        "content": "**Notes are optional.** With Grafana annotation-write permission, Ctrl/Cmd-click a timeseries (or drag a time range) → Add annotation. Record a setting or comfort observation and optional `settings` / `comfort` tags; do not copy private notes into tickets or screenshots. Toggle “Settings & comfort notes” to hide/show. Native notes belong to this dashboard; offline notes are equally acceptable. No control commands or annotation service.\n\nCompare consumption with outdoor conditions and room/water targets, not consumption alone. A colder or shorter period is not evidence of a setting effect. Use equivalent elapsed calendar periods only; missing history cannot support annual comparisons. Daily bars show only complete local days (current/partial days are absent, not zero). For the comparison cards, select This month or a month-start-to-date interval: both windows use the shorter equivalent elapsed duration and require complete valid history. Non-month selections or missing prior history are unavailable. The main headlines retain your whole selection. No supported annual comparison is claimed."
+      }
     }
   ],
-  "schemaVersion": 39,
-  "tags": [
-    "smarthome",
-    "heatpump",
-    "stiebel-eltron"
-  ],
-  "templating": {
-    "list": [
-      {
-        "current": {
-          "text": "NaN",
-          "value": "NaN"
-        },
-        "description": "Optional private installation input; unavailable until privately provisioned.",
-        "hide": 2,
-        "label": "Wohnfläche (m²)",
-        "name": "wohnflaeche",
-        "options": [
-          {
-            "text": "NaN",
-            "value": "NaN",
-            "selected": true
-          }
-        ],
-        "query": "NaN",
-        "skipUrlSync": false,
-        "type": "constant"
-      },
-      {
-        "current": {
-          "text": "NaN",
-          "value": "NaN"
-        },
-        "description": "Optional private installation input; unavailable until privately provisioned.",
-        "hide": 2,
-        "label": "Inbetriebnahme",
-        "name": "inbetriebnahme_ts",
-        "options": [
-          {
-            "text": "NaN",
-            "value": "NaN",
-            "selected": true
-          }
-        ],
-        "query": "NaN",
-        "skipUrlSync": true,
-        "type": "constant"
-      }
-    ]
-  },
-  "time": {
-    "from": "now-24h",
-    "to": "now"
-  },
-  "timepicker": {
-    "refresh_intervals": [
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "6h",
-      "12h",
-      "1d"
-    ]
-  },
-  "timezone": "browser",
-  "title": "Wärmepumpe - Stiebel Eltron",
-  "uid": "heatpump-overview",
-  "version": 1
+  "homeNavigation": true
 }

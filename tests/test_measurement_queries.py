@@ -94,8 +94,8 @@ class MeasurementQueryTests(unittest.TestCase):
         panel = next(p for p in dashboard['panels'] if p['id'] == 23)
         self.assertEqual([self.query(t['expr'], start) for t in panel['targets']], [[300], [0]])
         self.assertEqual([self.query(t['expr'], start + 60) for t in panel['targets']], [[0], [400]])
-        heating = json.loads(Path('grafana/provisioning/dashboards/heatpump.json').read_text())
-        panel = next(p for p in heating['panels'] if p['id'] == 24)
+        heating = json.loads(Path('grafana/provisioning/dashboards/heatpump-diagnostics.json').read_text())
+        panel = next(p for p in heating['panels'] if p['id'] == 5)
         lifetime = next(t['expr'] for t in panel['targets'] if 'gesamt' in t['expr'])
         self.assertEqual(self.query(lifetime, start + 120), [3])
         # Do not reinterpret a gauge reset as negative consumption or billing energy.
