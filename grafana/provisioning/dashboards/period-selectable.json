@@ -1,0 +1,16 @@
+{
+  "uid": "period-selectable",
+  "title": "Period calculations — selectable verification",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "browser",
+  "refresh": "1m",
+  "time": {"from": "now/M", "to": "now"},
+  "panels": [{
+    "id": 1,
+    "title": "Private calculation provisioning required",
+    "type": "text",
+    "gridPos": {"x": 0, "y": 0, "w": 24, "h": 8},
+    "options": {"mode": "markdown", "content": "Unavailable until private configuration is rendered and interval recording rules are enabled in a separately approved deployment. `python -m scraper.provision render` generates native selectable-period targets and price-free observation-interval rules. Historical freshness is not reconstructed. See `docs/period-calculations.md`."}
+  }]
+}

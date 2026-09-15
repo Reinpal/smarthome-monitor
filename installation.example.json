@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "installation": {
+    "panel_kwp": 8.4,
+    "usable_battery_kwh": 11.5,
+    "area_m2": 123,
+    "commissioning_date": "2024-02-12",
+    "currency": "EUR",
+    "timezone": "Europe/Berlin"
+  },
+  "import_tariffs": [
+    {
+      "from": "2025-01-01",
+      "until": "2025-07-01",
+      "status": "confirmed",
+      "vat_rate": 0.2,
+      "components": {
+        "energy": {"amount": 0.12, "vat_basis": "net"},
+        "network": {"amount": 0.06, "vat_basis": "net"},
+        "levies": {"amount": 0.02, "vat_basis": "net"}
+      },
+      "discounts": [
+        {"scope": "all_imports", "amount": 0.01, "vat_basis": "net"},
+        {"scope": "restricted_credit", "amount": 17, "vat_basis": "gross"}
+      ],
+      "fixed_charges": [
+        {"period": "month", "amount": 5, "vat_basis": "net"},
+        {"period": "year", "amount": 12, "vat_basis": "gross"}
+      ]
+    },
+    {
+      "from": "2025-07-01",
+      "until": "2026-01-01",
+      "status": "provisional",
+      "vat_rate": 0.2,
+      "components": {
+        "energy": {"amount": 0.15, "vat_basis": "gross"},
+        "network": {"amount": 0.07, "vat_basis": "gross"},
+        "levies": {"amount": 0.02, "vat_basis": "gross"}
+      },
+      "discounts": [],
+      "fixed_charges": []
+    }
+  ],
+  "export_tariffs": [
+    {"month": "2025-01", "status": "confirmed", "vat_rate": 0,
+      "price": {"amount": 0.08, "vat_basis": "gross"}},
+    {"month": "2025-02", "status": "provisional", "vat_rate": 0,
+      "price": {"amount": 0.075, "vat_basis": "gross"}}
+  ]
+}

@@ -1,5 +1,10 @@
-# Environment
+# Environment (including local variants; only the fictional template is public)
 .env
+.env.*
+!.env.example
+
+# Private installation input, generated dashboards, and private local backups
+/private/
 
 # Python
 __pycache__/

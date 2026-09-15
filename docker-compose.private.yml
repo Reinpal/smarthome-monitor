@@ -1,0 +1,17 @@
+# Opt-in offline-generated configuration; the base storage/network setup is unchanged.
+# Generate with python -m scraper.provision render before any planned deployment.
+services:
+  lgtm:
+    volumes:
+      - type: bind
+        source: ./private/generated/dashboards
+        target: /otel-lgtm/grafana/conf/provisioning/dashboards
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./private/generated/period-rules
+        target: /otel-lgtm/period-rules
+        read_only: true
+        bind:
+          create_host_path: false

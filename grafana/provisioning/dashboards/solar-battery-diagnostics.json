@@ -1,0 +1,2644 @@
+{
+  "uid": "solar-battery-diagnostics",
+  "title": "Solar & battery diagnostics",
+  "schemaVersion": 39,
+  "version": 2,
+  "editable": true,
+  "timezone": "browser",
+  "time": {
+    "from": "now/d",
+    "to": "now"
+  },
+  "refresh": "1m",
+  "graphTooltip": 1,
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "5m",
+      "15m"
+    ]
+  },
+  "tags": [
+    "energy",
+    "solar",
+    "diagnostics"
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": false,
+        "iconColor": "rgba(100, 180, 255, 1)",
+        "name": "Settings & comfort notes",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "templating": {
+    "list": []
+  },
+  "links": [
+    {
+      "title": "Solar & battery",
+      "type": "link",
+      "url": "/d/pv-overview",
+      "includeTime": true,
+      "keepTime": true,
+      "targetBlank": false
+    },
+    {
+      "title": "Heating & hot water",
+      "type": "link",
+      "url": "/d/heatpump-overview",
+      "includeTime": true,
+      "keepTime": true,
+      "targetBlank": false
+    },
+    {
+      "title": "Heat-pump diagnostics",
+      "type": "link",
+      "url": "/d/heatpump-diagnostics",
+      "includeTime": true,
+      "keepTime": true,
+      "targetBlank": false
+    },
+    {
+      "title": "Solar & battery diagnostics",
+      "type": "link",
+      "url": "/d/solar-battery-diagnostics",
+      "includeTime": true,
+      "keepTime": true,
+      "targetBlank": false
+    }
+  ],
+  "panels": [
+    {
+      "id": 900,
+      "type": "text",
+      "title": "Solar & battery technical context",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 4
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Raw device diagnostics, not period energy or billing meters. Hybrid inverter AC output includes possible battery output and is not pure PV production. Grid meter location must be the unique validated interconnection; never add duplicate meter counters. Battery current is **positive charging**, opposite powerflow P_Akku. Capacity API units are unverified; no Ah/kWh inference. Optional AC day/year counters may be unavailable. Neutral colors are not manufacturer limits."
+      }
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisLabel": "SOC (%)",
+            "lineWidth": 2,
+            "fillOpacity": 20,
+            "spanNulls": false
+          },
+          "unit": "percent",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SOC"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "id": 22,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Ladestand (SOC) - Verlauf",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "SOC",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_powerflow_soc_percent",
+                "name": "fronius.powerflow.soc",
+                "collector": "fronius",
+                "endpoint": "powerflow",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Temperatur (°C)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "celsius",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "id": 24,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Batterie Temperatur",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Zellentemperatur",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_storage_temperature_cell_celsius",
+                "name": "fronius.storage.temperature_cell",
+                "collector": "fronius",
+                "endpoint": "storage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "volt",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 12,
+        "h": 8
+      },
+      "id": 25,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Batterie Spannung",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Spannung DC",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_storage_voltage_dc_volts",
+                "name": "fronius.storage.voltage_dc",
+                "collector": "fronius",
+                "endpoint": "storage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "amp",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 12,
+        "w": 12,
+        "h": 8
+      },
+      "id": 26,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Batterie Strom",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Strom DC",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_storage_current_dc_amperes",
+                "name": "fronius.storage.current_dc",
+                "collector": "fronius",
+                "endpoint": "storage",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "kwatth",
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "id": 31,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "AC-Energie heute (optional)",
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. Geräte-Tageszähler, keine reine PV-Produktion bei Hybridbetrieb. Auf GEN24 nicht verfügbar; fehlend ist nicht null Verbrauch. Perioden-PV künftig aus P_PV mit Abdeckungsprüfung (docs/measurement-contracts.md).",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Heute",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "(__fresh_0__) / 1000",
+            "sources": [
+              {
+                "prom_name": "fronius_powerflow_e_day_Wh",
+                "name": "fronius.powerflow.e_day",
+                "collector": "fronius",
+                "endpoint": "powerflow",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "kwatth",
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "id": 32,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "AC-Energie Jahr (optional)",
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. Geräte-Jahreszähler, keine reine PV-Produktion bei Hybridbetrieb. Auf GEN24 nicht verfügbar; keine Hochrechnung oder Null-Ersetzung.",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Jahr",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "(__fresh_0__) / 1000",
+            "sources": [
+              {
+                "prom_name": "fronius_powerflow_e_year_Wh",
+                "name": "fronius.powerflow.e_year",
+                "collector": "fronius",
+                "endpoint": "powerflow",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "megwatth",
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 12,
+        "h": 8
+      },
+      "id": 33,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "Wechselrichter AC gesamt",
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. Lebenszeit-AC-Abgabe, enthält bei Hybridbetrieb Batterieabgabe. Nicht PV-Erzeugung; E_Total und TOTAL_ENERGY nicht addieren.",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Gesamt",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "(__fresh_0__) / 1000000",
+            "sources": [
+              {
+                "prom_name": "fronius_powerflow_e_total_Wh",
+                "name": "fronius.powerflow.e_total",
+                "collector": "fronius",
+                "endpoint": "powerflow",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "percent",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 28,
+        "w": 12,
+        "h": 8
+      },
+      "id": 34,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "Autarkie (momentan, Gerät)",
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. Momentane Gerätequote, kein Periodenwert. Nicht zeitlich mitteln, um Energieautarkie zu berechnen.",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Autarkie",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_powerflow_rel_autonomy_percent",
+                "name": "fronius.powerflow.rel_autonomy",
+                "collector": "fronius",
+                "endpoint": "powerflow",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "percent",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "w": 12,
+        "h": 8
+      },
+      "id": 35,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "Eigenverbrauch (momentan, Gerät)",
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. Momentane Gerätequote mit herstellerspezifischer Batterie-/Verlustgrenze. Kein direkter Haushaltsverbrauch und kein Periodenwert.",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Eigenverbrauch",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_powerflow_rel_self_consumption_percent",
+                "name": "fronius.powerflow.rel_self_consumption",
+                "collector": "fronius",
+                "endpoint": "powerflow",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "spanNulls": false
+          },
+          "unit": "percent",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Autarkie"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Eigenverbrauch"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 36,
+        "w": 12,
+        "h": 8
+      },
+      "id": 37,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Momentane Gerätequoten - Verlauf",
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. Keine energiegewichteten Periodenquoten. Nicht als Tages-/Monatsautarkie oder direkter Eigenverbrauch verwenden.",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Autarkie",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_powerflow_rel_autonomy_percent",
+                "name": "fronius.powerflow.rel_autonomy",
+                "collector": "fronius",
+                "endpoint": "powerflow",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Eigenverbrauch",
+          "refId": "B",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_powerflow_rel_self_consumption_percent",
+                "name": "fronius.powerflow.rel_self_consumption",
+                "collector": "fronius",
+                "endpoint": "powerflow",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "kwatth",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 44,
+        "w": 12,
+        "h": 8
+      },
+      "id": 42,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "Bezug Gesamt",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Bezug",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "(__fresh_0__) / 1000",
+            "sources": [
+              {
+                "prom_name": "fronius_meter_energy_real_consumed_Wh",
+                "name": "fronius.meter.energy_real_consumed",
+                "collector": "fronius",
+                "endpoint": "meter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "kwatth",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 44,
+        "w": 12,
+        "h": 8
+      },
+      "id": 43,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "Einspeisung Gesamt",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Einspeisung",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "(__fresh_0__) / 1000",
+            "sources": [
+              {
+                "prom_name": "fronius_meter_energy_real_produced_Wh",
+                "name": "fronius.meter.energy_real_produced",
+                "collector": "fronius",
+                "endpoint": "meter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Leistung (W)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "watt",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Phase 1"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Phase 2"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Phase 3"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 52,
+        "w": 12,
+        "h": 8
+      },
+      "id": 44,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Netz - Leistung pro Phase",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Phase 1",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_meter_power_real_p_phase_1_watts",
+                "name": "fronius.meter.power_real_p_phase_1",
+                "collector": "fronius",
+                "endpoint": "meter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Phase 2",
+          "refId": "B",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_meter_power_real_p_phase_2_watts",
+                "name": "fronius.meter.power_real_p_phase_2",
+                "collector": "fronius",
+                "endpoint": "meter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Phase 3",
+          "refId": "C",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_meter_power_real_p_phase_3_watts",
+                "name": "fronius.meter.power_real_p_phase_3",
+                "collector": "fronius",
+                "endpoint": "meter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Spannung (V)",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "spanNulls": false
+          },
+          "unit": "volt",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L1"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L2"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L3"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 52,
+        "w": 12,
+        "h": 8
+      },
+      "id": 51,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Netzspannung pro Phase",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "L1",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_meter_voltage_ac_phase_1_volts",
+                "name": "fronius.meter.voltage_ac_phase_1",
+                "collector": "fronius",
+                "endpoint": "meter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "L2",
+          "refId": "B",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_meter_voltage_ac_phase_2_volts",
+                "name": "fronius.meter.voltage_ac_phase_2",
+                "collector": "fronius",
+                "endpoint": "meter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "L3",
+          "refId": "C",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_meter_voltage_ac_phase_3_volts",
+                "name": "fronius.meter.voltage_ac_phase_3",
+                "collector": "fronius",
+                "endpoint": "meter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Strom (A)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "amp",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L1"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L2"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "L3"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 60,
+        "w": 12,
+        "h": 8
+      },
+      "id": 52,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Netzstrom pro Phase",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "L1",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_meter_current_ac_phase_1_amperes",
+                "name": "fronius.meter.current_ac_phase_1",
+                "collector": "fronius",
+                "endpoint": "meter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "L2",
+          "refId": "B",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_meter_current_ac_phase_2_amperes",
+                "name": "fronius.meter.current_ac_phase_2",
+                "collector": "fronius",
+                "endpoint": "meter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "L3",
+          "refId": "C",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_meter_current_ac_phase_3_amperes",
+                "name": "fronius.meter.current_ac_phase_3",
+                "collector": "fronius",
+                "endpoint": "meter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Frequenz (Hz)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "hertz",
+          "decimals": 3,
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 60,
+        "w": 12,
+        "h": 8
+      },
+      "id": 53,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Netzfrequenz",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Frequenz",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_meter_frequency_hertz",
+                "name": "fronius.meter.frequency",
+                "collector": "fronius",
+                "endpoint": "meter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "decimals": 3,
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 68,
+        "w": 12,
+        "h": 8
+      },
+      "id": 54,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Leistungsfaktor (cos phi)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "cos(phi)",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_meter_power_factor_sum",
+                "name": "fronius.meter.power_factor_sum",
+                "collector": "fronius",
+                "endpoint": "meter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Leistung (W)",
+            "lineWidth": 2,
+            "fillOpacity": 20,
+            "spanNulls": false,
+            "gradientMode": "opacity"
+          },
+          "unit": "watt",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 68,
+        "w": 12,
+        "h": 8
+      },
+      "id": 61,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "Wechselrichter AC-Leistung",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "AC Leistung",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_inverter_pac_watts",
+                "name": "fronius.inverter.pac",
+                "collector": "fronius",
+                "endpoint": "inverter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Spannung (V)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "volt",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "String 1"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "String 2"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 76,
+        "w": 12,
+        "h": 8
+      },
+      "id": 62,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "DC-Spannung (Strings)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "String 1",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_inverter_udc_volts",
+                "name": "fronius.inverter.udc",
+                "collector": "fronius",
+                "endpoint": "inverter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "String 2",
+          "refId": "B",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_inverter_udc_2_volts",
+                "name": "fronius.inverter.udc_2",
+                "collector": "fronius",
+                "endpoint": "inverter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "Strom (A)",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "amp",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "String 1"
+            },
+            "properties": []
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "String 2"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 76,
+        "w": 12,
+        "h": 8
+      },
+      "id": 63,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "DC-Strom (Strings)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "String 1",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_inverter_idc_amperes",
+                "name": "fronius.inverter.idc",
+                "collector": "fronius",
+                "endpoint": "inverter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "String 2",
+          "refId": "B",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_inverter_idc_2_amperes",
+                "name": "fronius.inverter.idc_2",
+                "collector": "fronius",
+                "endpoint": "inverter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short",
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 84,
+        "w": 12,
+        "h": 8
+      },
+      "id": 64,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "Wechselrichter Status",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Status",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_inverter_status_code",
+                "name": "fronius.inverter.status_code",
+                "collector": "fronius",
+                "endpoint": "inverter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "short",
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "Unavailable",
+          "custom": {
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 84,
+        "w": 12,
+        "h": 8
+      },
+      "id": 65,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "title": "Fehlercode",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Error",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_inverter_error_code",
+                "name": "fronius.inverter.error_code",
+                "collector": "fronius",
+                "endpoint": "inverter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "volt",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 92,
+        "w": 12,
+        "h": 8
+      },
+      "id": 66,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "AC-Spannung",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "UAC",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_inverter_uac_volts",
+                "name": "fronius.inverter.uac",
+                "collector": "fronius",
+                "endpoint": "inverter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "amp",
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 92,
+        "w": 12,
+        "h": 8
+      },
+      "id": 67,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "AC-Strom",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "IAC",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_inverter_iac_amperes",
+                "name": "fronius.inverter.iac",
+                "collector": "fronius",
+                "endpoint": "inverter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisLabel": "",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": false
+          },
+          "unit": "hertz",
+          "decimals": 3,
+          "noValue": "Unavailable",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 100,
+        "w": 12,
+        "h": 8
+      },
+      "id": 68,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none"
+      },
+      "title": "AC-Frequenz",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "legendFormat": "Frequenz",
+          "refId": "A",
+          "instant": false,
+          "range": true,
+          "diagnosticQuery": {
+            "expression": "__fresh_0__",
+            "sources": [
+              {
+                "prom_name": "fronius_inverter_fac_hertz",
+                "name": "fronius.inverter.fac",
+                "collector": "fronius",
+                "endpoint": "inverter",
+                "kind": "diagnostic"
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Device-reported; fresh field/endpoint and contract-v2 metadata required. No manufacturer-specific normal limits. "
+    },
+    {
+      "id": 910,
+      "type": "timeseries",
+      "title": "Collection receipt age · per endpoint",
+      "description": "time() minus last non-empty endpoint receipt. This does not establish every field’s presence or sensor-internal freshness. Gaps are not zero. Compare to configured thresholds; missing exporter samples are unavailable.",
+      "gridPos": {
+        "x": 0,
+        "y": 108,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "time() - smarthome_collection_last_success_seconds{collector=\"fronius\"}",
+          "legendFormat": "{{source}} receipt age",
+          "instant": false,
+          "range": true,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        },
+        {
+          "refId": "B",
+          "expr": "smarthome_collection_stale_after_seconds{collector=\"fronius\"}",
+          "legendFormat": "{{source}} stale threshold",
+          "instant": false,
+          "range": true,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ]
+    },
+    {
+      "id": 911,
+      "type": "timeseries",
+      "title": "Field presence · last processed collection",
+      "description": "1 present, 0 omitted/invalid in last processed result; absent metadata is unknown. Presence alone is not freshness. Collection receipt ages and source-specific thresholds are shown separately.",
+      "gridPos": {
+        "x": 12,
+        "y": 108,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "spanNulls": false,
+            "axisCenteredZero": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "smarthome_measurement_present{metric=~\"fronius\\\\..*\"}",
+          "legendFormat": "{{metric}}",
+          "instant": false,
+          "range": true,
+          "editorMode": "code",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
+        }
+      ]
+    }
+  ],
+  "homeNavigation": true
+}

@@ -1,0 +1,1691 @@
+{
+  "uid": "home-energy",
+  "title": "Home · household energy",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "browser",
+  "editable": true,
+  "refresh": "1m",
+  "time": {
+    "from": "now/M",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "5m",
+      "15m"
+    ],
+    "time_options": [
+      "1h",
+      "12h",
+      "24h",
+      "7d",
+      "30d"
+    ]
+  },
+  "tags": [
+    "home-energy"
+  ],
+  "homeNavigation": true,
+  "links": [
+    {
+      "title": "Solar & battery",
+      "type": "link",
+      "url": "/d/pv-overview",
+      "includeTime": true
+    }
+  ],
+  "templating": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Household electricity",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Estimated integral of consumption-only device-calculated primary-meter site load; not independently metered whole-house demand.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "household",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Grid import",
+      "type": "stat",
+      "gridPos": {
+        "x": 4,
+        "y": 0,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Calculated differences of one validated grid-interconnection absolute Wh gauge, converted to kWh; proportional interval allocation. No duplicate meter totals or reset repair.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "grid_import",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Self-sufficiency",
+      "type": "stat",
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Calculated (site household energy − grid imports) / household energy × 100 with matching coverage. Includes battery inventory stored before this period; not same-period direct PV use. Zero demand or inconsistent balance is unavailable. Grid charging assumed unused.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "self_sufficiency",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Solar/battery benefit · estimate",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Estimated avoided purchases + export revenue, date-effective private prices. Same-demand grid-only baseline, not investment profit or a bill. Fixed charges/restricted credits excluded. Grid charging assumed unused; conversion and site boundaries remain qualified.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "solar_battery_benefit",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "configured_currency",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/pv-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Heat-pump electricity · VD",
+      "type": "stat",
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Calculated matching heating + hot-water VD cumulative MWh differences converted to kWh. Device compressor-related accounting, NOT verified whole-system electricity; NHZ auxiliary electrical input, pumps, standby and controls not established.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "heatpump_electricity",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/heatpump-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Heat-pump period efficiency · VD",
+      "type": "stat",
+      "gridPos": {
+        "x": 20,
+        "y": 0,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Calculated matching-period VD heat / VD electricity, energy weighted, NOT mean daily ratios, instantaneous COP, annual JAZ or whole-system efficiency. Excludes NHZ heat from numerator; auxiliary electricity unverified.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "heatpump_ratio",
+          "periodQualification": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: kWh/kWh",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      },
+      "links": [
+        {
+          "title": "Selected-period detail",
+          "url": "/d/heatpump-overview?from=${__from}&to=${__to}",
+          "targetBlank": false
+        },
+        {
+          "title": "Coverage and observed endpoints",
+          "url": "?from=${__from}&to=${__to}&viewPanel=90",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Read this first · period energy vs power",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 18,
+        "h": 3
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "**This calendar month** is the default. Use the native time picker for local days/months (one calendar month for the daily chart). **Observed prefix** is not a full/extrapolated total: inspect [coverage](?from=${__from}&to=${__to}&viewPanel=90). Estimates are not bills. Prices may be provisional independently of telemetry. Blank/Unavailable is never a reassuring zero.\n\n[Completed-month trends · last 12 months](/d/home-energy?from=now-12M/M&to=now/M&viewPanel=75). Use the time picker for older months; only complete covered months appear."
+      }
+    },
+    {
+      "id": 32,
+      "title": "Prices · independent of energy coverage",
+      "type": "stat",
+      "gridPos": {
+        "x": 18,
+        "y": 5,
+        "w": 6,
+        "h": 3
+      },
+      "description": "Financial price confidence only; not a claim of available or complete energy. Carried-forward/expired prices are provisional. Main benefit stays unavailable if telemetry is missing.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "periodMetric": "solar_battery_benefit",
+          "periodField": "price_status"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "Confirmed"
+                },
+                "2": {
+                  "text": "Provisional"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 70,
+      "title": "Daily calendar energy · completed local days",
+      "type": "barchart",
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 24,
+        "h": 9
+      },
+      "description": "Each bar group is one COMPLETE local calendar day, labelled by its starting date. DST days are 23/25 hours when applicable; never rolling 24-hour totals or averages of period totals. Partially selected/current days and any day with gaps, stale tails or resets are omitted, NOT zero. Select one calendar month (at most 32 touched local dates); longer ranges are unavailable here. Meter import and estimated DC PV / site demand have distinct boundaries; do not stack or infer a power balance. Supported timezone horizon 2000–2100, not a claim of stored history.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "household",
+          "calendarMode": "daily"
+        },
+        {
+          "refId": "B",
+          "calendarMetric": "grid_import",
+          "calendarMode": "daily"
+        },
+        {
+          "refId": "C",
+          "calendarMetric": "pv",
+          "calendarMode": "daily"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns",
+            "valueLabel": "quantity"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "day": 0
+            },
+            "renameByName": {
+              "household": "Household (estimate)",
+              "grid_import": "Grid import",
+              "pv": "PV DC (estimate)"
+            }
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "day",
+                "destinationType": "time",
+                "dateFormat": "X"
+              }
+            ],
+            "fields": {}
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "day",
+                "desc": false
+              }
+            ]
+          }
+        },
+        {
+          "id": "formatTime",
+          "options": {
+            "timeField": "day",
+            "outputFormat": "YYYY-MM-DD",
+            "timezone": "browser"
+          }
+        }
+      ],
+      "options": {
+        "xField": "day",
+        "orientation": "vertical",
+        "stacking": "none",
+        "groupWidth": 0.7,
+        "barWidth": 0.9,
+        "showValue": "never",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "xTickLabelRotation": -30
+      },
+      "links": [
+        {
+          "title": "Completed-month trends",
+          "url": "/d/home-energy?from=now-12M/M&to=now/M&viewPanel=75",
+          "targetBlank": false
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Power snapshot · right now when To = now",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 17,
+        "w": 24,
+        "h": 3
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Watts and SOC below are a separate endpoint snapshot; an absolute historical selection shows that endpoint, **not current live power**. Grid + imports / − exports; battery + discharges / − charges. Solar is DC generator power, household is device-calculated demand; these boundaries do not form an exact AC balance."
+      }
+    },
+    {
+      "id": 20,
+      "title": "PV generator · DC W",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 4,
+        "h": 4
+      },
+      "description": "Snapshot at the selected endpoint (right now when To=now), not period energy. Device-reported unless stated. Per-field presence/receipt age AND endpoint health are checked; cached exports are not fresh reads. Historical selection is a historical snapshot. ",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "liveMetric": "pv",
+          "legendFormat": ""
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 21,
+      "title": "Household demand · W",
+      "type": "stat",
+      "gridPos": {
+        "x": 4,
+        "y": 20,
+        "w": 4,
+        "h": 4
+      },
+      "description": "Snapshot at the selected endpoint (right now when To=now), not period energy. Device-reported unless stated. Per-field presence/receipt age AND endpoint health are checked; cached exports are not fresh reads. Historical selection is a historical snapshot. ",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "liveMetric": "household",
+          "legendFormat": ""
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 22,
+      "title": "Grid · +import / −export",
+      "type": "stat",
+      "gridPos": {
+        "x": 8,
+        "y": 20,
+        "w": 4,
+        "h": 4
+      },
+      "description": "Snapshot at the selected endpoint (right now when To=now), not period energy. Device-reported unless stated. Per-field presence/receipt age AND endpoint health are checked; cached exports are not fresh reads. Historical selection is a historical snapshot. ",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "liveMetric": "grid_power",
+          "legendFormat": ""
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 23,
+      "title": "Battery · +out / −in",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 20,
+        "w": 4,
+        "h": 4
+      },
+      "description": "Snapshot at the selected endpoint (right now when To=now), not period energy. Device-reported unless stated. Per-field presence/receipt age AND endpoint health are checked; cached exports are not fresh reads. Historical selection is a historical snapshot. ",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "liveMetric": "battery_power",
+          "legendFormat": ""
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 24,
+      "title": "Battery state of charge",
+      "type": "stat",
+      "gridPos": {
+        "x": 16,
+        "y": 20,
+        "w": 4,
+        "h": 4
+      },
+      "description": "Snapshot at the selected endpoint (right now when To=now), not period energy. Device-reported unless stated. Per-field presence/receipt age AND endpoint health are checked; cached exports are not fresh reads. Historical selection is a historical snapshot. ",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "liveMetric": "soc",
+          "legendFormat": ""
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 25,
+      "title": "Outdoor conditions",
+      "type": "stat",
+      "gridPos": {
+        "x": 20,
+        "y": 20,
+        "w": 4,
+        "h": 4
+      },
+      "description": "Snapshot at the selected endpoint (right now when To=now), not period energy. Device-reported unless stated. Per-field presence/receipt age AND endpoint health are checked; cached exports are not fresh reads. Historical selection is a historical snapshot. ",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "liveMetric": "outdoor",
+          "legendFormat": ""
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 30,
+      "title": "Comfort · control zone / tank, not whole-house comfort",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 16,
+        "h": 4
+      },
+      "description": "Freshness-gated sensor/control readings at selected endpoint; not every room or tap. No generic comfort targets or savings recommendations. Historical comparisons are not weather adjusted.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "0",
+          "liveMetric": "room",
+          "legendFormat": "Room actual"
+        },
+        {
+          "refId": "1",
+          "liveMetric": "room_target",
+          "legendFormat": "Room target"
+        },
+        {
+          "refId": "2",
+          "liveMetric": "water_temperature",
+          "legendFormat": "Tank actual"
+        },
+        {
+          "refId": "3",
+          "liveMetric": "water_target",
+          "legendFormat": "Tank target"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 31,
+      "title": "Field age · not cached-export age",
+      "type": "stat",
+      "gridPos": {
+        "x": 16,
+        "y": 24,
+        "w": 8,
+        "h": 4
+      },
+      "description": "Seconds since collector receipt, at selected endpoint. Endpoint health and individual completeness remain separate. Device-internal frozen sensors cannot be disproven.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "liveMetric": "pv",
+          "liveField": "age",
+          "legendFormat": "Solar field age"
+        },
+        {
+          "refId": "B",
+          "liveMetric": "room",
+          "liveField": "age",
+          "legendFormat": "Room field age"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        }
+      }
+    },
+    {
+      "id": 80,
+      "title": "Equivalent elapsed previous month · household electricity",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 24,
+        "h": 5
+      },
+      "description": "Native time-picker comparison, NOT a Grafana 1M shift. Available only when selection begins at local month start and ends within that month. BOTH comparison windows are capped to the current continuous observed prefix and shorter prior-month elapsed duration (including DST); main headline remains independent. Compared duration is shown explicitly. Both windows must be complete with real history; zero previous energy withholds percentage change. No annualization or invented year-over-year results.",
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "household",
+          "calendarMode": "current",
+          "legendFormat": "Current · capped elapsed window"
+        },
+        {
+          "refId": "B",
+          "calendarMetric": "household",
+          "calendarMode": "previous",
+          "legendFormat": "Previous · same elapsed seconds"
+        },
+        {
+          "refId": "C",
+          "calendarMetric": "household",
+          "calendarMode": "change",
+          "legendFormat": "Change · not weather adjusted"
+        },
+        {
+          "refId": "D",
+          "calendarMetric": "household",
+          "calendarMode": "current",
+          "periodField": "coverage",
+          "legendFormat": "Compared elapsed duration"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 90,
+      "title": "Coverage · required context for observed-prefix values",
+      "type": "table",
+      "gridPos": {
+        "x": 0,
+        "y": 33,
+        "w": 24,
+        "h": 8
+      },
+      "description": "Coverage alone does not make a derived value valid: both/all inputs must align. Full requested period: 1=yes, 0=continuous observed prefix only (if the headline exists). Coverage can be incomplete even when its endpoint is recent. Financial confidence is independent. Absent telemetry/metadata is unavailable; unsupported prior-year history is withheld.",
+      "targets": [
+        {
+          "refId": "Q0",
+          "periodMetric": "household",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Household electricity",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q1",
+          "periodMetric": "household",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Household electricity",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q2",
+          "periodMetric": "household",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Household electricity",
+            "aspect": "Full requested period?"
+          }
+        },
+        {
+          "refId": "Q3",
+          "periodMetric": "grid_import",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Grid import",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q4",
+          "periodMetric": "grid_import",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Grid import",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q5",
+          "periodMetric": "grid_import",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Grid import",
+            "aspect": "Full requested period?"
+          }
+        },
+        {
+          "refId": "Q6",
+          "periodMetric": "self_sufficiency",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Self-sufficiency",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q7",
+          "periodMetric": "self_sufficiency",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Self-sufficiency",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q8",
+          "periodMetric": "self_sufficiency",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Self-sufficiency",
+            "aspect": "Full requested period?"
+          }
+        },
+        {
+          "refId": "Q9",
+          "periodMetric": "solar_battery_benefit",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Solar/battery benefit · estimate",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q10",
+          "periodMetric": "solar_battery_benefit",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Solar/battery benefit · estimate",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q11",
+          "periodMetric": "solar_battery_benefit",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Solar/battery benefit · estimate",
+            "aspect": "Full requested period?"
+          }
+        },
+        {
+          "refId": "Q12",
+          "periodMetric": "heatpump_electricity",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Heat-pump electricity · VD",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q13",
+          "periodMetric": "heatpump_electricity",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Heat-pump electricity · VD",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q14",
+          "periodMetric": "heatpump_electricity",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Heat-pump electricity · VD",
+            "aspect": "Full requested period?"
+          }
+        },
+        {
+          "refId": "Q15",
+          "periodMetric": "heatpump_ratio",
+          "periodField": "coverage",
+          "periodLabels": {
+            "headline": "Heat-pump period efficiency · VD",
+            "aspect": "Covered seconds"
+          }
+        },
+        {
+          "refId": "Q16",
+          "periodMetric": "heatpump_ratio",
+          "periodField": "observed_until",
+          "periodLabels": {
+            "headline": "Heat-pump period efficiency · VD",
+            "aspect": "Observed through"
+          }
+        },
+        {
+          "refId": "Q17",
+          "periodMetric": "heatpump_ratio",
+          "periodField": "complete",
+          "periodLabels": {
+            "headline": "Heat-pump period efficiency · VD",
+            "aspect": "Full requested period?"
+          }
+        }
+      ],
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns",
+            "valueLabel": "aspect"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "headline": 0
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "Unavailable"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Covered seconds"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Observed through"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Full requested period?"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 91,
+      "title": "Definitions, diagnostics and unavailable history",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 41,
+        "w": 24,
+        "h": 4
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Headline tooltips declare units, confidence and equipment boundaries. Solar and Heating links preserve the selected period; diagnostics links appear only once provisioned templates exist. No supported annual comparison is fabricated. Integrated power uses nominal 60-second exports and linear interval estimates, not every device poll. Confirmed private tariff corrections require regeneration and reopening the dashboard; retained interval history is repriced, not rewritten."
+      }
+    },
+    {
+      "id": 75,
+      "title": "Energy trends · completed local months",
+      "type": "barchart",
+      "gridPos": {
+        "x": 0,
+        "y": 45,
+        "w": 24,
+        "h": 9
+      },
+      "description": "Select up to 12 local calendar months with the native time picker, or use the panel link for the last 12 completed months. Only fully selected, completed months with complete accepted interval coverage appear; missing, partial and unsupported history is omitted, never zero-filled or annualized. Longer selections are withheld, not truncated. Month lengths and DST differ; totals are not normalized.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "household",
+          "calendarMode": "monthly"
+        },
+        {
+          "refId": "B",
+          "calendarMetric": "grid_import",
+          "calendarMode": "monthly"
+        },
+        {
+          "refId": "C",
+          "calendarMetric": "pv",
+          "calendarMode": "monthly"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 2,
+          "noValue": "Unavailable",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns",
+            "valueLabel": "quantity"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "month": 0
+            },
+            "renameByName": {
+              "household": "Household (estimate)",
+              "grid_import": "Grid import",
+              "pv": "PV DC (estimate)"
+            }
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "month",
+                "destinationType": "time",
+                "dateFormat": "X"
+              }
+            ],
+            "fields": {}
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "month",
+                "desc": false
+              }
+            ]
+          }
+        },
+        {
+          "id": "formatTime",
+          "options": {
+            "timeField": "month",
+            "outputFormat": "YYYY-MM",
+            "timezone": "browser"
+          }
+        }
+      ],
+      "options": {
+        "xField": "month",
+        "orientation": "vertical",
+        "stacking": "none",
+        "groupWidth": 0.7,
+        "barWidth": 0.9,
+        "showValue": "never",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi"
+        },
+        "xTickLabelRotation": -30
+      },
+      "links": [
+        {
+          "title": "Last 12 completed months",
+          "url": "/d/home-energy?from=now-12M/M&to=now/M&viewPanel=75",
+          "targetBlank": false
+        }
+      ]
+    }
+  ]
+}
