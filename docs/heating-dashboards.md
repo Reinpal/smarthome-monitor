@@ -220,6 +220,9 @@ Prometheus/promtool, Grafana/Chromium, heating daily/MTD charts, navigation and
 Home/Solar browser journeys. The temporary #5 dependency is resolved. #7 still
 owns separately authorized deployment/permissions, live data acceptance and
 production resource/concurrency validation; this run makes no live claims.
+See the subsequent [#7 integrated acceptance record](acceptance.md) for sanitized
+read-only live findings, hardware query budgets and deployment/rollback guidance.
+It does not claim an actual production rollout.
 
 All fixtures are fictional; test services bind loopback with temporary databases,
 and browser requests outside the isolated Grafana origin are blocked. Binaries used:

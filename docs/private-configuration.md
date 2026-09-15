@@ -149,8 +149,11 @@ The #5 calendar extension adds hidden native query variables for timezone-aware
 days, previous-month comparisons and observed overnight windows. These refresh
 with Grafana time selection, not with manual report generation. Only configuration,
 tariff corrections or timezone-rule updates require regeneration. The generated
-queries are several MB and retain the existing POST datasource; they contain
-private effective prices and must stay under the ignored private output path.
+queries retain the existing POST datasource; they contain private effective
+prices and must stay under the ignored private output path. The #7 timezone-query
+compaction/qualification fixes reduce fictional overview payloads to roughly
+0.94–1.17 MB; size still
+grows with tariff history. See [acceptance and deployment gates](acceptance.md).
 
 The output directory is dedicated to generation: obsolete JSON is removed.
 Invalid input leaves the previous rendering intact. Individual files replace
@@ -224,5 +227,6 @@ boundaries/leap years, DST-aware lookup, unknown/invalid/missing inputs, safe CL
 errors, ignore rules and a history sentinel untouched by rendering. Storage
 regressions use fake commands, never real mounts. Live datasource queries, browser
 rendering, deployed permissions and the privileged storage integration test are
-**not run** under the read-only/no-deployment constraint; final integration
-acceptance remains issue #7.
+**not run** during #3. Subsequent integrated browser, sanitized read-only live
+checks, hardware budgets and deployment/rollback guidance are recorded in
+[final acceptance](acceptance.md); no actual deployment was performed.

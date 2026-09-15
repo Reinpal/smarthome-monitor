@@ -160,6 +160,28 @@ class HomeQueryTests(unittest.TestCase):
         age=self.query(live_target({'liveMetric':'pv','liveField':'age'})['expr'],at+360)
         self.assertEqual(float(age[0]['value'][1]),300)
 
+    def test_qualified_headline_keeps_valid_zero_and_withholds_missing_value(self):
+        from scraper.periods import Period
+        period = Period(self.fixture.start, self.fixture.start + timedelta(minutes=2))
+        self.push_night(period, pv=0)
+        dashboard = render_dashboard(template('photovoltaik.json'), self.installation)
+        target = next(p for p in dashboard['panels'] if p['id'] == 100)['targets'][0]
+        for start, end, label in (
+            (period.start, period.end, 'Full period'),
+            (period.start, period.end + timedelta(seconds=30), 'Observed prefix'),
+            (period.start, period.end + timedelta(seconds=181), None),
+            (period.start - timedelta(minutes=1), period.end, None),
+        ):
+            values = {'__from': int(start.timestamp()*1000), '__to': int(end.timestamp()*1000),
+                      '__range_s': int(end.timestamp()-start.timestamp())}
+            rows = self.query(substitute(target['expr'], values), end.timestamp())
+            if label is None:
+                self.assertEqual(rows, [], 'Coverage label must not substitute for an absent headline')
+            else:
+                self.assertEqual(len(rows), 1)
+                self.assertEqual(float(rows[0]['value'][1]), 0)
+                self.assertEqual(rows[0]['metric']['coverage'], label)
+
     def test_native_calendar_boundaries_match_reference_dst_shorter_months_and_non_hour_zone(self):
         cases = [(date(2025,3,1),date(2025,4,1)), (date(2024,3,1),date(2024,4,1)),
                  (date(2025,10,1),date(2025,11,1)),(date(2025,1,1),date(2025,1,16)),
@@ -184,6 +206,32 @@ class HomeQueryTests(unittest.TestCase):
             expr='vector('+zone_offset(str(wall.timestamp()),self.installation.timezone,wall=True)+') < Inf > -Inf'
             self.assertEqual(self.query(expr,wall.timestamp()),[])
         self.assertEqual(self.query('vector('+zone_offset('0',self.installation.timezone)+') < Inf > -Inf',0),[])
+
+    def test_compact_timezone_candidates_preserve_transition_and_horizon_uniqueness(self):
+        from zoneinfo import ZoneInfo
+        from scraper.calendar_promql import zone_spans
+        for name in ('Europe/Berlin', 'Australia/Lord_Howe', 'Asia/Kathmandu', 'Pacific/Apia', 'UTC'):
+            zone = ZoneInfo(name)
+            spans = zone_spans(zone)
+            # Historical political/date-line changes as well as regular DST.
+            transitions = [(a, b) for a, b in zip(spans, spans[1:])
+                           if 2011 <= datetime.fromtimestamp(b[0], timezone.utc).year <= 2012]
+            for before, after in transitions:
+                boundary = after[0]
+                for at in (boundary - 1, boundary, boundary + 1):
+                    expr = 'vector(' + zone_offset(str(at), zone) + ') < Inf > -Inf'
+                    rows = self.query(expr, at)
+                    self.assertEqual(float(rows[0]['value'][1]), datetime.fromtimestamp(at, zone).utcoffset().total_seconds())
+                low, high = sorted((boundary + before[2], boundary + after[2]))
+                for wall in (low, (low + high) // 2, high - 1):
+                    expr = 'vector(' + zone_offset(str(wall), zone, wall=True) + ') < Inf > -Inf'
+                    self.assertEqual(self.query(expr, boundary), [], 'Gap/fold must not pick an arbitrary offset')
+                expr = 'vector(' + zone_offset(str(high), zone, wall=True) + ') < Inf > -Inf'
+                self.assertEqual(float(self.query(expr, boundary)[0]['value'][1]), after[2])
+            for at, available in ((spans[0][0] - 1, False), (spans[0][0], True),
+                                  (spans[-1][1] - 1, True), (spans[-1][1], False)):
+                rows = self.query('vector(' + zone_offset(str(at), zone) + ') < Inf > -Inf', at)
+                self.assertEqual(bool(rows), available)
 
     def test_native_previous_month_queries_require_equal_complete_history(self):
         period=calendar_period(date(2025,3,1),date(2025,4,1),self.installation)
