@@ -55,11 +55,11 @@ Both push metrics to the **LGTM** container (Grafana + Prometheus/Mimir + OpenTe
    docker compose up -d
    ```
 
-5. **Open Grafana** at [http://localhost:3000](http://localhost:3000) (default credentials: `admin` / `admin`, configurable via `GF_SECURITY_ADMIN_PASSWORD` in `.env`)
+5. **Open Grafana through your existing trusted-LAN proxy** (the base Compose file does not publish port 3000). Set a strong `GF_SECURITY_ADMIN_PASSWORD` in `.env`; do not expose Grafana publicly.
 
 ## Configuration
 
-All configuration is done via environment variables in the `.env` file. See [`.env.example`](.env.example) for all available options:
+Device/runtime configuration uses environment variables in `.env`. See [`.env.example`](.env.example) for available options. Installation parameters and tariffs use one ignored `private/installation.json`; see [Private installation configuration](docs/private-configuration.md) for the fictional example, validation, tariff lookup API, and opt-in offline dashboard provisioning.
 
 | Variable | Default | Description |
 |---|---|---|
@@ -114,16 +114,12 @@ Two provisioned Grafana dashboards are included:
 ### Heat Pump (Waermepumpe)
 Monitors temperatures, energy consumption, COP, compressor status, and more from the ISG.
 
-The dashboard includes two template variables you should adjust to match your setup:
-- **Wohnflaeche (m2)**: Your heated living area in square meters (used for per-m2 energy calculations)
-- **Inbetriebnahme**: Commissioning date of your heat pump as a Unix timestamp (used for lifetime calculations)
-
-Both can be changed directly in the Grafana dashboard settings under **Variables**.
+Installation inputs are supplied through [private provisioning](docs/private-configuration.md), not tracked dashboard defaults. Optional area and commissioning date remain unavailable when omitted. Certificate comparisons and their installation-specific reference constants have been removed; configured area does not establish a valid heat boundary.
 
 ### Photovoltaik (PV Overview)
 Shows solar production, grid feed-in/consumption, battery status, and power flow from the Fronius inverter.
 
-> **Note**: The dashboards ship with timezone set to `Europe/Vienna`. Change this in the dashboard settings (gear icon > General > Timezone) if you're in a different timezone.
+> **Note**: Public templates use the browser timezone and unavailable installation placeholders. Private rendering applies the configured IANA timezone and shows usable battery capacity in the existing SOC panel description. This input is not measured remaining energy. Tariff lookup is available for subsequent period calculations; this slice does not yet display financial results.
 
 ## Project Structure
 
