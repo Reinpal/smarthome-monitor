@@ -38,7 +38,10 @@ Optional endpoints that consistently return no measurements will alert. If a
 device does not support an endpoint, deliberately remove it from
 `scraper/config.py`; do not suppress real collection failures. This mechanism
 checks endpoint/page freshness, not completeness of every individual measurement
-or whether a device's internal sensor is frozen.
+or whether a device's internal sensor is frozen. The source contract adds separate
+per-measurement presence and observation timestamps; see
+[measurement contracts](measurement-contracts.md#freshness-completeness-and-usable-coverage)
+for required query gates, legacy-history limitations and fictional integration tests.
 
 ## Metrics
 

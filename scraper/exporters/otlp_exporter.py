@@ -1,6 +1,8 @@
 """OpenTelemetry OTLP metrics exporter for ISG and Fronius data."""
 
 import logging
+import math
+import time
 
 from opentelemetry import metrics
 from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
@@ -9,7 +11,7 @@ from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 from opentelemetry.sdk.resources import Resource
 
 from scraper.health import CollectionHealth
-from scraper.metrics.definitions import get_otel_unit, is_counter_metric
+from scraper.metrics.definitions import energy_in_kwh, get_otel_unit, is_counter_metric
 from scraper.parsers.isg_parser import ParsedValue, build_metric_name
 
 logger = logging.getLogger(__name__)
@@ -47,12 +49,15 @@ class OTLPExporter:
             resource=resource,
             metric_readers=[reader],
         )
-        metrics.set_meter_provider(self.meter_provider)
-
-        self.meter = metrics.get_meter("isg_heatpump", "1.0.0")
-        self.fronius_meter = metrics.get_meter("fronius_solar", "1.0.0")
+        self.meter = self.meter_provider.get_meter("isg_heatpump", "1.0.0")
+        self.fronius_meter = self.meter_provider.get_meter("fronius_solar", "1.0.0")
 
         self.health = CollectionHealth()
+        self.meter.create_observable_gauge(
+            "smarthome_measurement_contract_version",
+            callbacks=[lambda options: [metrics.Observation(2)]],
+            description="Semantic export contract version; not a source-health signal",
+        )
         for name, index in (
             ("smarthome_collection_last_success_seconds", 0),
             ("smarthome_collection_stale_after_seconds", 1),
@@ -68,8 +73,44 @@ class OTLPExporter:
         # Cache for created instruments to avoid re-creating them
         self._gauges: dict[str, metrics.ObservableGauge] = {}
         self._gauge_values: dict[str, float] = {}
-        self._counters: dict[str, metrics.ObservableUpDownCounter] = {}
+        self._counters: dict[str, metrics.ObservableGauge] = {}
         self._counter_values: dict[str, float] = {}
+        self._measurement_last_success: dict[str, float] = {}
+        self._instrument_units: dict[str, str] = {}
+
+        def observe_measurements(options):
+            # Snapshot: collection and periodic callbacks run on different threads.
+            for name, timestamp in self._measurement_last_success.copy().items():
+                yield metrics.Observation(timestamp, {"metric": name})
+
+        self.meter.create_observable_gauge(
+            "smarthome_measurement_last_success_seconds",
+            callbacks=[observe_measurements],
+            description="Collector observation time per valid measurement, not export time",
+        )
+
+        def observe_presence(options):
+            for name in self._measurement_last_success.copy():
+                present = name in self._gauge_values or name in self._counter_values
+                yield metrics.Observation(int(present), {"metric": name})
+
+        self.meter.create_observable_gauge(
+            "smarthome_measurement_present",
+            callbacks=[observe_presence],
+            description="Valid field in latest processed source result; also check observation age",
+        )
+
+    def _clear_values(self, prefixes: tuple[str, ...]) -> None:
+        """A new source result replaces its cache; absent/invalid fields are not zero."""
+        for cache in (self._gauge_values, self._counter_values):
+            for name in list(cache):
+                if name.startswith(prefixes):
+                    cache.pop(name, None)
+
+    def _accept_unit(self, name: str, unit: str) -> bool:
+        # OTel instrument units are immutable. Do not attach a new numeric scale
+        # to an existing series after a firmware/display-unit change.
+        return self._instrument_units.setdefault(name, unit) == unit
 
     def _get_or_create_gauge(
         self, name: str, unit: str, description: str
@@ -95,9 +136,9 @@ class OTLPExporter:
     ) -> None:
         """Create an observable gauge for counter-like values.
 
-        We use ObservableGauge even for counters because the ISG reports
-        absolute cumulative values (not deltas). Prometheus will handle
-        the counter semantics on its side.
+        Keep historical gauge series and names intact. These are device absolute
+        readings, NOT Prometheus counters; period queries must explicitly handle
+        resets and coverage (see docs/measurement-contracts.md).
         """
         if name not in self._counters:
             otel_unit = get_otel_unit(unit)
@@ -126,32 +167,46 @@ class OTLPExporter:
         Returns:
             Number of metrics exported
         """
+        prefixes = (f"heatpump.{page_name}.",)
+        if page_name == "waermepumpe":
+            prefixes += ("heatpump.calculated.",)
+        self._clear_values(prefixes)
+        observed_at = time.time()
         exported = 0
 
         for value in values:
-            if value.numeric_value is None:
-                logger.debug(
-                    "Skipping non-numeric value: %s/%s = '%s'",
-                    value.section,
-                    value.key,
-                    value.raw_value,
-                )
+            number, unit = value.numeric_value, value.unit
+            if number is None or not math.isfinite(number):
                 continue
 
             metric_name = build_metric_name(page_name, value.section, value.key)
             description = f"{value.section} - {value.key}"
+            if page_name == "waermepumpe" and value.section in ("WÄRMEMENGE", "LEISTUNGSAUFNAHME"):
+                number = energy_in_kwh(number, unit)
+                if number is None or value.is_boolean:
+                    continue
+                # Preserve the established daily kWh / cumulative MWh series.
+                unit = "MWh" if value.key.endswith("SUMME") else "kWh"
+                if unit == "MWh":
+                    number /= 1000
+            if not self._accept_unit(metric_name, unit):
+                continue
 
             if is_counter_metric(metric_name):
-                self._get_or_create_counter(metric_name, value.unit, description)
-                self._counter_values[metric_name] = value.numeric_value
+                self._get_or_create_counter(metric_name, unit, description)
+                self._counter_values[metric_name] = number
             else:
-                self._get_or_create_gauge(metric_name, value.unit, description)
-                self._gauge_values[metric_name] = value.numeric_value
-
+                self._get_or_create_gauge(metric_name, unit, description)
+                self._gauge_values[metric_name] = number
+            self._measurement_last_success[metric_name] = observed_at
             exported += 1
 
         # Also export calculated COP metrics
         exported += self._export_calculated_metrics(page_name, values)
+        if page_name == "waermepumpe":
+            for name in self._gauge_values:
+                if name.startswith("heatpump.calculated."):
+                    self._measurement_last_success[name] = observed_at
 
         logger.info(
             "Exported %d metrics for page '%s'", exported, page_name
@@ -167,9 +222,13 @@ class OTLPExporter:
         Returns:
             Number of metrics exported
         """
+        self._clear_values(("fronius.",))
+        observed_at = time.time()
         exported = 0
 
         for fm in fronius_metrics:
+            if not math.isfinite(fm.value) or not self._accept_unit(fm.name, fm.unit):
+                continue
             if is_counter_metric(fm.name):
                 self._get_or_create_fronius_counter(
                     fm.name, fm.unit, fm.description
@@ -181,6 +240,7 @@ class OTLPExporter:
                 )
                 self._gauge_values[fm.name] = fm.value
 
+            self._measurement_last_success[fm.name] = observed_at
             exported += 1
 
         logger.info("Exported %d Fronius metrics", exported)
@@ -227,20 +287,25 @@ class OTLPExporter:
     def _export_calculated_metrics(
         self, page_name: str, values: list[ParsedValue]
     ) -> int:
-        """Calculate and export derived metrics like COP.
-
-        COP = Wärmemenge / Leistungsaufnahme (for matching periods)
-        """
+        """Device VD energy ratios, not whole-system COP or annual efficiency."""
         if page_name != "waermepumpe":
             return 0
 
         # Build lookup: section -> key -> numeric_value
         lookup: dict[str, dict[str, float]] = {}
         for v in values:
-            if v.numeric_value is not None:
-                if v.section not in lookup:
-                    lookup[v.section] = {}
-                lookup[v.section][v.key] = v.numeric_value
+            name = build_metric_name(page_name, v.section, v.key)
+            if name not in self._gauge_values and name not in self._counter_values:
+                continue
+            number = v.numeric_value
+            if number is None or not math.isfinite(number) or v.is_boolean:
+                continue
+            if v.section in ("WÄRMEMENGE", "LEISTUNGSAUFNAHME"):
+                number = energy_in_kwh(number, v.unit)
+            elif v.section == "PROZESSDATEN" and v.unit != "°C":
+                continue
+            if number is not None:
+                lookup.setdefault(v.section, {})[v.key] = number
 
         exported = 0
         waermemenge = lookup.get("WÄRMEMENGE", {})
@@ -248,18 +313,20 @@ class OTLPExporter:
 
         # Calculate COP for each matching pair
         cop_pairs = [
-            ("VD HEIZEN TAG", "cop_heizen_tag", "COP Heating (daily)"),
-            ("VD HEIZEN SUMME", "cop_heizen_gesamt", "COP Heating (total)"),
-            ("VD WARMWASSER TAG", "cop_warmwasser_tag", "COP Hot Water (daily)"),
-            ("VD WARMWASSER SUMME", "cop_warmwasser_gesamt", "COP Hot Water (total)"),
+            ("VD HEIZEN TAG", "cop_heizen_tag", "Device VD heating energy ratio since day reset; excludes NHZ"),
+            ("VD HEIZEN SUMME", "cop_heizen_gesamt", "Device VD heating lifetime energy ratio; not annual, excludes NHZ"),
+            ("VD WARMWASSER TAG", "cop_warmwasser_tag", "Device VD hot-water energy ratio since day reset; excludes NHZ"),
+            ("VD WARMWASSER SUMME", "cop_warmwasser_gesamt", "Device VD hot-water lifetime energy ratio; not annual, excludes NHZ"),
         ]
 
         for key, metric_suffix, description in cop_pairs:
             heat = waermemenge.get(key)
             power = leistungsaufnahme.get(key)
             if heat is not None and power is not None and power > 0:
-                # Ensure same units (both could be kWh or MWh but ratio is the same)
+                # Both inputs were independently converted to kWh.
                 cop = heat / power
+                if not math.isfinite(cop):
+                    continue
                 metric_name = f"heatpump.calculated.{metric_suffix}"
                 self._get_or_create_gauge(metric_name, "", description)
                 self._gauge_values[metric_name] = round(cop, 2)
@@ -278,17 +345,8 @@ class OTLPExporter:
             self._gauge_values[metric_name] = round(spread, 1)
             exported += 1
 
-        # Calculate instantaneous electrical power (V * A)
-        strom = prozessdaten.get("STROM INVERTER")
-        spannung = prozessdaten.get("SPANNUNG INVERTER")
-        if strom is not None and spannung is not None:
-            power_w = strom * spannung
-            metric_name = "heatpump.calculated.inverter_leistung_berechnet"
-            self._get_or_create_gauge(
-                metric_name, "kW", "Calculated inverter power (V * A)"
-            )
-            self._gauge_values[metric_name] = round(power_w / 1000, 2)
-            exported += 1
+        # V*A is not verified whole-system real power (phase count, power factor,
+        # AC/DC boundary and auxiliaries are unknown). Retire the calculated claim.
 
         return exported
 

@@ -14,7 +14,8 @@ logger = logging.getLogger(__name__)
 
 # Pattern to extract numeric value and unit from strings like "24,4°C", "7,11bar", "15,9l/min"
 VALUE_PATTERN = re.compile(
-    r"^([+-]?\d+(?:[.,]\d+)?)\s*(°C|bar|mbar|V|A|Hz|kW|KWh|kWh|MWh|l/min|%|h|min)?$"
+    r"^([+-]?(?:\d{1,3}(?:\.\d{3})+,\d+|\d+(?:[.,]\d+)?))\s*"
+    r"(°C|bar|mbar|V|A|Hz|W|Wh|kW|KWh|kWh|MWh|l/min|%|h|min)?$"
 )
 
 # Image file patterns for boolean status indicators
@@ -76,7 +77,9 @@ def _parse_numeric_value(text: str) -> tuple[float | None, str]:
     text = text.strip()
     match = VALUE_PATTERN.match(text)
     if match:
-        number_str = match.group(1).replace(",", ".")
+        number_str = match.group(1)
+        if "," in number_str:
+            number_str = number_str.replace(".", "").replace(",", ".")
         unit = match.group(2) or ""
         # Normalize unit
         if unit == "KWh":
