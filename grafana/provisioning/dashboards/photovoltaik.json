@@ -368,6 +368,7 @@
       },
       "gridPos": { "h": 6, "w": 4, "x": 0, "y": 16 },
       "id": 21,
+      "description": "Device-reported SOC (%). Configured usable capacity: ${usable_battery_kwh} kWh (installation input, not measured remaining energy; NaN means not configured).",
       "options": {
         "minVizHeight": 75,
         "minVizWidth": 75,
@@ -1625,14 +1626,12 @@
     "photovoltaik",
     "fronius"
   ],
-  "templating": {
-    "list": []
-  },
+  "templating": {"list": [{"name": "usable_battery_kwh", "label": "Configured usable capacity (kWh)", "type": "constant", "hide": 2, "query": "NaN", "current": {"text": "NaN", "value": "NaN"}, "options": [{"text": "NaN", "value": "NaN", "selected": true}]}]},
   "time": {
     "from": "now-24h",
     "to": "now"
   },
-  "timezone": "Europe/Vienna",
+  "timezone": "browser",
   "title": "Photovoltaik - Fronius",
   "uid": "pv-overview"
 }

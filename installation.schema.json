@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Private installation and tariffs, version 1",
+  "description": "Only installation parameters and prices. No bills, identifiers or telemetry. The companion example is entirely fictional. Runtime validation additionally checks date validity/order/overlaps, timezone availability and discount totals.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "installation", "import_tariffs", "export_tariffs"],
+  "properties": {
+    "version": {"const": 1, "type": "integer"},
+    "installation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["panel_kwp", "usable_battery_kwh", "currency", "timezone"],
+      "properties": {
+        "panel_kwp": {"type": "number", "exclusiveMinimum": 0, "description": "Installed panel nameplate kWp; required, strictly positive."},
+        "usable_battery_kwh": {"type": "number", "minimum": 0, "description": "Usable storage kWh; zero means no battery, not missing input."},
+        "area_m2": {"type": "number", "exclusiveMinimum": 0, "description": "Optional area, not a validated heat/energy boundary."},
+        "commissioning_date": {"$ref": "#/$defs/date"},
+        "currency": {"type": "string", "pattern": "^[A-Z]{3}$", "description": "Currency code; all monetary amounts use this currency, not cents."},
+        "timezone": {"type": "string", "minLength": 1, "description": "Installed IANA timezone for local calendar dates and DST."}
+      }
+    },
+    "import_tariffs": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["from", "until", "status", "vat_rate", "components", "discounts", "fixed_charges"],
+        "properties": {
+          "from": {"$ref": "#/$defs/date", "description": "Inclusive local date."},
+          "until": {"$ref": "#/$defs/date", "description": "Exclusive expiry date, always preserved on carry-forward."},
+          "status": {"$ref": "#/$defs/status"},
+          "vat_rate": {"$ref": "#/$defs/vatRate"},
+          "components": {
+            "type": "object", "additionalProperties": false,
+            "required": ["energy", "network", "levies"],
+            "properties": {
+              "energy": {"$ref": "#/$defs/price"},
+              "network": {"$ref": "#/$defs/price"},
+              "levies": {"$ref": "#/$defs/price"}
+            }
+          },
+          "discounts": {
+            "type": "array",
+            "items": {
+              "type": "object", "additionalProperties": false,
+              "required": ["scope", "amount", "vat_basis"],
+              "properties": {
+                "scope": {"enum": ["all_imports", "restricted_credit"], "description": "all_imports: established universal currency/kWh discount; restricted_credit: absolute currency credit, NEVER subtracted automatically."},
+                "amount": {"$ref": "#/$defs/amount"},
+                "vat_basis": {"$ref": "#/$defs/vatBasis"}
+              }
+            }
+          },
+          "fixed_charges": {
+            "type": "array",
+            "items": {
+              "type": "object", "additionalProperties": false,
+              "required": ["period", "amount", "vat_basis"],
+              "properties": {
+                "period": {"enum": ["month", "year"]},
+                "amount": {"$ref": "#/$defs/amount", "description": "Absolute currency per indicated period, separate from variable rates."},
+                "vat_basis": {"$ref": "#/$defs/vatBasis"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "export_tariffs": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["month", "status", "vat_rate", "price"],
+        "properties": {
+          "month": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$", "description": "Unique local calendar month YYYY-MM."},
+          "status": {"$ref": "#/$defs/status"},
+          "vat_rate": {"$ref": "#/$defs/vatRate"},
+          "price": {"$ref": "#/$defs/price", "description": "Currency/kWh export remuneration; use correct recipient VAT basis, not assumed import VAT."}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "date": {"type": "string", "format": "date", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    "amount": {"type": "number", "minimum": 0},
+    "vatBasis": {"enum": ["net", "gross"]},
+    "vatRate": {"type": "number", "minimum": 0, "maximum": 1, "description": "Fraction, not percentage points. Net amounts are multiplied by 1 + vat_rate exactly once."},
+    "status": {"enum": ["confirmed", "provisional"]},
+    "price": {
+      "type": "object", "additionalProperties": false,
+      "required": ["amount", "vat_basis"],
+      "properties": {
+        "amount": {"$ref": "#/$defs/amount", "description": "Currency per kWh, never cents."},
+        "vat_basis": {"$ref": "#/$defs/vatBasis"}
+      }
+    }
+  }
+}

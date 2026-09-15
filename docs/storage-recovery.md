@@ -3,7 +3,8 @@
 ## Active deployment
 
 The only active metrics database is `/mnt/external/smarthome-data/prometheus`.
-The external ext4 drive has UUID `223e23de-8d26-4f4c-a435-cfdb385f5356`.
+The expected external-drive UUID is private host configuration in `/etc/fstab`;
+it is intentionally not recorded here.
 The deployed `.env` sets `DATA_PATH=/mnt/external/smarthome-data`.
 Prometheus retention remains **5 years**.
 
@@ -40,7 +41,11 @@ is a boot-order/fail-closed safeguard, not protection from every disk failure.
 ## Installing/reinstalling
 
 These settings are Pi-specific. If replacing the drive, restore the database
-first, then update both `/etc/fstab` and the expected UUID in the guard.
+first, then update the UUID entry in `/etc/fstab`. The tracked guard now reads
+that existing host configuration and requires exactly one `UUID=...` source for
+`/mnt/external`; paths/labels are rejected rather than guessed. Do not copy
+identifiers into the public repository. Previously installed guards are not
+changed by editing this checkout; reinstall only during approved maintenance.
 
 ```sh
 sudo install -m 755 deploy/check-smarthome-storage /usr/local/sbin/check-smarthome-storage

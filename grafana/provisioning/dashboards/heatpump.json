@@ -561,7 +561,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Täglicher Stromverbrauch für Heizen und Warmwasser. Schwellenwerte basierend auf Energieausweis HWB(ref)=39 kWh/m²a, 240m² Neubau.",
+      "description": "Device-reported daily electricity counters. No energy-certificate comparison: measurement boundaries are not established.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -601,78 +601,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Heizen"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Warmwasser"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "HWB-Referenz (39 kWh/m²a)"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "semi-dark-green",
-                  "mode": "fixed"
-                }
-              },
-              {
-                "id": "custom.lineStyle",
-                "value": {
-                  "fill": "dash",
-                  "dash": [
-                    10,
-                    10
-                  ]
-                }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
-              },
-              {
-                "id": "custom.fillOpacity",
-                "value": 0
-              },
-              {
-                "id": "custom.stacking",
-                "value": {
-                  "group": "B",
-                  "mode": "none"
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 10,
@@ -705,11 +634,6 @@
           "expr": "heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_tag_kWh",
           "legendFormat": "Warmwasser",
           "refId": "B"
-        },
-        {
-          "expr": "39.0 * $wohnflaeche / 3.5 / 365",
-          "legendFormat": "HWB-Referenz (39 kWh/m²a)",
-          "refId": "C"
         }
       ],
       "title": "Täglicher Stromverbrauch",
@@ -789,83 +713,6 @@
       ],
       "title": "JAZ / COP Heizen",
       "type": "gauge"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Hochgerechneter jährlicher Stromverbrauch pro m² Wohnfläche. Basierend auf Energieausweis HWB(ref)=39 kWh/m²a und JAZ ~3.5 ergibt sich ein Zielwert von ~14 kWh/m²a Strom (inkl. Warmwasser).",
-      "fieldConfig": {
-        "defaults": {
-          "decimals": 1,
-          "unit": "kWh/m²a",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "dark-green",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 10
-              },
-              {
-                "color": "yellow",
-                "value": 14
-              },
-              {
-                "color": "orange",
-                "value": 20
-              },
-              {
-                "color": "red",
-                "value": 25
-              }
-            ]
-          }
-        }
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 6,
-        "x": 18,
-        "y": 33
-      },
-      "id": 25,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value_and_name"
-      },
-      "targets": [
-        {
-          "expr": "(increase(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh[30d]) + increase(heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh[30d])) * 1000 * 12 / $wohnflaeche",
-          "legendFormat": "30-Tage Hochrechnung",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "(heatpump_waermepumpe_leistungsaufnahme_vd_heizen_summe_MWh + heatpump_waermepumpe_leistungsaufnahme_vd_warmwasser_summe_MWh) * 1000 / ((time() - $inbetriebnahme_ts) / 86400) * 365 / $wohnflaeche",
-          "legendFormat": "Seit Inbetriebnahme",
-          "refId": "B"
-        }
-      ],
-      "title": "Verbrauch pro m² (hochgerechnet)",
-      "type": "stat"
     },
     {
       "datasource": {
@@ -1117,7 +964,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Aufteilung des Stromverbrauchs auf Heizen und Warmwasser. Bei einem Neubau mit HWB 39 sollte Warmwasser einen merklichen Anteil haben, da der Heizenergiebedarf niedrig ist.",
+      "description": "Device-reported electricity counters split by heating and hot water; no building-certificate benchmark.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1296,101 +1143,6 @@
         }
       ],
       "title": "Betriebsinfo",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Vergleich: Energieausweis HWB(ref) = 39 kWh/m²a (Soll-Wärmebedarf) vs. tatsächlich gemessene Wärmeabgabe der WP pro m². Zeigt ob das Haus mehr oder weniger Wärme braucht als laut Energieausweis.",
-      "fieldConfig": {
-        "defaults": {
-          "decimals": 1,
-          "unit": "kWh/m²a",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 39
-              },
-              {
-                "color": "orange",
-                "value": 50
-              },
-              {
-                "color": "red",
-                "value": 70
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "HWB Energieausweis"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "semi-dark-green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 53
-      },
-      "id": 29,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value_and_name"
-      },
-      "targets": [
-        {
-          "expr": "(increase(heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh[30d]) + increase(heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh[30d])) * 1000 * 12 / $wohnflaeche",
-          "legendFormat": "Wärmebedarf 30-Tage",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "(heatpump_waermepumpe_waermemenge_vd_heizen_summe_MWh + heatpump_waermepumpe_waermemenge_vd_warmwasser_summe_MWh) * 1000 / ((time() - $inbetriebnahme_ts) / 86400) * 365 / $wohnflaeche",
-          "legendFormat": "Seit Inbetriebnahme",
-          "refId": "B"
-        },
-        {
-          "expr": "vector(39)",
-          "legendFormat": "HWB Energieausweis (39)",
-          "refId": "C"
-        }
-      ],
-      "title": "Wärmebedarf: IST vs. Energieausweis (HWB 39)",
       "type": "stat"
     },
     {
@@ -2631,31 +2383,41 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "240",
-          "value": "240"
+          "text": "NaN",
+          "value": "NaN"
         },
-        "description": "Beheizte Wohnfläche in m² (für Verbrauchsberechnung pro m²)",
-        "hide": 0,
+        "description": "Optional private installation input; unavailable until privately provisioned.",
+        "hide": 2,
         "label": "Wohnfläche (m²)",
         "name": "wohnflaeche",
-        "options": [],
-        "query": "240",
+        "options": [
+          {
+            "text": "NaN",
+            "value": "NaN",
+            "selected": true
+          }
+        ],
+        "query": "NaN",
         "skipUrlSync": false,
-        "type": "textbox"
+        "type": "constant"
       },
       {
         "current": {
-          "selected": false,
-          "text": "1758664800",
-          "value": "1758664800"
+          "text": "NaN",
+          "value": "NaN"
         },
-        "description": "Unix-Timestamp der Inbetriebnahme (24.09.2025 00:00 CEST)",
+        "description": "Optional private installation input; unavailable until privately provisioned.",
         "hide": 2,
         "label": "Inbetriebnahme",
         "name": "inbetriebnahme_ts",
-        "options": [],
-        "query": "1758664800",
+        "options": [
+          {
+            "text": "NaN",
+            "value": "NaN",
+            "selected": true
+          }
+        ],
+        "query": "NaN",
         "skipUrlSync": true,
         "type": "constant"
       }
@@ -2676,7 +2438,7 @@
       "1d"
     ]
   },
-  "timezone": "Europe/Vienna",
+  "timezone": "browser",
   "title": "Wärmepumpe - Stiebel Eltron",
   "uid": "heatpump-overview",
   "version": 1

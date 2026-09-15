@@ -2,13 +2,21 @@
 # Fail closed: never let Docker bind the SD-card directory below a missing disk.
 set -eu
 mount_path=/mnt/external
-expected_uuid=223e23de-8d26-4f4c-a435-cfdb385f5356
 fail() { echo "SmartHome storage: $*" >&2; exit 1; }
+# /etc/fstab is the existing private host source of truth, not a tracked UUID.
+expected_source=$(findmnt --fstab -n -o SOURCE --mountpoint "$mount_path") || fail "expected drive missing from fstab"
+case "$expected_source" in
+    UUID=*) expected_uuid=${expected_source#UUID=} ;;
+    *) fail "fstab must identify the expected drive by UUID" ;;
+esac
+case "$expected_uuid" in
+    ''|*[!0-9a-fA-F-]*) fail "invalid or ambiguous expected drive UUID" ;;
+esac
 mountpoint -q "$mount_path" || fail "$mount_path is not mounted"
-expected_device=$(stat -Lc %r "/dev/disk/by-uuid/$expected_uuid")
+expected_device=$(stat -Lc %r "/dev/disk/by-uuid/$expected_uuid" 2>/dev/null) || fail "expected drive unavailable"
 [ "$(stat -c %d "$mount_path")" = "$expected_device" ] || fail "mount is not on the expected device"
 actual_uuid=$(findmnt -n -o UUID --mountpoint "$mount_path")
-[ "$actual_uuid" = "$expected_uuid" ] || fail "wrong drive UUID: $actual_uuid"
+[ "$actual_uuid" = "$expected_uuid" ] || fail "wrong drive UUID"
 options=$(findmnt -n -o OPTIONS --mountpoint "$mount_path")
 case ",$options," in *,rw,*) ;; *) fail "drive is not mounted read-write" ;; esac
 [ -d "$mount_path/smarthome-data/prometheus" ] || fail "Prometheus data directory missing"
