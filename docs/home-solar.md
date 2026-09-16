@@ -10,9 +10,10 @@
   compact comfort/field-age context, equivalent previous-month comparison and
   coverage table. Headline tooltips explain units, confidence and boundaries;
   detail and coverage links retain the selection.
-- Solar separates site/PV/grid/battery energy, specific yield, explicitly
-  unavailable direct solar self-consumption, financial breakdown, observed night
-  contribution, endpoint snapshots and coverage. Benefit is **avoided purchases
+- Solar separates site/PV/grid/battery energy, specific yield, financial breakdown,
+  observed night contribution, endpoint snapshots and coverage. The owner chose
+  to omit the unsupported direct solar self-consumption tile rather than retain
+  a permanently unavailable placeholder; self-sufficiency and battery panels remain. Benefit is **avoided purchases
   + export revenue**; variable purchases **minus** export revenue is distinct.
   Price confidence is visible in separate context panels, independently of
   telemetry completeness. Each headline has only its metric target: a surviving
@@ -44,7 +45,7 @@ and [period calculations](period-calculations.md), not redefined by layout:
 - Grid energy is one validated meter's absolute gauge differences, in kWh after
   Wh conversion. Resets/gaps are not repaired or zero-filled.
 - Self-sufficiency includes pre-period battery inventory. Direct solar
-  self-consumption remains unavailable: AC/DC losses and inventory allocation
+  self-consumption is not shown: AC/DC losses and inventory allocation
   do not establish a verified direct-use or onsite-retained share.
 - Battery charge/discharge is battery-side energy; SOC × private usable capacity
   is an inventory estimate, not separately measured AC household delivery.
