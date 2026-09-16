@@ -407,7 +407,7 @@
       "gridPos": {
         "x": 0,
         "y": 5,
-        "w": 4,
+        "w": 6,
         "h": 5
       },
       "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Estimated DC generator kWh / privately configured installed kWp. Not weather-normalized equipment efficiency; no short-period annualization.",
@@ -477,9 +477,9 @@
       "title": "Battery charging · battery side",
       "type": "stat",
       "gridPos": {
-        "x": 4,
+        "x": 6,
         "y": 5,
-        "w": 4,
+        "w": 6,
         "h": 5
       },
       "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Estimated integral of negative P_Akku, sign split at linear zero crossings. Battery-side energy, not household AC use or a cumulative counter.",
@@ -549,9 +549,9 @@
       "title": "Battery discharging · battery side",
       "type": "stat",
       "gridPos": {
-        "x": 8,
+        "x": 12,
         "y": 5,
-        "w": 4,
+        "w": 6,
         "h": 5
       },
       "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Estimated integral of positive P_Akku. Battery-side energy, not an independently measured household AC contribution.",
@@ -621,9 +621,9 @@
       "title": "Battery inventory change · estimate",
       "type": "stat",
       "gridPos": {
-        "x": 12,
+        "x": 18,
         "y": 5,
-        "w": 4,
+        "w": 6,
         "h": 5
       },
       "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Calculated SOC change × privately configured usable capacity. Negative means depletion, not negative consumption. Estimated inventory, not another energy production counter.",
@@ -689,77 +689,6 @@
       ]
     },
     {
-      "id": 109,
-      "title": "Solar self-consumption · unavailable",
-      "type": "stat",
-      "gridPos": {
-        "x": 16,
-        "y": 5,
-        "w": 8,
-        "h": 5
-      },
-      "description": "Selected local period; value is a continuous observed prefix, NOT an extrapolated total. See Coverage for exact observed endpoints and seconds. Missing/stale fields, leading/internal gaps, resets or mismatched periods withhold results; missing is never zero. Nominal 60-second interval/export resolution. Unavailable: DC generator minus AC export cannot establish direct household solar use or a verified onsite-retained share. AC/DC conversion/storage losses and inventory allocation are not verified; no misleading fallback ratio.",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "periodMetric": "solar_self_consumption"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "decimals": 2,
-          "noValue": "Unavailable",
-          "color": {
-            "mode": "fixed",
-            "fixedColor": "blue"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "colorMode": "none",
-        "graphMode": "none",
-        "textMode": "value_and_name",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "values": false
-        },
-        "text": {
-          "titleSize": 12,
-          "valueSize": 25
-        }
-      },
-      "links": [
-        {
-          "title": "Selected-period detail",
-          "url": "/d/pv-overview?from=${__from}&to=${__to}",
-          "targetBlank": false
-        },
-        {
-          "title": "Coverage and observed endpoints",
-          "url": "?from=${__from}&to=${__to}&viewPanel=90",
-          "targetBlank": false
-        }
-      ]
-    },
-    {
       "id": 10,
       "title": "Measurement boundaries",
       "type": "text",
@@ -771,7 +700,7 @@
       },
       "options": {
         "mode": "markdown",
-        "content": "**Period energy above; endpoint power below.** PV is a DC generator estimate, grid energy is meter differences, household is calculated site demand. Battery quantities are battery-side, not household AC delivery. Direct solar self-consumption remains **unavailable** because loss/storage allocation is unverified. No hybrid-AC production shortcut, annualization or weather-normalized efficiency claim. Inspect [coverage](?from=${__from}&to=${__to}&viewPanel=90).\n\n[Completed-month trends · last 12 months](/d/pv-overview?from=now-12M/M&to=now/M&viewPanel=75). Use the time picker for older months; only complete covered months appear."
+        "content": "**Period energy above; endpoint power below.** PV is a DC generator estimate, grid energy is meter differences, household is calculated site demand. Battery quantities are battery-side, not household AC delivery. Use self-sufficiency and grid import/export to understand household supply; direct solar self-consumption is not shown. No hybrid-AC production shortcut, annualization or weather-normalized efficiency claim. Inspect [coverage](?from=${__from}&to=${__to}&viewPanel=90).\n\n[Completed-month trends · last 12 months](/d/pv-overview?from=now-12M/M&to=now/M&viewPanel=75). Use the time picker for older months; only complete covered months appear."
       }
     },
     {

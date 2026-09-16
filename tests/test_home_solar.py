@@ -55,7 +55,14 @@ class HomeTemplateTests(unittest.TestCase):
             self.assertTrue(p['targets'][0]['periodQualification'])
             self.assertTrue(all('${__from}' in link['url'] and '${__to}' in link['url'] for link in p['links']))
         self.assertNotIn('1M', json.dumps(home.get('timepicker')))
-        self.assertIn('unavailable', next(p for p in solar['panels'] if p['id'] == 109)['title'])
+        self.assertNotIn(109, [p['id'] for p in solar['panels']])
+        self.assertNotIn('solar_self_consumption', json.dumps(solar))
+        battery_row = [p for p in solar['panels'] if p['gridPos']['y'] == 5]
+        self.assertEqual([p['id'] for p in battery_row], [105, 106, 107, 108])
+        self.assertEqual([(p['gridPos']['x'], p['gridPos']['w']) for p in battery_row],
+                         [(0, 6), (6, 6), (12, 6), (18, 6)])
+        self.assertIn('self_sufficiency', json.dumps(solar))
+        self.assertIn('battery_discharge', json.dumps(solar))
 
     def test_rendered_targets_links_and_configuration_are_connected(self):
         installation = load_installation(ROOT / 'installation.example.json')
