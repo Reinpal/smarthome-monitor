@@ -89,14 +89,15 @@ class PeriodQueries:
                 raise ValueError('period: lookahead requires a pinned evaluation')
             self.at += f' offset -{lookahead}'
         self.metrics, self.coverage, self.complete, self.price_status, self.observed_until = {}, {}, {}, {}, {}
+        self.telemetry_status = {}
         self._energy, self._accepted, self._endpoints = {}, {}, {}
         self.completed_sources = {}
         for key, source in SOURCES.items():
             energy = self._sum(self._piece(key, source))
             covered = self._sum(self._duration(key))
-            observed = f'sum(max_over_time(({self._record(key, "end_seconds")})[{window}:60s]{self.at}))'
+            observed = f'max(max_over_time(({self._record(key, "end_seconds")})[{window}:60s]{self.at}))'
             endpoint = f'(vector({end}) - clamp_min(vector({end}) - {observed}, 0))'
-            valid_until = f'sum(last_over_time({self._record(key, "valid_until_seconds")}[{window}]{self.at}))'
+            valid_until = f'max(last_over_time({self._record(key, "valid_until_seconds")}[{window}]{self.at}))'
             # Only a continuous observed prefix may be a qualified current headline.
             # Leading/internal holes and stale tails are withheld, never zero-filled.
             accepted = (f'({covered} >= ({endpoint} - {start} - 0.001)) and '
@@ -104,6 +105,10 @@ class PeriodQueries:
             self._energy[key], self._accepted[key], self._endpoints[key] = energy, accepted, endpoint
             self.metrics[key] = f'(({energy}) and ({accepted})) < Inf > -Inf'
             self.coverage[key] = covered
+            # 1 = freshness-validated only; 2 = includes legacy estimates. Missing
+            # telemetry is still unavailable, never a reassuring status of one.
+            legacy = self._sum(f'({self._duration(key)}) and {{__name__="smarthome_legacy_v1_end_seconds",metric="{key}"}}')
+            self.telemetry_status[key] = f'(1 + (({legacy} or on() (0 * ({covered}))) > bool 0)) and ({covered} > 0)'
             self.complete[key] = f'({covered} >= bool ({end} - {start} - 0.001))'
             self.observed_until[key] = endpoint
             # Full source windows need neither observed-prefix discovery nor a
@@ -146,7 +151,7 @@ class PeriodQueries:
         self.units.update(soc='percent', self_sufficiency='percent', solar_self_consumption='percent', specific_yield='suffix: kWh/kWp')
 
     def _alias(self, key, source):
-        for mapping in (self.coverage, self.complete, self.observed_until):
+        for mapping in (self.coverage, self.complete, self.observed_until, self.telemetry_status):
             mapping[key] = mapping[source]
 
     def _combine(self, key, left, right, operation, *, allow_negative=False, positive_denominator=False):
@@ -162,11 +167,14 @@ class PeriodQueries:
         # Infinite ratios and NaN are absent, not reassuring values.
         self.metrics[key] = f'({value}) < Inf > -Inf'
         self._alias(key, left)
+        self.telemetry_status[key] = f'clamp_max(({self.telemetry_status[left]}) + ({self.telemetry_status[right]}) - 1, 2)'
         if left in self.price_status and right in self.price_status:
             self.price_status[key] = f'clamp_max(({self.price_status[left]}) + ({self.price_status[right]}) - 1, 2)'
 
     def _record(self, key, field):
-        return PREFIX + field + '{metric=' + json.dumps(key) + '}'
+        # A raw selector (not a vector union) preserves original sample timestamps.
+        # Separate legacy namespace makes UI rollback independent of TSDB cleanup.
+        return '{__name__=~"smarthome_(period|legacy)_v1_' + field + '",metric=' + json.dumps(key) + '}'
 
     def _bounds(self, key, low=None, high=None):
         start, end = self._record(key, 'start_seconds'), self._record(key, 'end_seconds')
@@ -209,7 +217,7 @@ class PeriodQueries:
         marker = self._record(metric, 'end_seconds')
         # Expression retains metric labels, so timestamp freshness joins by metric.
         fresh = f'((time() - timestamp({marker})) < 60)'
-        return f'sum(sum_over_time((({expression}) and on(metric) {fresh})[{self.window}:60s]{self.at}))'
+        return f'sum(sum_over_time((({expression}) and on(metric,provenance) {fresh})[{self.window}:60s]{self.at}))'
 
     def target(self, key, *, ref_id='A', field='metrics'):
         """Native Grafana instant target; pass field=coverage/complete/price_status."""
@@ -235,6 +243,34 @@ def render_period_targets(dashboard, installation):
     dashboard = render_home_extensions(dashboard, installation)
     def panels(items):
         for panel in items:
+            # Shared coverage context, including Heating's separate stat panels.
+            for index, marker in enumerate(list(panel.get('targets', []))):
+                if marker.get('periodField') != 'coverage':
+                    continue
+                confidence = {**marker, 'refId': 'Legacy' + str(index), 'periodField': 'telemetry_status'}
+                if 'periodLabels' in marker:
+                    confidence['periodLabels'] = {**marker['periodLabels'], 'aspect': 'Telemetry confidence'}
+                    matcher = {'id': 'byName', 'options': 'Telemetry confidence'}
+                else:
+                    matcher = {'id': 'byFrameRefID', 'options': confidence['refId']}
+                panel['targets'].append(confidence)
+                panel.setdefault('fieldConfig', {}).setdefault('overrides', []).append({
+                    'matcher': matcher, 'properties': [
+                        {'id': 'unit', 'value': 'none'},
+                        {'id': 'displayName', 'value': 'Telemetry confidence'},
+                        {'id': 'mappings', 'value': [{'type': 'value', 'options': {
+                            '1': {'text': 'Validated observations'},
+                            '2': {'text': 'Legacy estimate · freshness unknown'}}}]}]})
+            if dashboard.get('uid') in ('home-energy', 'pv-overview', 'heatpump-overview') and panel.get('id') in (70, 75):
+                panel['description'] = (panel.get('description', '') +
+                    ' Historical buckets may include legacy estimates with unknown field freshness; '
+                    'see Telemetry confidence for the selected period. Gap/day/tariff allocation is approximate.')
+            if (dashboard.get('uid'), panel.get('id')) in {
+                    ('home-energy', 10), ('pv-overview', 10), ('heatpump-overview', 900)}:
+                panel['options']['content'] = ('**Historical backfill = legacy estimate; field freshness unknown.** '
+                    'Daily/monthly charts may include these estimates. Counter gaps ≤24h and power gaps ≤15m '
+                    'are allocated approximately; longer gaps stay unavailable. See telemetry confidence below.\n\n'
+                    + panel['options']['content'])
             for index, target in enumerate(panel.get('targets', [])):
                 if 'periodMetric' in target:
                     key = target['periodMetric']
@@ -249,6 +285,13 @@ def render_period_targets(dashboard, installation):
                             for flag, label in ((1, 'Full period'), (0, 'Observed prefix')))
                         resolved['expr'] = f'({value}) * on() group_left(coverage) ({qualification})'
                         resolved['legendFormat'] = '{{coverage}}'
+                        if key in queries.telemetry_status:
+                            status = queries.telemetry_status[key]
+                            confidence = ' or '.join(
+                                f'label_replace(vector(1) and (({status}) == {flag}), "confidence", "{label}", "", "")'
+                                for flag, label in ((1, 'Validated'), (2, 'Legacy estimate')))
+                            resolved['expr'] += f' * on() group_left(confidence) ({confidence})'
+                            resolved['legendFormat'] += ' · {{confidence}}'
                     for label, value in target.get('periodLabels', {}).items():
                         resolved['expr'] = f'label_replace(({resolved["expr"]}), {json.dumps(label)}, {json.dumps(value)}, "", "")'
                     panel['targets'][index] = resolved

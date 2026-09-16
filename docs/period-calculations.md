@@ -1,5 +1,11 @@
 # Period calculations — issue #4 / spec #1
 
+**Issue #9 extension:** [bounded legacy backfill](backfill.md) adds separately
+stored, visibly qualified historical estimates to the interactive queries below.
+It does not weaken the live recording rules or the strict raw-history reader.
+Legacy counter/power gap policies and per-source cutoff joining supersede the
+historical “no backfill implemented” limitation below; field freshness stays unknown.
+
 Implements two **connected** verification paths in the existing stack. No service,
 collector thread, financial exporter, database, or plugin was added. Nothing was
 deployed/restarted; no live/original-checkout inputs or history were read or changed.
@@ -92,7 +98,10 @@ Stable metric keys and units:
 
 `PeriodQueries.metrics`, `.coverage`, `.complete`, `.price_status`, and
 `.observed_until` are the underlying expression dictionaries; `.units` supplies
-Grafana unit identifiers for metric targets. `coverage` is
+Grafana unit identifiers for metric targets. Since #9, `.telemetry_status` is
+1 for freshness-validated observations only, 2 when legacy estimates contribute,
+and absent with no covered time; combined values inherit the less-confident input.
+It is independent of `price_status`. `coverage` is
 seconds; `complete` is 1 for full coverage, 0 otherwise; price status is 1 confirmed,
 2 provisional, absent before the first known rate. The raw observation endpoint
 expression returns epoch seconds; `target(..., field="observed_until")` converts
