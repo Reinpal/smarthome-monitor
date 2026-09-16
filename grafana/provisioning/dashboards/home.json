@@ -723,7 +723,7 @@
         {
           "refId": "A",
           "liveMetric": "pv",
-          "legendFormat": ""
+          "legendFormat": "PV"
         }
       ],
       "fieldConfig": {
@@ -783,7 +783,7 @@
         {
           "refId": "A",
           "liveMetric": "household",
-          "legendFormat": ""
+          "legendFormat": "Household"
         }
       ],
       "fieldConfig": {
@@ -843,7 +843,7 @@
         {
           "refId": "A",
           "liveMetric": "grid_power",
-          "legendFormat": ""
+          "legendFormat": "Grid"
         }
       ],
       "fieldConfig": {
@@ -903,7 +903,7 @@
         {
           "refId": "A",
           "liveMetric": "battery_power",
-          "legendFormat": ""
+          "legendFormat": "Battery power"
         }
       ],
       "fieldConfig": {
@@ -963,7 +963,7 @@
         {
           "refId": "A",
           "liveMetric": "soc",
-          "legendFormat": ""
+          "legendFormat": "Battery charge"
         }
       ],
       "fieldConfig": {
@@ -1023,7 +1023,7 @@
         {
           "refId": "A",
           "liveMetric": "outdoor",
-          "legendFormat": ""
+          "legendFormat": "Outdoor temperature"
         }
       ],
       "fieldConfig": {

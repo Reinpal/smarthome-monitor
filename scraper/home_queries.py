@@ -26,7 +26,7 @@ def live_target(marker):
         value = f'clamp_min(-{value}, 0)'
     return {'refId': marker.get('refId', 'A'), 'expr': f'({value}) and ' + ' and '.join(checks),
             'instant': True, 'range': False, 'editorMode': 'code', 'format': 'time_series',
-            'legendFormat': marker.get('legendFormat', key),
+            'legendFormat': marker.get('legendFormat') or key,
             'datasource': {'type': 'prometheus', 'uid': 'prometheus'}}
 
 
