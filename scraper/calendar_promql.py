@@ -180,13 +180,29 @@ class CalendarQueries:
 
     def daily(self, marker):
         key = marker['calendarMetric']
+        field = marker.get('periodField', 'metrics')
+        if field not in ('metrics', 'missing_seconds'):
+            raise ValueError('calendar: unsupported daily field')
         terms = []
         for day in range(DAYS):
             start, end = '${cal_day_%02d}' % day, '${cal_day_%02d}' % (day + 1)
             q = self.window(start, end, '74h')
-            condition = (f'({q.complete[key]} == 1) and (vector({start}) >= ${{__from}}/1000) '
-                         f'and (vector({end}) <= ${{__to}}/1000) and (vector(${{__to}}/1000) <= ${{cal_day_32}})')
-            value = _gate(q.metrics[key], condition)
+            condition = (f'(vector({start}) >= ${{__from}}/1000) '
+                         f'and (vector({end}) <= ${{__to}}/1000) and (vector({end}) <= time()) '
+                         f'and (vector(${{__to}}/1000) <= ${{cal_day_32}})')
+            if field == 'missing_seconds':
+                # Diagnostic only: absent coverage means the entire date is
+                # missing, NOT zero energy. Keep incomplete dates visible while
+                # leaving all energy/ratio acceptance gates unchanged.
+                expression = f'clamp_min(vector({end} - {start}) - (({q.coverage[key]}) or on() vector(0)), 0)'
+            else:
+                # Reuse the compact full-source gate where available, rather
+                # than computing both prefix acceptance and full coverage.
+                expression = q.completed_sources.get(key)
+                if expression is None:
+                    expression = q.metrics[key]
+                    condition = f'({q.complete[key]} == 1) and ({condition})'
+            value = _gate(expression, condition)
             # Day START is a categorical timestamp, not the instant query's time.
             terms.append(f'label_replace(label_replace(({value}), "day", "{start}", "", ""), '
                          f'"quantity", "{key}", "", "")')

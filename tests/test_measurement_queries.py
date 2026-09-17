@@ -26,6 +26,35 @@ class MeasurementQueryTests(unittest.TestCase):
     def query(self, expression, timestamp):
         return [float(p['value'][1]) for p in self.stack.query(expression, timestamp)]
 
+    def test_interval_rules_wait_for_in_flight_exports(self):
+        """An export timestamp precedes its arrival; retrospective offset reads
+        must not skip it when a rule tick races OTLP ingestion.
+
+        Drive the real SDK/Prometheus seam in event order without sleeping for
+        minute ticks. No samples are delivered before their simulated arrival.
+        """
+        from scraper.period_promql import recording_rules
+
+        group = recording_rules()['groups'][0]
+        delay = float(group.get('query_offset', '0s').removesuffix('s'))
+        rules = {r['record']: r['expr'] for r in group['rules']
+                 if r['labels']['metric'] == 'household'}
+        start = int(time.time()) - 900
+        for i in (-2, -1):
+            self.stack.source(i, stamp=start + i * 60)
+        intervals = []
+        for i in range(4):
+            # Tick at +0.1s; this minute's timestamped export arrives at +0.5s.
+            at = start + i * 60 + .1 - delay
+            left = self.query(rules['smarthome_period_v1_start_seconds'], at)
+            right = self.query(rules['smarthome_period_v1_end_seconds'], at)
+            if left and right:
+                intervals.append((left[0], right[0]))
+            self.stack.source(i, stamp=start + i * 60)
+        self.assertEqual(len(intervals), 4, 'in-flight exports must not lose intervals')
+        self.assertTrue(all(b - a == 60 for a, b in intervals))
+        self.assertTrue(all(a[1] == b[0] for a, b in zip(intervals, intervals[1:])))
+
     def test_source_export_names_panels_resets_missing_and_cached_queries(self):
         start = int(time.time()) - 900
         for i, (battery, grid, total) in enumerate([(-300, -200, 1000), (400, 200, 1300), (0, 0, 20)]):

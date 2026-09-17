@@ -133,9 +133,18 @@ negative energy, reset clamp, or extrapolated repair**. Omitted/stale/multiple
 series are not zero. Resource/equipment identity must remain stable; an unobserved
 reset cannot be disproven by software.
 
-The 60-second recording group samples the latest exported observations. This
-adds resampling to the nominal 60-second OTLP cadence; it is **estimated**, not a
-reconstruction of every 30-second device poll. The query integrates the positive
+The 60-second recording group evaluates with `query_offset: 30s`, allowing
+in-flight OTLP exports to reach storage before their timestamps are queried.
+Without this delay, a tick can miss a just-timestamped export which the next
+tick's retrospective `offset 60s` already sees, permanently losing an interval.
+The allowance is bounded: longer ingestion delays still fail closed; source
+freshness, identity, presence and reset gates are unchanged. Derived headlines
+can lag an additional recording tick. Regenerate the private rules and reload
+Prometheus to apply this change; it does not repair already-missing intervals.
+
+The group samples exported observations. This adds resampling to the nominal
+60-second OTLP cadence; it is **estimated**, not a reconstruction of every
+30-second device poll. The query integrates the positive
 part of linear signed power, including sign crossings, and proportionally
 allocates counter increments only inside accepted observation intervals.
 Selection and tariff boundaries clip those intervals. Missing internal/leading

@@ -110,6 +110,21 @@ chart. A 31-day autumn month is not rejected by a hardcoded 744-hour limit.
 Absent dates are absent bars; another valid date can still be shown. Three
 separate, non-stacked columns retain site/DC/grid boundaries.
 
+The adjacent **Daily gaps · missing time** table (panel **71**) keeps incomplete
+completed dates visible, newest first, with missing accepted-coverage duration
+for household, grid import and PV. Zero missing seconds means complete coverage,
+not zero energy. With no accepted history, the entire date's duration is missing
+(including 23/25-hour DST dates); current and partially selected dates remain
+excluded. `calendarMode: daily` with `periodField: missing_seconds` exposes this
+diagnostic. Its zero-coverage fallback never enters energy or ratio queries.
+
+Home/Solar guidance distinguishes live collection health from historical
+completeness. Monthly self-sufficiency still requires continuous, matching
+household/grid coverage; the table explains why a nearly complete date has no
+bar. Select a fully covered day for a valid ratio instead of interpreting missing
+history as zero. This UI does not repair history, estimate unknown energy, or
+relax acceptance thresholds.
+
 Daily targets return `day` (local day-start **epoch seconds**) and `quantity`
 labels. Use the transform sequence in Home/Solar panel **70**:
 

@@ -484,7 +484,7 @@
       },
       "options": {
         "mode": "markdown",
-        "content": "**This calendar month** is the default. Use the native time picker for local days/months (one calendar month for the daily chart). **Observed prefix** is not a full/extrapolated total: inspect [coverage](?from=${__from}&to=${__to}&viewPanel=90). Estimates are not bills. Prices may be provisional independently of telemetry. Blank/Unavailable is never a reassuring zero.\n\n[Completed-month trends · last 12 months](/d/home-energy?from=now-12M/M&to=now/M&viewPanel=75). Use the time picker for older months; only complete covered months appear."
+        "content": "**Unavailable monthly self-sufficiency?** Live collection can be healthy while the selected history has gaps. Ratios need continuous, matching household/grid history; even a short gap withholds the monthly result. The **Daily gaps** table shows why a completed date has no energy bar. Try a fully covered day; missing energy is never filled with zero.\n\n**This calendar month** is the default. Use the native time picker for local days/months (one calendar month for the daily chart). **Observed prefix** is not a full/extrapolated total: inspect [coverage](?from=${__from}&to=${__to}&viewPanel=90). Estimates are not bills. Prices may be provisional independently of telemetry. Blank/Unavailable is never a reassuring zero.\n\n[Completed-month trends · last 12 months](/d/home-energy?from=now-12M/M&to=now/M&viewPanel=75). Use the time picker for older months; only complete covered months appear."
       }
     },
     {
@@ -561,13 +561,121 @@
       }
     },
     {
+      "id": 71,
+      "title": "Daily gaps · missing time (0 = complete)",
+      "type": "table",
+      "gridPos": {
+        "x": 16,
+        "y": 8,
+        "w": 8,
+        "h": 9
+      },
+      "description": "Missing accepted calculation coverage per completed local date, not necessarily a device outage. Dates with gaps have no full-day energy bar. An entirely missing date shows its whole duration; zero means complete coverage, NOT zero energy. Current/partially selected dates are excluded. Most recent dates first.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "calendarMetric": "household",
+          "calendarMode": "daily",
+          "periodField": "missing_seconds"
+        },
+        {
+          "refId": "B",
+          "calendarMetric": "grid_import",
+          "calendarMode": "daily",
+          "periodField": "missing_seconds"
+        },
+        {
+          "refId": "C",
+          "calendarMetric": "pv",
+          "calendarMode": "daily",
+          "periodField": "missing_seconds"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 1,
+          "noValue": "Unknown"
+        },
+        "overrides": []
+      },
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns",
+            "valueLabel": "quantity"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "day": 0
+            },
+            "renameByName": {
+              "household": "Household",
+              "grid_import": "Grid",
+              "pv": "PV"
+            }
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "day",
+                "destinationType": "time",
+                "dateFormat": "X"
+              }
+            ],
+            "fields": {}
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "day",
+                "desc": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "formatTime",
+          "options": {
+            "timeField": "day",
+            "outputFormat": "YYYY-MM-DD",
+            "timezone": "browser"
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
       "id": 70,
-      "title": "Daily calendar energy · completed local days",
+      "title": "Daily calendar energy · complete coverage only",
       "type": "barchart",
       "gridPos": {
         "x": 0,
         "y": 8,
-        "w": 24,
+        "w": 16,
         "h": 9
       },
       "description": "Each bar group is one COMPLETE local calendar day, labelled by its starting date. DST days are 23/25 hours when applicable; never rolling 24-hour totals or averages of period totals. Partially selected/current days and any day with gaps, stale tails or resets are omitted, NOT zero. Select one calendar month (at most 32 touched local dates); longer ranges are unavailable here. Meter import and estimated DC PV / site demand have distinct boundaries; do not stack or infer a power balance. Supported timezone horizon 2000–2100, not a claim of stored history.",

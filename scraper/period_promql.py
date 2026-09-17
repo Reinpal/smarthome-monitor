@@ -49,7 +49,13 @@ def recording_rules(*, labels=None):
                             ('rate', rate), ('zero_seconds', zero), ('shape', shape),
                             ('stale_after_seconds', current['threshold']), ('valid_until_seconds', valid_until)):
             rules.append({'record': PREFIX + field, 'labels': {'metric': key}, 'expr': f'({expr}) and ({valid})'})
-    return {'groups': [{'name': 'smarthome-period-intervals-v1', 'interval': '60s', 'rules': rules}]}
+    # OTLP samples are timestamped before transport/ingestion completes. Without
+    # an offset, a rule tick can miss an in-flight export which its next tick's
+    # retrospective `offset 60s` already sees, permanently dropping an interval.
+    # Evaluate settled history instead; do not widen source freshness or bridge
+    # outages. Transport delays exceeding this allowance still fail closed.
+    return {'groups': [{'name': 'smarthome-period-intervals-v1', 'interval': '60s',
+                        'query_offset': '30s', 'rules': rules}]}
 
 
 def _utc(day, installation):

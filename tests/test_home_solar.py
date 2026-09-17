@@ -44,6 +44,12 @@ class HomeTemplateTests(unittest.TestCase):
                 for target in p.get('targets', []):
                     self.assertNotIn('expr', target)  # Render markers, not public prices/readings.
             self.assertEqual(next(p for p in dashboard['panels'] if p['id'] == 70)['type'], 'barchart')
+            gaps = next(p for p in dashboard['panels'] if p['id'] == 71)
+            self.assertEqual(gaps['type'], 'table')
+            self.assertEqual([t['periodField'] for t in gaps['targets']], ['missing_seconds'] * 3)
+            self.assertEqual([t['id'] for t in gaps['transformations']],
+                             ['labelsToFields', 'merge', 'organize', 'convertFieldType', 'sortBy', 'formatTime'])
+            self.assertIn('monthly self-sufficiency', json.dumps(dashboard))
             self.assertIn('complete', json.dumps(next(p for p in dashboard['panels'] if p['id'] == 90)).lower())
         heads = [p for p in home['panels'] if p['gridPos']['y'] == 0]
         self.assertEqual(len(heads), 6)
@@ -296,6 +302,30 @@ class HomeQueryTests(unittest.TestCase):
         rows=self.query(substitute(target['expr'],self.variables(october)),october.end.timestamp())
         self.assertEqual([float(r['value'][1]) for r in rows],[25])  # Other dates absent, not zero bars.
 
+    def test_daily_missing_seconds_keeps_incomplete_and_absent_dates_visible(self):
+        # Spring DST: a missing day is 23h, not an assumed 24h. One missing
+        # minute must remain visible as a gap, never as a zero-energy bar.
+        period = calendar_period(date(2025, 3, 29), date(2025, 3, 31), self.installation)
+        self.fixture.push_intervals(period.start.timestamp(), 1440,
+                                    missing=('household', 720))
+        values = self.variables(period)
+        q = CalendarQueries(self.installation)
+        marker = {'calendarMetric': 'household', 'calendarMode': 'daily'}
+        energy = self.query(substitute(q.target(marker)['expr'], values), period.end.timestamp())
+        self.assertEqual(energy, [])
+        target = q.target({**marker, 'periodField': 'missing_seconds'})
+        rows = self.query(substitute(target['expr'], values), period.end.timestamp())
+        self.assertEqual({int(r['metric']['day']): float(r['value'][1]) for r in rows},
+                         {values['cal_day_00']: 60, values['cal_day_01']: 23 * 3600})
+        # A complete dependency remains visibly complete (0 missing seconds).
+        target = q.target({**marker, 'calendarMetric': 'grid_import', 'periodField': 'missing_seconds'})
+        rows = self.query(substitute(target['expr'], values), period.end.timestamp())
+        self.assertEqual(sorted(float(r['value'][1]) for r in rows), [0, 23 * 3600])
+        from scraper.periods import Period
+        partial = Period(period.start + timedelta(hours=1), period.end - timedelta(hours=1))
+        self.assertEqual(self.query(substitute(target['expr'], self.variables(partial)),
+                                    partial.end.timestamp()), [])
+
     def test_observed_night_queries_dst_and_measured_conditions_not_runtime_forecast(self):
         from scraper.periods import Period
         for day,hours in [(date(2025,3,29),11),(date(2025,6,1),12),(date(2025,10,25),13)]:
@@ -326,6 +356,30 @@ class HomeQueryTests(unittest.TestCase):
         self.value(CalendarQueries(parse_installation(raw)).target({'calendarMetric':'overnight_coverage','calendarMode':'overnight'}),self.variables(period))
 
     @unittest.skipUnless(os.environ.get('GRAFANA_TEST_HOME') and os.environ.get('CHROMIUM_TEST_BINARY'),
+                         'set Grafana and Chromium binaries for daily-gap browser acceptance')
+    def test_daily_gap_table_renders_incomplete_date_in_grafana(self):
+        from period_browser import grafana
+        from playwright.sync_api import sync_playwright, expect
+        period = calendar_period(date(2025, 3, 29), date(2025, 3, 30), self.installation)
+        self.fixture.push_intervals(period.start.timestamp(), 1440, missing=('household', 720))
+        dashboard = render_dashboard(template('home.json'), self.installation)
+        with grafana([dashboard], self.base) as (base, _), sync_playwright() as pw:
+            browser = pw.chromium.launch(executable_path=os.environ['CHROMIUM_TEST_BINARY'], headless=True)
+            try:
+                page = browser.new_page(viewport={'width': 1440, 'height': 1000})
+                page.route('**/*', lambda route: route.continue_() if route.request.url.startswith(base + '/') else route.abort())
+                page.goto(base + '/d/home-energy?viewPanel=71&from=' + str(int(period.start.timestamp()*1000))
+                          + '&to=' + str(int(period.end.timestamp()*1000)), wait_until='networkidle', timeout=120000)
+                expect(page.get_by_role('row').filter(has_text='2025-03-29')).to_be_visible(timeout=90000)
+                row = page.get_by_role('row').filter(has_text='2025-03-29')
+                expect(row).to_contain_text('1.0 min')
+                expect(row).to_contain_text('0 s')
+                expect(row).to_contain_text('1.0 day')
+                expect(page.locator('body')).to_contain_text('missing time (0 = complete)')
+            finally:
+                browser.close()
+
+    @unittest.skipUnless(os.environ.get('GRAFANA_TEST_HOME') and os.environ.get('CHROMIUM_TEST_BINARY'),
                          'set GRAFANA_TEST_HOME and CHROMIUM_TEST_BINARY for native Home/Solar browser acceptance')
     def test_provisioned_browser_time_navigation_daily_comparison_night_and_no_data(self):
         from period_browser import grafana
@@ -351,12 +405,14 @@ class HomeQueryTests(unittest.TestCase):
                 page=browser.new_page(viewport={'width':1440,'height':1000})
                 page.route('**/*',lambda route: route.continue_() if route.request.url.startswith(base+'/') else route.abort())
                 errors=[]
-                def check_response(response):
-                    if '/api/ds/query' in response.url:
-                        body=response.json()
+                def check_response(request):
+                    # Headers may arrive before the body. Inspect only finished
+                    # requests so navigation cannot discard an in-flight body.
+                    if '/api/ds/query' in request.url:
+                        body=request.response().json()
                         for result in body.get('results',{}).values():
                             if result.get('error'):errors.append(result['error'])
-                page.on('response',check_response)
+                page.on('requestfinished',check_response)
                 def selection(period):
                     return f'?from={int(period.start.timestamp()*1000)}&to={int(period.end.timestamp()*1000)}'
                 selected=selection(march)

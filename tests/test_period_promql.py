@@ -7,6 +7,7 @@ from copy import deepcopy
 from datetime import date, datetime, timezone
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import tempfile
@@ -56,6 +57,13 @@ class InteractiveQueryTests(unittest.TestCase):
             tests = deepcopy(tests)
             for case in tests:
                 for check in case['promql_expr_test']:
+                    if rules:
+                        # These fixtures timestamp exports exactly on rule ticks.
+                        # The production offset intentionally defers their facts
+                        # until the next tick. Query after that tick, keeping the
+                        # requested energy bounds unchanged.
+                        amount, unit = re.fullmatch(r'(\d+)([sm])', check['eval_time']).groups()
+                        check['eval_time'] = f'{int(amount) * (60 if unit == "m" else 1) + 60}s'
                     check['expr'] = 'round((' + check['expr'] + '), 0.000000001)'
                     for sample in check['exp_samples']:
                         sample['value'] = round(sample['value'], 9)

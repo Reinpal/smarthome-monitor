@@ -18,8 +18,11 @@ class MeasurementDashboardTests(unittest.TestCase):
         solar_panels = {p['id']: p for p in solar['panels']}
         self.assertEqual(solar_panels[100]['targets'][0]['periodMetric'], 'pv')
         self.assertIn('NOT hybrid inverter AC', solar_panels[100]['description'])
-        self.assertEqual(solar_panels[109]['targets'][0]['periodMetric'], 'solar_self_consumption')
-        self.assertIn('Unavailable', solar_panels[109]['description'])
+        # The unsupported direct-solar-use tile was deliberately removed;
+        # self-sufficiency remains a distinct, coverage-gated metric.
+        self.assertNotIn(109, solar_panels)
+        self.assertNotIn('solar_self_consumption', json.dumps(solar))
+        self.assertEqual(solar_panels[104]['targets'][0]['periodMetric'], 'self_sufficiency')
         diagnostics = json.loads((root / 'heatpump-diagnostics.json').read_text())
         heating_panels = {p['id']: p for p in diagnostics['panels']}
         self.assertIn('not annual', heating_panels[5]['title'])
